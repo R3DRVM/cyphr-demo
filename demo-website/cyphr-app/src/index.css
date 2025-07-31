@@ -47,7 +47,66 @@ html, body {
   /* Mobile-friendly spacing */
   .main-content {
     padding: 0.5rem;
+    padding-bottom: 80px; /* Space for mobile bottom nav */
   }
+}
+
+/* Mobile Bottom Navigation */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 1000;
+  display: none; /* Hidden by default, shown via JS */
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+  }
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  min-width: 60px;
+}
+
+.mobile-nav-item:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-nav-item.active {
+  color: #6D8FC7;
+  background: rgba(109, 143, 199, 0.1);
+}
+
+.mobile-nav-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.mobile-nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  font-family: 'Nulshock', sans-serif;
+  letter-spacing: 0.05em;
 }
 
 body {

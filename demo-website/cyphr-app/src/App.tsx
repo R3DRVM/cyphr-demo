@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ColorProvider } from './contexts/ColorContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -12,6 +12,46 @@ import Orders from './pages/Orders';
 import Portfolio from './pages/Portfolio';
 import Spot from './pages/Spot';
 import ProTerminal from './pages/ProTerminal';
+
+// Mobile Bottom Navigation Component
+const MobileBottomNav: React.FC = () => {
+  const location = useLocation();
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsVisible(window.innerWidth <= 768);
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  if (!isVisible) return null;
+
+  const navItems = [
+    { name: 'Terminal', path: '/pro-terminal', icon: '📊' },
+    { name: 'Discover', path: '/discover', icon: '🔍' },
+    { name: 'Dashboard', path: '/dashboard', icon: '📈' },
+    { name: 'Portfolio', path: '/portfolio', icon: '💼' },
+  ];
+
+  return (
+    <div className="mobile-bottom-nav">
+      {navItems.map((item) => (
+        <Link
+          key={item.name}
+          to={item.path}
+          className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+        >
+          <span className="mobile-nav-icon">{item.icon}</span>
+          <span className="mobile-nav-label">{item.name}</span>
+        </Link>
+      ))}
+    </div>
+  );
+};
 
 function App() {
   useEffect(() => {
@@ -42,20 +82,21 @@ function App() {
         <div className="app">
           <Header />
           <main className="main-content">
-                               <Routes>
-                     <Route path="/" element={<Navigate to="/pro-terminal" replace />} />
-                     <Route path="/pro-terminal" element={<ProTerminal />} />
-                     <Route path="/discover" element={<Discover />} />
-                     <Route path="/dashboard" element={<Dashboard />} />
-                     <Route path="/perpetuals" element={<Perpetuals />} />
-                     <Route path="/tracker" element={<Tracker />} />
-                     <Route path="/orders" element={<Orders />} />
-                     <Route path="/token/:id" element={<TokenPage />} />
-                     <Route path="/portfolio" element={<Portfolio />} />
-                     <Route path="/spot" element={<Spot />} />
-                   </Routes>
+            <Routes>
+              <Route path="/" element={<Navigate to="/pro-terminal" replace />} />
+              <Route path="/pro-terminal" element={<ProTerminal />} />
+              <Route path="/discover" element={<Discover />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/perpetuals" element={<Perpetuals />} />
+              <Route path="/tracker" element={<Tracker />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/token/:id" element={<TokenPage />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/spot" element={<Spot />} />
+            </Routes>
           </main>
           <Footer />
+          <MobileBottomNav />
         </div>
       </Router>
     </ColorProvider>

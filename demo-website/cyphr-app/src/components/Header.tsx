@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccentColor } from '../contexts/ColorContext';
 import './Header.css';
@@ -6,6 +6,7 @@ import './Header.css';
 const Header: React.FC = () => {
   const location = useLocation();
   const { accentColor } = useAccentColor();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { name: 'TERMINAL', path: '/pro-terminal' },
@@ -25,7 +26,7 @@ const Header: React.FC = () => {
           <Link to="/" className="logo-link">
             <div className="logo-container">
               <img
-                src="/demo-website/White 3d Logo.png"
+                src="/White 3d Logo.png"
                 alt="Cyphr Logo"
                 className="logo-image"
                 onLoad={() => console.log('Logo loaded successfully')}
@@ -34,8 +35,8 @@ const Header: React.FC = () => {
             </div>
           </Link>
 
-          {/* Navigation */}
-          <nav className="navigation">
+          {/* Desktop Navigation */}
+          <nav className="navigation desktop-nav">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -43,12 +44,26 @@ const Header: React.FC = () => {
                 className={`nav-link ${
                   location.pathname === item.path ? 'active' : ''
                 }`}
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
           </nav>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button 
+          className="mobile-menu-button"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle mobile menu"
+        >
+          <div className={`hamburger ${isMobileMenuOpen ? 'open' : ''}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </button>
 
         {/* Right Side Actions */}
         <div className="header-right">
@@ -94,6 +109,52 @@ const Header: React.FC = () => {
             </svg>
           </button>
         </div>
+      </div>
+
+      {/* Mobile Navigation Menu */}
+      <div className={`mobile-nav-overlay ${isMobileMenuOpen ? 'open' : ''}`}>
+        <nav className="mobile-navigation">
+          <div className="mobile-nav-header">
+            <h3>Navigation</h3>
+            <button 
+              className="mobile-close-button"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              ✕
+            </button>
+          </div>
+          <div className="mobile-nav-items">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`mobile-nav-link ${
+                  location.pathname === item.path ? 'active' : ''
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="mobile-nav-text">{item.name}</span>
+                <span className="mobile-nav-arrow">→</span>
+              </Link>
+            ))}
+          </div>
+          <div className="mobile-nav-footer">
+            <div className="mobile-actions">
+              <button className="mobile-action-btn">
+                <svg className="mobile-action-icon" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                Search
+              </button>
+              <button className="mobile-action-btn">
+                <svg className="mobile-action-icon" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                Watchlist
+              </button>
+            </div>
+          </div>
+        </nav>
       </div>
     </header>
   );
