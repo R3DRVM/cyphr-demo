@@ -1,0 +1,227 @@
+/* Header Styles */
+.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 32px;
+  background-color: #0a0a0a;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Left Side - Logo and Navigation */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 48px; /* Increased gap from 12 to 48px for more space */
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.logo-link:hover {
+  color: #6D8FC7;
+}
+
+.logo-container {
+  position: relative;
+}
+
+.logo-image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.logo-link:hover .logo-image {
+  transform: scale(1.05);
+}
+
+/* Navigation */
+.navigation {
+  display: flex;
+  gap: 32px; /* Increased gap between nav items */
+}
+
+.nav-link {
+  font-family: 'Nulshock', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  color: #999999;
+  transition: all 0.3s ease;
+  padding: 8px 0;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #6D8FC7;
+}
+
+.nav-link.active {
+  color: #6D8FC7;
+}
+
+/* Right Side Actions */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999999;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.action-button:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.action-icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.action-button:hover .action-icon {
+  transform: scale(1.1);
+}
+
+/* Star button with notification badge */
+.star-button {
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(to right, #ef4444, #dc2626);
+  color: white;
+  font-size: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Deposit Button */
+.deposit-button {
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  background-color: #6D8FC7;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deposit-button:hover {
+  background-color: rgba(109, 143, 199, 0.9);
+  transform: scale(1.05);
+}
+
+/* Money Bag */
+.money-bag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.money-bag:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.money-icon {
+  width: 16px;
+  height: 16px;
+  color: #6D8FC7;
+  transition: transform 0.3s ease;
+}
+
+.money-bag:hover .money-icon {
+  transform: scale(1.1);
+}
+
+.money-amount {
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.money-bag:hover .money-amount {
+  color: #6D8FC7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    padding: 16px 16px;
+  }
+  
+  .header-left {
+    gap: 24px; /* Reduce gap on mobile */
+  }
+  
+  .navigation {
+    gap: 16px; /* Reduce nav gap on mobile */
+  }
+  
+  .header-right {
+    gap: 8px; /* Reduce right side gap on mobile */
+  }
+  
+  .money-bag {
+    padding: 6px 12px;
+  }
+  
+  .deposit-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+} 
