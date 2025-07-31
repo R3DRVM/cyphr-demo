@@ -33,6 +33,26 @@ const ProTerminal: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [typedTitle, setTypedTitle] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+
+  // Typing effect for title
+  useEffect(() => {
+    const title = 'Cyphr Terminal';
+    let index = 0;
+    
+    const typeInterval = setInterval(() => {
+      if (index < title.length) {
+        setTypedTitle(title.slice(0, index + 1));
+        index++;
+      } else {
+        setIsTyping(false);
+        clearInterval(typeInterval);
+      }
+    }, 150); // Type each character every 150ms
+
+    return () => clearInterval(typeInterval);
+  }, []);
 
   // Mock token data for fallback
   const mockTokens: TokenData[] = [
@@ -679,7 +699,9 @@ const ProTerminal: React.FC = () => {
             <span className="text-green-400 text-sm">LIVE</span>
           </div>
           <div className="title-section">
-            <h1 className="text-2xl font-bold text-white">Cypher Terminal</h1>
+            <h1 className="text-2xl font-bold text-white">
+              {typedTitle}
+            </h1>
             <div className="pro-terminal-subtitle">
               <span className="text-xs text-gray-400">Professional Trading Intelligence Platform</span>
             </div>

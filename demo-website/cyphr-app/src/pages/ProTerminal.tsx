@@ -679,7 +679,7 @@ const ProTerminal: React.FC = () => {
             <span className="text-green-400 text-sm">LIVE</span>
           </div>
           <div className="title-section">
-            <h1 className="text-2xl font-bold text-white">Cypher Terminal</h1>
+            <h1 className="text-2xl font-bold text-white">Cyphr Terminal</h1>
             <div className="pro-terminal-subtitle">
               <span className="text-xs text-gray-400">Professional Trading Intelligence Platform</span>
             </div>

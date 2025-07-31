@@ -63,11 +63,25 @@
 }
 
 .pro-terminal-title h1 {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   font-weight: 600;
   color: #ffffff;
   letter-spacing: 0.05em;
-  font-family: 'Nulshock', 'ModeSeven', monospace;
+  font-family: 'ModeSeven', 'Nulshock', monospace;
+  position: relative;
+}
+
+.pro-terminal-title h1::after {
+  content: '_';
+  color: #6D8FC7;
+  animation: blink 2s infinite;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+
+@keyframes blink {
+  0%, 40% { opacity: 0.7; }
+  41%, 100% { opacity: 0.3; }
 }
 
 .pro-terminal-status {
@@ -114,8 +128,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.375rem 0.75rem;
-  background: rgba(0, 212, 255, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  background: rgba(109, 143, 199, 0.1);
+  border: 1px solid rgba(109, 143, 199, 0.3);
   min-width: 180px;
   font-family: 'ModeSeven', monospace;
   border-radius: 6px;
@@ -1682,7 +1696,7 @@
   }
   
   .pro-terminal-title h1 {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
   
   .token-symbol {
