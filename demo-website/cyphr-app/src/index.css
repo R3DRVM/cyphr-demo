@@ -7,6 +7,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'ModeSeven';
+  src: url('/fonts/ModeSeven.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Global Styles */
 * {
   margin: 0;
@@ -258,7 +266,7 @@ body {
 }
 
 .font-mono {
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-family: 'ModeSeven', 'JetBrains Mono', 'Courier New', monospace;
 }
 
 /* Enhanced App Layout */

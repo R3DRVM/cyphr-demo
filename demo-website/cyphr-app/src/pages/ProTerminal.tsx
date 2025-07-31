@@ -39,7 +39,7 @@ const ProTerminal: React.FC = () => {
     {
       symbol: 'SOL',
       name: 'Solana',
-      price: 98.45,
+      price: 177.45,
       change24h: 5.67,
       volume24h: 2840000000,
       marketCap: 45000000000,
@@ -674,15 +674,16 @@ const ProTerminal: React.FC = () => {
       {/* Header */}
       <div className="pro-terminal-header">
         <div className="pro-terminal-title">
-          <h1 className="text-2xl font-bold text-white">CYPHR TERMINAL</h1>
           <div className="pro-terminal-status">
             <div className="status-indicator"></div>
             <span className="text-green-400 text-sm">LIVE</span>
           </div>
-        </div>
-        
-        <div className="pro-terminal-subtitle">
-          <span className="text-xs text-gray-400">Professional Trading Intelligence Platform</span>
+          <div className="title-section">
+            <h1 className="text-2xl font-bold text-white">Cypher Terminal</h1>
+            <div className="pro-terminal-subtitle">
+              <span className="text-xs text-gray-400">Professional Trading Intelligence Platform</span>
+            </div>
+          </div>
         </div>
         
         {/* Search Bar */}
