@@ -14,7 +14,7 @@ export default defineConfig({
     port: 5173,
     open: true,
   },
-  base: '/demo-website/',
+  base: '/',
   build: {
     outDir: 'dist',
     sourcemap: true,
