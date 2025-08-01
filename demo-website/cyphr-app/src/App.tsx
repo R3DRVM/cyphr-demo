@@ -12,6 +12,7 @@ import Orders from './pages/Orders';
 import Portfolio from './pages/Portfolio';
 import Spot from './pages/Spot';
 import ProTerminal from './pages/ProTerminal';
+import StrategyBuilder from './pages/StrategyBuilder';
 
 // Mobile Bottom Navigation Component
 const MobileBottomNav: React.FC = () => {
@@ -31,9 +32,11 @@ const MobileBottomNav: React.FC = () => {
   if (!isVisible) return null;
 
   const navItems = [
+    { name: 'Strategy', path: '/strategy-builder', icon: '🧠' },
     { name: 'Terminal', path: '/pro-terminal', icon: '📊' },
-    { name: 'Discover', path: '/discover', icon: '🔍' },
     { name: 'Dashboard', path: '/dashboard', icon: '📈' },
+    { name: 'Insights', path: '/tracker', icon: '🔍' },
+    { name: 'Perpetuals', path: '/perpetuals', icon: '📊' },
     { name: 'Portfolio', path: '/portfolio', icon: '💼' },
   ];
 
@@ -83,7 +86,7 @@ function App() {
           <Header />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Navigate to="/pro-terminal" replace />} />
+              <Route path="/" element={<Navigate to="/strategy-builder" replace />} />
               <Route path="/pro-terminal" element={<ProTerminal />} />
               <Route path="/discover" element={<Discover />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -93,6 +96,7 @@ function App() {
               <Route path="/token/:id" element={<TokenPage />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/spot" element={<Spot />} />
+              <Route path="/strategy-builder" element={<StrategyBuilder />} />
             </Routes>
           </main>
           <Footer />

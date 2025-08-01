@@ -9,8 +9,8 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
+    { name: 'STRATEGY', path: '/strategy-builder' },
     { name: 'TERMINAL', path: '/pro-terminal' },
-    { name: 'DISCOVER', path: '/discover' },
     { name: 'DASHBOARD', path: '/dashboard' },
     { name: 'INSIGHTS', path: '/tracker' },
     { name: 'PERPETUALS', path: '/perpetuals' },
