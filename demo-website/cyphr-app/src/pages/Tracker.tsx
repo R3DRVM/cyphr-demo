@@ -24,7 +24,7 @@ const Tracker: React.FC = () => {
     { name: 'Trades', icon: '☰', path: 'trades' },
     { name: 'My Holdings', icon: '💰', path: 'holdings' },
     { name: 'Token Details', icon: '⭐', path: 'details' },
-    { name: 'AI Insights', icon: '🤖', path: 'ai-insights' },
+    { name: 'AI Insights', icon: <img src="/RobotIcon.png" alt="AI" style={{ width: '16px', height: '16px' }} />, path: 'ai-insights' },
     { name: 'Bubble Map', icon: '🌐', path: 'bubble' }
   ];
 
