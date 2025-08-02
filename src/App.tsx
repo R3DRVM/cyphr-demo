@@ -32,9 +32,11 @@ const MobileBottomNav: React.FC = () => {
   if (!isVisible) return null;
 
   const navItems = [
+    { name: 'Strategy', path: '/strategy-builder', icon: '🧠' },
     { name: 'Terminal', path: '/pro-terminal', icon: '📊' },
-    { name: 'Discover', path: '/discover', icon: '🔍' },
     { name: 'Dashboard', path: '/dashboard', icon: '📈' },
+    { name: 'Insights', path: '/tracker', icon: '🔍' },
+    { name: 'Perpetuals', path: '/perpetuals', icon: '📊' },
     { name: 'Portfolio', path: '/portfolio', icon: '💼' },
   ];
 
@@ -46,7 +48,9 @@ const MobileBottomNav: React.FC = () => {
           to={item.path}
           className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
         >
-          <span className="mobile-nav-icon">{item.icon}</span>
+          <span className="mobile-nav-icon">
+            {item.icon}
+          </span>
           <span className="mobile-nav-label">{item.name}</span>
         </Link>
       ))}
@@ -84,7 +88,7 @@ function App() {
           <Header />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Navigate to="/pro-terminal" replace />} />
+              <Route path="/" element={<Navigate to="/strategy-builder" replace />} />
               <Route path="/pro-terminal" element={<ProTerminal />} />
               <Route path="/discover" element={<Discover />} />
               <Route path="/dashboard" element={<Dashboard />} />
