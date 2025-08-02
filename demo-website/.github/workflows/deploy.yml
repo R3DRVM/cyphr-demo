@@ -37,7 +37,7 @@ jobs:
         cp cyphr-app/public/* .
         
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: git config --local user.email "action@github.com"
       if: github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
