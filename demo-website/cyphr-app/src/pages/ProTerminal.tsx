@@ -847,7 +847,7 @@ const ProTerminal: React.FC = () => {
                   <div className="ai-overview-card">
                     <div className="ai-card-header">
                       <div className="ai-card-icon">
-          <img src="/demo-website/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
+          <img src="/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
         </div>
                       <div className="ai-card-title">Holder Distribution</div>
                     </div>

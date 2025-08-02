@@ -50,7 +50,7 @@ const MobileBottomNav: React.FC = () => {
         >
           <span className="mobile-nav-icon">
             {item.icon.endsWith('.png') ? (
-              <img src={`/demo-website/${item.icon}`} alt={item.name} style={{ width: '20px', height: '20px' }} />
+              <img src={`/${item.icon}`} alt={item.name} style={{ width: '20px', height: '20px' }} />
             ) : (
               item.icon
             )}

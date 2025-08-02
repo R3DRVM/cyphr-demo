@@ -573,7 +573,7 @@ const Perpetuals: React.FC = () => {
         <div className="crystal-glass p-4 rounded-xl shadow-elite">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-cyphr-teal font-nulshock text-base font-semibold">Market Stats</h3>
-            <img src="/demo-website/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
+            <img src="/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
           </div>
           
           <div className="space-y-3">
