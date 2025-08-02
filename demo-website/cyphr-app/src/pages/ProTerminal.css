@@ -2,9 +2,9 @@
 
 .pro-terminal-container {
   min-height: calc(100vh - 120px);
-  background: linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #1a1a2e 75%, #16213e 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #0f0f23 75%, #0a0a0a 100%);
   color: #ffffff;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Nulshock', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
   position: relative;
   margin-top: -1rem;
@@ -19,18 +19,18 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(0, 153, 204, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+    radial-gradient(circle at 20% 80%, rgba(109, 143, 199, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(109, 143, 199, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, transparent 70%);
   pointer-events: none;
   z-index: -1;
 }
 
 /* Header Section */
 .pro-terminal-header {
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(30px);
-  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  border-bottom: 1px solid rgba(109, 143, 199, 0.2);
   padding: 0.75rem 1.5rem;
   display: flex;
   align-items: center;
@@ -47,25 +47,27 @@
 .pro-terminal-title {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .pro-terminal-subtitle {
   display: flex;
   align-items: center;
-  margin-left: 1rem;
+  font-family: 'Nulshock', monospace;
 }
 
 .pro-terminal-title h1 {
   font-size: 1.25rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-family: 'Courier New', monospace;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  font-family: 'Nulshock', 'ModeSeven', monospace;
 }
 
 .pro-terminal-status {
@@ -76,7 +78,7 @@
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid rgba(34, 197, 94, 0.3);
   font-size: 0.75rem;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   border-radius: 4px;
 }
 
@@ -115,7 +117,7 @@
   background: rgba(0, 212, 255, 0.1);
   border: 1px solid rgba(0, 212, 255, 0.3);
   min-width: 180px;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   border-radius: 6px;
 }
 
@@ -156,20 +158,21 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
   font-size: 0.875rem;
-  font-family: 'Courier New', monospace;
+  font-family: 'Nulshock', 'ModeSeven', monospace;
   transition: all 0.3s ease;
   border-radius: 6px;
 }
 
 .pro-search-input:focus {
   outline: none;
-  border-color: #00d4ff;
+  border-color: #6D8FC7;
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(109, 143, 199, 0.1);
 }
 
 .pro-search-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
+  font-family: 'ModeSeven', monospace;
 }
 
 .clear-search-btn {
@@ -208,7 +211,7 @@
   width: 16px;
   height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top: 2px solid #00d4ff;
+  border-top: 2px solid #6D8FC7;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -286,7 +289,7 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.75rem;
   font-weight: 500;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 4px;
@@ -298,8 +301,8 @@
 }
 
 .timeframe-btn.active {
-  background: #00d4ff;
-  color: #000000;
+  background: #6D8FC7;
+  color: #ffffff;
   font-weight: 600;
 }
 
@@ -383,7 +386,7 @@
 /* Token Info Bar */
 .token-info-bar {
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -392,7 +395,7 @@
   justify-content: space-between;
   gap: 1.5rem;
   animation: slideIn 0.6s ease-out;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   backdrop-filter: blur(20px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
@@ -498,7 +501,7 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
   font-weight: 500;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -511,9 +514,9 @@
 }
 
 .pro-tab-btn.active {
-  background: rgba(0, 212, 255, 0.1);
-  color: #00d4ff;
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  background: rgba(109, 143, 199, 0.1);
+  color: #6D8FC7;
+  border: 1px solid rgba(109, 143, 199, 0.3);
 }
 
 .pro-tab-btn.active::after {
@@ -523,7 +526,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #00d4ff;
+  background: #6D8FC7;
   border-radius: 1px;
 }
 
@@ -541,7 +544,7 @@
 
 .chart-section {
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 12px;
   padding: 1rem;
   backdrop-filter: blur(20px);
@@ -550,7 +553,7 @@
 
 .insights-section {
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 12px;
   padding: 1rem;
   backdrop-filter: blur(20px);
@@ -560,7 +563,7 @@
 .quick-stats {
   grid-column: 1 / -1;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 12px;
   padding: 1rem;
   backdrop-filter: blur(20px);
@@ -577,7 +580,7 @@
 
 .ai-overview-card {
   background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(109, 143, 199, 0.1);
   border-radius: 8px;
   padding: 1rem;
   transition: all 0.3s ease;
@@ -585,9 +588,9 @@
 }
 
 .ai-overview-card:hover {
-  border-color: rgba(0, 212, 255, 0.3);
+  border-color: rgba(109, 143, 199, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.1);
+  box-shadow: 0 8px 25px rgba(109, 143, 199, 0.1);
 }
 
 .ai-card-header {
@@ -596,7 +599,7 @@
   gap: 0.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  border-bottom: 1px solid rgba(109, 143, 199, 0.1);
 }
 
 .ai-card-icon {
@@ -806,7 +809,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -815,7 +818,7 @@
   content: '';
   width: 4px;
   height: 20px;
-  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  background: linear-gradient(135deg, #6D8FC7 0%, #4A5F8C 100%);
   border-radius: 2px;
 }
 
@@ -824,7 +827,7 @@
   position: relative;
   width: 100%;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow:
@@ -832,7 +835,7 @@
     0 4px 20px rgba(0, 0, 0, 0.5);
   cursor: crosshair;
   user-select: none;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   transition: all 0.3s ease;
 }
 
@@ -841,7 +844,7 @@
   height: 600px;
   margin-bottom: 2rem;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(20, 20, 20, 0.95) 100%);
-  border: 2px solid rgba(0, 212, 255, 0.3);
+  border: 2px solid rgba(109, 143, 199, 0.3);
   box-shadow:
     inset 0 2px 10px rgba(0, 0, 0, 0.5),
     0 8px 32px rgba(0, 0, 0, 0.8);
@@ -864,7 +867,7 @@
 
 .zoom-popup-content {
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(20, 20, 20, 0.95) 100%);
-  border: 2px solid rgba(0, 212, 255, 0.3);
+  border: 2px solid rgba(109, 143, 199, 0.3);
   border-radius: 12px;
   padding: 1.5rem;
   max-width: 95vw;
@@ -879,12 +882,12 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  border-bottom: 1px solid rgba(109, 143, 199, 0.2);
 }
 
 .zoom-popup-header h3 {
   color: #ffffff;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   font-size: 1.2rem;
   margin: 0;
 }
@@ -901,8 +904,8 @@
 }
 
 .zoom-popup-close:hover {
-  background: rgba(0, 212, 255, 0.1);
-  color: #00d4ff;
+  background: rgba(109, 143, 199, 0.1);
+  color: #6D8FC7;
 }
 
 .zoom-popup-chart {
@@ -938,14 +941,14 @@
 }
 
 .loading-content h2 {
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
   color: #ffffff;
 }
 
 .loading-content p {
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -1100,7 +1103,7 @@
   border-radius: 6px;
   padding: 0.75rem;
   color: #ffffff;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   font-size: 0.75rem;
   z-index: 1000;
   backdrop-filter: blur(15px);
@@ -1139,7 +1142,7 @@
 }
 
 .candlestick-chart text {
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   font-size: 10px;
   fill: rgba(255, 255, 255, 0.7);
 }
@@ -1187,13 +1190,13 @@
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.1);
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
 }
 
 .insight-confidence {
   font-size: 0.75rem;
   color: #cccccc;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
 }
 
 .insight-analysis {
@@ -1201,14 +1204,14 @@
   color: #ffffff;
   margin-bottom: 0.5rem;
   line-height: 1.4;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
 }
 
 .insight-recommendation {
   font-size: 0.8rem;
   color: #cccccc;
   font-style: italic;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
 }
 
 /* Stats Grid */
@@ -1736,25 +1739,38 @@
 
 /* Scrollbar Styling */
 .search-results::-webkit-scrollbar,
-.pro-tab-content::-webkit-scrollbar {
-  width: 6px;
+.pro-tab-content::-webkit-scrollbar,
+.insights-list::-webkit-scrollbar,
+.holders-content::-webkit-scrollbar,
+.liquidity-events::-webkit-scrollbar {
+  width: 8px;
 }
 
 .search-results::-webkit-scrollbar-track,
-.pro-tab-content::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+.pro-tab-content::-webkit-scrollbar-track,
+.insights-list::-webkit-scrollbar-track,
+.holders-content::-webkit-scrollbar-track,
+.liquidity-events::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
 }
 
 .search-results::-webkit-scrollbar-thumb,
-.pro-tab-content::-webkit-scrollbar-thumb {
-  background: rgba(0, 212, 255, 0.5);
-  border-radius: 3px;
+.pro-tab-content::-webkit-scrollbar-thumb,
+.insights-list::-webkit-scrollbar-thumb,
+.holders-content::-webkit-scrollbar-thumb,
+.liquidity-events::-webkit-scrollbar-thumb {
+  background: rgba(109, 143, 199, 0.5);
+  border-radius: 4px;
+  border: 1px solid rgba(109, 143, 199, 0.2);
 }
 
 .search-results::-webkit-scrollbar-thumb:hover,
-.pro-tab-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 212, 255, 0.7);
+.pro-tab-content::-webkit-scrollbar-thumb:hover,
+.insights-list::-webkit-scrollbar-thumb:hover,
+.holders-content::-webkit-scrollbar-thumb:hover,
+.liquidity-events::-webkit-scrollbar-thumb:hover {
+  background: rgba(109, 143, 199, 0.7);
 }
 
 /* Additional styles for new components */
@@ -1799,7 +1815,7 @@
   align-items: center;
   padding: 1rem;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 8px;
   backdrop-filter: blur(10px);
 }
@@ -1826,7 +1842,7 @@
 .liquidity-card {
   padding: 1rem;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 8px;
   backdrop-filter: blur(10px);
 }

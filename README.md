@@ -174,17 +174,6 @@ The demo uses the CoinGecko API for real-time cryptocurrency data:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- **CoinGecko** for providing free cryptocurrency data
-- **Bloomberg Terminal** for UI/UX inspiration
-- **React Community** for the amazing framework
-- **Vite** for the fast build tool
-
-## 📞 Support
-
-For support, email support@cyphr.trade or create an issue in this repository.
-
 ---
 
 **Live Demo**: [demo.cyphr.trade](https://demo.cyphr.trade)
