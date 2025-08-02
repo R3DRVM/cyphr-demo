@@ -1,181 +1,105 @@
-# Cyphr Demo Website
+# Cyphr Trading Platform
 
-A professional trading intelligence platform demo showcasing real-time cryptocurrency data, advanced charting, and AI-powered insights.
+A modern, feature-rich cryptocurrency trading platform built with React, TypeScript, and Vite.
 
-## 🌟 Features
+## 🚀 Features
 
-### 🚀 Real-Time Trading Terminal
-- **Live Token Search** - Search any cryptocurrency by symbol or contract address
-- **Real-Time Data** - Live prices, volume, and market cap from CoinGecko API
-- **Professional Charts** - Interactive candlestick charts with grid backgrounds
-- **AI Insights** - Machine learning-powered trading recommendations
-- **Risk Assessment** - Dynamic risk level analysis
-
-### 📊 Advanced Analytics
-- **Holder Distribution** - Token holder analysis and whale tracking
-- **Liquidity Events** - Real-time liquidity movement monitoring
-- **Smart Money Flow** - Institutional and whale activity tracking
-- **Technical Indicators** - RSI, MACD, and momentum analysis
-
-### 🎨 Professional UI/UX
-- **Bloomberg Terminal Inspired** - Professional trading platform design
-- **Dark Theme** - Easy on the eyes for extended trading sessions
-- **Responsive Design** - Works on desktop, tablet, and mobile
-- **Real-Time Updates** - Live data feeds and dynamic content
-
-## 🛠️ Technology Stack
-
-- **Frontend**: React 18 + TypeScript
-- **Styling**: CSS3 with custom animations
-- **Build Tool**: Vite
-- **Data API**: CoinGecko (free tier)
-- **Charts**: Custom SVG-based candlestick charts
-- **Deployment**: GitHub Pages
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 16+ 
-- npm or yarn
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/cyphr-demo.git
-   cd cyphr-demo/demo-website/cyphr-app
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open in browser**
-   ```
-   http://localhost:5173
-   ```
-
-### Build for Production
-
-```bash
-npm run build
-```
-
-The built files will be in the `dist/` directory, ready for deployment.
-
-## 🌐 Deployment
-
-### GitHub Pages
-
-This project is configured for GitHub Pages deployment with a custom domain:
-
-1. **Push to GitHub**
-   ```bash
-   git add .
-   git commit -m "Initial commit"
-   git remote add origin https://github.com/yourusername/cyphr-demo.git
-   git push -u origin main
-   ```
-
-2. **Enable GitHub Pages**
-   - Go to repository Settings → Pages
-   - Source: Deploy from a branch
-   - Branch: `main` → `/demo-website/cyphr-app/dist`
-   - Save
-
-3. **Custom Domain**
-   - The CNAME file is already configured for `demo.cyphr.trade`
-   - Add the domain in GitHub Pages settings
-   - Update your DNS to point to GitHub Pages
+- **Real-time Trading**: Live price feeds and trading capabilities
+- **Portfolio Management**: Track your investments and performance
+- **Advanced Charts**: Interactive charts with D3.js
+- **Strategy Builder**: Create and backtest trading strategies
+- **Professional Terminal**: Advanced trading interface
+- **Responsive Design**: Works on desktop and mobile devices
 
 ## 📁 Project Structure
 
 ```
-demo-website/cyphr-app/
-├── public/
-│   ├── CNAME                 # Custom domain configuration
-│   ├── index.html           # Main HTML file
-│   └── assets/              # Static assets
-├── src/
-│   ├── components/          # Reusable React components
-│   ├── pages/              # Page components
-│   │   ├── ProTerminal.tsx # Main trading terminal
-│   │   └── ProTerminal.css # Terminal styling
-│   ├── contexts/           # React contexts
-│   └── App.tsx             # Main app component
-├── package.json            # Dependencies and scripts
-└── vite.config.ts         # Vite configuration
+cyphr-demo/
+├── src/                    # React source code
+│   ├── components/         # Reusable UI components
+│   ├── pages/             # Page components
+│   ├── contexts/          # React contexts
+│   └── ...
+├── public/                # Static assets
+│   ├── fonts/            # Custom fonts
+│   ├── *.png             # Icons and logos
+│   └── ...
+├── .github/              # GitHub Actions workflows
+├── package.json          # Dependencies and scripts
+├── vite.config.ts        # Vite configuration
+└── README.md            # This file
 ```
 
-## 🔧 Configuration
+## 🛠️ Development
 
-### Environment Variables
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
 
-Create a `.env` file in the project root:
-
-```env
-VITE_COINGECKO_API_URL=https://api.coingecko.com/api/v3
+### Installation
+```bash
+npm install
 ```
 
-### Customization
+### Development Server
+```bash
+npm run dev
+```
 
-- **Colors**: Edit CSS variables in `src/index.css`
-- **API**: Modify API endpoints in `src/pages/ProTerminal.tsx`
-- **Styling**: Update `src/pages/ProTerminal.css`
+### Build for Production
+```bash
+npm run build
+```
 
-## 📊 API Integration
+### Deploy to GitHub Pages
+```bash
+npm run deploy
+```
 
-The demo uses the CoinGecko API for real-time cryptocurrency data:
+## 🌐 Live Demo
 
-- **Search**: `/search?query={token}`
-- **Prices**: `/simple/price?ids={ids}&vs_currencies=usd`
-- **Market Data**: Includes 24h change, volume, market cap
+Visit the live demo at: [https://R3DRVM.github.io/cyphr-demo](https://R3DRVM.github.io/cyphr-demo)
 
-### Rate Limits
-- CoinGecko free tier: 50 calls/minute
-- Consider upgrading for production use
+## 🎨 Design
 
-## 🎯 Demo Features
+The platform features a modern, dark-themed interface with:
+- Custom color schemes
+- Professional trading aesthetics
+- Responsive layouts
+- Smooth animations
 
-### Search Functionality
-- Type any cryptocurrency symbol (BTC, ETH, PEPE, etc.)
-- Search by full name or contract address
-- Real-time results with live pricing
-- Click to load detailed analysis
+## 📱 Pages
 
-### Chart Features
-- Interactive candlestick charts
-- Professional grid background
-- Price and time labels
-- Zoom and pan functionality
-- Multiple timeframes (1H, 4H, 1D, 1W, 1M)
+- **Dashboard**: Overview of market data and portfolio
+- **Discover**: Explore new tokens and markets
+- **Spot Trading**: Traditional spot trading interface
+- **Perpetuals**: Futures and perpetual trading
+- **Portfolio**: Portfolio management and analytics
+- **Orders**: Order history and management
+- **Tracker**: Market tracking and alerts
+- **Pro Terminal**: Advanced trading terminal
+- **Strategy Builder**: Create and test trading strategies
 
-### AI Insights
-- Bullish/Bearish sentiment analysis
-- Confidence scoring
-- Technical analysis recommendations
-- Risk level assessment
+## 🔧 Technologies
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **D3.js** - Data visualization
+- **React Router** - Navigation
+- **CSS3** - Styling and animations
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## 🤝 Contributing
 
-**Live Demo**: [demo.cyphr.trade](https://demo.cyphr.trade)
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-Built with ❤️ by the Cyphr Team 
+## 📞 Support
+
+For support or questions, please open an issue on GitHub.

@@ -1,0 +1,44 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: cyphr-app/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd cyphr-app
+        npm ci
+        
+    - name: Build project
+      run: |
+        cd cyphr-app
+        npm run build
+        
+    - name: Copy built files to root
+      run: |
+        cp -r cyphr-app/dist/* .
+        cp cyphr-app/public/* .
+        
+    - name: Deploy to GitHub Pages
+      uses: git config --local user.email "action@github.com"
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: . 
