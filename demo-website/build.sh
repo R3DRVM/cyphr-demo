@@ -9,4 +9,4 @@ echo "Copying built files to root directory..."
 cp -r cyphr-app/dist/* .
 cp cyphr-app/public/* .
 
-echo "Build complete! Files are ready for deployment."
+echo "Build complete! Files are ready for deployment." 
