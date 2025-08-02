@@ -185,7 +185,7 @@ const LogicNode: React.FC<{ data: any }> = ({ data }) => (
       {data.logicType === 'ai' && (
         <div className="ai-logic-info">
                       <div className="ai-badge">
-              <img src="/RobotIcon.png" alt="AI" style={{ width: '14px', height: '14px', marginRight: '4px', verticalAlign: 'middle' }} />
+              <img src="/demo-website/RobotIcon.png" alt="AI" style={{ width: '18px', height: '18px', marginRight: '4px', verticalAlign: 'middle' }} />
               AI-Powered
             </div>
           <p>AI analyzes market conditions and optimizes entry/exit timing</p>
@@ -696,7 +696,7 @@ const StrategyBuilder: React.FC = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h3>
-              <img src="/RobotIcon.png" alt="AI" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+              <img src="/demo-website/RobotIcon.png" alt="AI" style={{ width: '20px', height: '20px', marginRight: '8px', verticalAlign: 'middle' }} />
               AI Strategy Builder
             </h3>
               <button className="modal-close" onClick={() => setShowAIBuilder(false)}>×</button>
@@ -831,7 +831,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add AI-optimized logic"
               >
-                <img src="/RobotIcon.png" alt="AI" className="palette-icon" style={{ width: '16px', height: '16px' }} />
+                <img src="/demo-website/RobotIcon.png" alt="AI" className="palette-icon" style={{ width: '28px', height: '28px', marginRight: '-8px', marginLeft: '-4px' }} />
                 <span>AI-Optimized Logic</span>
                 <span className="ai-badge">+75%</span>
               </div>
