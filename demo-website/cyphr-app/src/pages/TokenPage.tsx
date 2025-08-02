@@ -274,7 +274,7 @@ const TokenPage: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">Trade {tokenData.name}</h3>
-              <span className="text-cyphr-teal text-lg">⚡</span>
+              <img src="/demo-website/ActionIcon.png" alt="Action" style={{ width: '20px', height: '20px' }} />
             </div>
 
             {/* Buy/Sell Toggle */}

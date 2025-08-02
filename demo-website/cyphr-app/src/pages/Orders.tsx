@@ -152,7 +152,7 @@ const Orders: React.FC = () => {
         <div className="elite-glass-card p-6 rounded-2xl shadow-elite">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">Active Orders</h3>
-            <span className="text-cyphr-teal text-lg">⚡</span>
+            <img src="/demo-website/ActionIcon.png" alt="Action" style={{ width: '20px', height: '20px' }} />
           </div>
           
           {activeOrders.length === 0 ? (
@@ -243,7 +243,7 @@ const Orders: React.FC = () => {
         <div className="elite-glass-card p-6 rounded-2xl shadow-elite">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">Order History</h3>
-            <span className="text-cyphr-teal text-lg">📊</span>
+            <img src="/demo-website/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
           </div>
           
           <div className="overflow-x-auto">

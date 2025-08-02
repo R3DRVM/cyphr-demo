@@ -32,11 +32,11 @@ const MobileBottomNav: React.FC = () => {
   if (!isVisible) return null;
 
   const navItems = [
-    { name: 'Strategy', path: '/strategy-builder', icon: '🧠' },
-    { name: 'Terminal', path: '/pro-terminal', icon: '📊' },
+    { name: 'Strategy', path: '/strategy-builder', icon: '📊' },
+    { name: 'Terminal', path: '/pro-terminal', icon: 'TokenDataIcon.png' },
     { name: 'Dashboard', path: '/dashboard', icon: '📈' },
     { name: 'Insights', path: '/tracker', icon: '🔍' },
-    { name: 'Perpetuals', path: '/perpetuals', icon: '📊' },
+    { name: 'Perpetuals', path: '/perpetuals', icon: 'TokenDataIcon.png' },
     { name: 'Portfolio', path: '/portfolio', icon: '💼' },
   ];
 
@@ -48,7 +48,13 @@ const MobileBottomNav: React.FC = () => {
           to={item.path}
           className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
         >
-          <span className="mobile-nav-icon">{item.icon}</span>
+          <span className="mobile-nav-icon">
+            {item.icon.endsWith('.png') ? (
+              <img src={`/demo-website/${item.icon}`} alt={item.name} style={{ width: '20px', height: '20px' }} />
+            ) : (
+              item.icon
+            )}
+          </span>
           <span className="mobile-nav-label">{item.name}</span>
         </Link>
       ))}

@@ -670,9 +670,9 @@ const ProTerminal: React.FC = () => {
   }
 
   return (
-    <div className="pro-terminal-container">
+    <div className="pro-terminal-container animate-fade-in">
       {/* Header */}
-      <div className="pro-terminal-header">
+      <div className="pro-terminal-header animate-slide-up">
         <div className="pro-terminal-title">
           <div className="pro-terminal-status">
             <div className="status-indicator"></div>
@@ -756,9 +756,9 @@ const ProTerminal: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="pro-terminal-content">
+      <div className="pro-terminal-content animate-slide-up">
         {/* Token Info Bar */}
-        <div className="token-info-bar">
+        <div className="token-info-bar animate-slide-up">
           <div className="token-basic-info">
             <h2 className="token-symbol">{selectedToken.symbol}</h2>
             <span className="token-name">{selectedToken.name}</span>
@@ -794,7 +794,7 @@ const ProTerminal: React.FC = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="pro-tab-navigation">
+        <div className="pro-tab-navigation animate-slide-up">
           {['overview', 'chart', 'insights', 'holders', 'liquidity'].map((tab) => (
             <button
               key={tab}
@@ -846,7 +846,9 @@ const ProTerminal: React.FC = () => {
                   {/* Holder Distribution */}
                   <div className="ai-overview-card">
                     <div className="ai-card-header">
-                      <div className="ai-card-icon">📊</div>
+                      <div className="ai-card-icon">
+          <img src="/demo-website/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
+        </div>
                       <div className="ai-card-title">Holder Distribution</div>
                     </div>
                     <div className="ai-card-content">

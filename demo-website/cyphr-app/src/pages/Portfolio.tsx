@@ -145,7 +145,7 @@ const Portfolio: React.FC = () => {
           <div className="elite-glass-card p-6 rounded-xl animate-slide-up shadow-elite">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold flex items-center gap-2">
-                <span className="text-xl">📊</span>
+                <img src="/demo-website/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
                 Total Value
               </h3>
               <button className="text-cyphr-gray hover:text-cyphr-teal transition-all duration-300 text-sm hover:scale-110">▼</button>
@@ -158,7 +158,7 @@ const Portfolio: React.FC = () => {
           <div className="elite-glass-card p-6 rounded-xl animate-slide-up shadow-elite">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold flex items-center gap-2">
-                <span className="text-xl">⚡</span>
+                <img src="/demo-website/ActionIcon.png" alt="Action" style={{ width: '20px', height: '20px' }} />
                 Recent Activity
               </h3>
               <button className="text-cyphr-gray hover:text-cyphr-teal transition-all duration-300 text-sm hover:scale-110">▼</button>

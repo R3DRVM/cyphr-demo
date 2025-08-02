@@ -43,20 +43,27 @@
 
 .strategy-title {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
 }
 
 .strategy-title h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 1.3rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: #ffffff;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  font-family: 'Courier New', monospace;
+  font-family: 'Nulshock', sans-serif;
+}
+
+.strategy-tagline {
+  font-size: 0.875rem;
+  color: #888;
+  font-weight: 400;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
 }
 
 .strategy-status {
@@ -67,7 +74,7 @@
   background: rgba(34, 197, 94, 0.1);
   border: 1px solid rgba(34, 197, 94, 0.3);
   font-size: 0.875rem;
-  font-family: 'Courier New', monospace;
+  font-family: 'ModeSeven', monospace;
   border-radius: 6px;
 }
 
@@ -121,13 +128,13 @@
 
 /* Cyphr Button Styles */
 .cyphr-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.25rem;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -137,12 +144,13 @@
 }
 
 .cyphr-btn-primary {
-  background: linear-gradient(135deg, #6D8FC7 0%, #5A7BB8 100%);
+  background: linear-gradient(135deg, #6D8FC7 0%, #29589F 100%);
   color: #ffffff;
   box-shadow: 0 4px 15px rgba(109, 143, 199, 0.3);
 }
 
 .cyphr-btn-primary:hover {
+  background: linear-gradient(135deg, #29589F 0%, #6D8FC7 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(109, 143, 199, 0.4);
 }
@@ -154,15 +162,16 @@
 }
 
 .cyphr-btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, #bd496f 0%, #a03d5f 100%);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #bd496f;
+  box-shadow: 0 4px 15px rgba(189, 73, 111, 0.3);
 }
 
 .cyphr-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #a03d5f 0%, #bd496f 100%);
+  box-shadow: 0 6px 20px rgba(189, 73, 111, 0.4);
+  transform: translateY(-2px);
 }
 
 .cyphr-btn-ai {
@@ -177,14 +186,15 @@
 }
 
 .cyphr-btn-social {
-  background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+  background: linear-gradient(135deg, #6D8FC7 0%, #29589F 100%);
   color: #ffffff;
-  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+  box-shadow: 0 4px 15px rgba(109, 143, 199, 0.3);
 }
 
 .cyphr-btn-social:hover {
+  background: linear-gradient(135deg, #29589F 0%, #6D8FC7 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+  box-shadow: 0 6px 20px rgba(109, 143, 199, 0.4);
 }
 
 .cyphr-btn-danger {
@@ -397,6 +407,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
+  font-family: 'ModeSeven', monospace;
 }
 
 .modal-close {
@@ -553,6 +564,7 @@
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'ModeSeven', monospace;
 }
 
 .node-palette {
@@ -648,6 +660,7 @@
   font-size: 2rem;
   margin-bottom: 1rem;
   font-weight: 700;
+  font-family: 'ModeSeven', monospace;
 }
 
 .empty-canvas-content p {
@@ -917,6 +930,7 @@
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'ModeSeven', monospace;
 }
 
 .simulation-loading {
@@ -1019,6 +1033,7 @@
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'ModeSeven', monospace;
 }
 
 .property-group {

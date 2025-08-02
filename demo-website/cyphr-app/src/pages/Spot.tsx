@@ -107,7 +107,9 @@ const Spot: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-cyphr-pink to-transparent transform rotate-12"></div>
             </div>
-            <div className="absolute bottom-3 left-3 text-cyphr-gray text-xl">📊</div>
+            <div className="absolute bottom-3 left-3 text-cyphr-gray text-xl">
+          <img src="/demo-website/TokenDataIcon.png" alt="Token Data" style={{ width: '20px', height: '20px' }} />
+        </div>
           </div>
         </div>
 

@@ -59,7 +59,7 @@
 .pro-terminal-subtitle {
   display: flex;
   align-items: center;
-  font-family: 'Nulshock', monospace;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .pro-terminal-title h1 {
