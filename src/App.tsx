@@ -12,6 +12,7 @@ import Orders from './pages/Orders';
 import Portfolio from './pages/Portfolio';
 import Spot from './pages/Spot';
 import ProTerminal from './pages/ProTerminal';
+import StrategyBuilder from './pages/StrategyBuilder';
 
 // Mobile Bottom Navigation Component
 const MobileBottomNav: React.FC = () => {
@@ -93,6 +94,7 @@ function App() {
               <Route path="/token/:id" element={<TokenPage />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/spot" element={<Spot />} />
+              <Route path="/strategy-builder" element={<StrategyBuilder />} />
             </Routes>
           </main>
           <Footer />
