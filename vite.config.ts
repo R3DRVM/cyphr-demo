@@ -16,7 +16,7 @@ export default defineConfig({
   },
   base: '/cyphr-demo/',
   build: {
-    outDir: 'dist',
+    outDir: 'docs',
     sourcemap: true,
   },
   publicDir: 'public',

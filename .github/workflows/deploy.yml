@@ -3,8 +3,6 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-and-deploy:
@@ -12,33 +10,23 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
-        cache-dependency-path: cyphr-app/package-lock.json
         
     - name: Install dependencies
-      run: |
-        cd cyphr-app
-        npm ci
+      run: npm ci
         
     - name: Build project
-      run: |
-        cd cyphr-app
-        npm run build
-        
-    - name: Copy built files to root
-      run: |
-        cp -r cyphr-app/dist/* .
-        cp cyphr-app/public/* .
+      run: npm run build
         
     - name: Deploy to GitHub Pages
-      uses: git config --local user.email "action@github.com"
+      uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: . 
+        publish_dir: ./docs 
