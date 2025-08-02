@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccentColor } from '../contexts/ColorContext';
+import cyphrLogo from '/cyphr-logo.png';
 
 import './Header.css';
 
@@ -27,7 +28,7 @@ const Header: React.FC = () => {
           <Link to="/" className="logo-link">
             <div className="logo-container">
               <img
-                src="/demo-website/White 3d Logo.png"
+                src={cyphrLogo}
                 alt="Cyphr Logo"
                 className="logo-image"
                 onLoad={() => console.log('Logo loaded successfully')}
