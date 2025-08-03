@@ -61,7 +61,7 @@ const Portfolio: React.FC = () => {
         {/* Wallet Info */}
         <div className="flex items-center gap-3">
           <span className="text-cyphr-white font-sf-pro text-base font-semibold">Axiom Main</span>
-          <span className="text-cyphr-teal text-lg">💰</span>
+          <img src="/DepositIcon.png" alt="Deposit" style={{ width: '20px', height: '20px' }} />
           <span className="text-cyphr-white font-sf-pro text-base font-semibold">2.47 SOL</span>
         </div>
         
@@ -87,7 +87,7 @@ const Portfolio: React.FC = () => {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold flex items-center gap-2">
-              <span className="text-xl">👛</span>
+              <img src="/WalletIcon.png" alt="Wallet" style={{ width: '20px', height: '20px' }} />
               Wallets
             </h3>
           </div>
@@ -102,7 +102,7 @@ const Portfolio: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="elite-input w-full text-sm"
               />
-              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-cyphr-gray">🔍</span>
+
             </div>
           </div>
 

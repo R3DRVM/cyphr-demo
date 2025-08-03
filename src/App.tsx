@@ -88,7 +88,7 @@ function App() {
           <Header />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Navigate to="/strategy-builder" replace />} />
+              <Route path="/" element={<Navigate to="/discover" replace />} />
               <Route path="/pro-terminal" element={<ProTerminal />} />
               <Route path="/discover" element={<Discover />} />
               <Route path="/dashboard" element={<Dashboard />} />

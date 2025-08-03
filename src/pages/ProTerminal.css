@@ -130,7 +130,7 @@
   padding: 0.375rem 0.75rem;
   background: rgba(109, 143, 199, 0.1);
   border: 1px solid rgba(109, 143, 199, 0.3);
-  min-width: 180px;
+  min-width: 200px;
   font-family: 'ModeSeven', monospace;
   border-radius: 6px;
 }
@@ -352,9 +352,8 @@
 
 /* Main Content */
 .pro-terminal-content {
-  padding: 0 1rem 1rem 1rem;
-  max-width: 1600px;
-  margin: 0 auto;
+  padding: 0;
+  width: 100%;
   animation: fadeIn 0.5s ease-in-out;
 }
 

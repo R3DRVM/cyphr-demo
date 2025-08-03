@@ -376,33 +376,18 @@ const Perpetuals: React.FC = () => {
           ))}
         </div>
 
-        {/* Enhanced Timeframes with Indicators */}
-        <div className="flex gap-2">
-          {timeframes.map((timeframe) => (
-            <button
-              key={timeframe}
-              onClick={() => setActiveTimeframe(timeframe)}
-              className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-300 premium-nav-button ${
-                activeTimeframe === timeframe
-                  ? 'text-cyphr-black active'
-                  : 'text-cyphr-gray hover:text-cyphr-white'
-              }`}
-            >
-              {timeframe}
-            </button>
-          ))}
-        </div>
+
         
         {/* Professional Action Buttons */}
         <div className="flex gap-2">
           <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg style={{ width: '16px', height: '16px', marginRight: '12px' }} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-6.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd"/>
             </svg>
             Indicators
           </button>
           <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg style={{ width: '16px', height: '16px', marginRight: '12px' }} fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"/>
             </svg>
             Settings

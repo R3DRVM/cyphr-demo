@@ -293,7 +293,7 @@ const Tracker: React.FC = () => {
             {/* AI Summary Card */}
             <div className="elite-glass-card p-6 rounded-lg mb-6 animate-slide-up shadow-elite">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-cyphr-teal font-sf-pro text-sm font-semibold flex items-center gap-2">
+                <h3 className="text-cyphr-teal font-nulshock text-sm font-semibold flex items-center gap-2">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
                   </svg>
@@ -316,18 +316,18 @@ const Tracker: React.FC = () => {
                 <svg className="w-4 h-4 text-cyphr-teal" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
                 </svg>
-                <span className="text-cyphr-teal font-sf-pro text-sm font-semibold">Risk Level:</span>
+                <span className="text-cyphr-teal font-mono text-sm font-semibold">Risk Level:</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-cyphr-teal rounded-full animate-pulse"></div>
-                <span className="text-cyphr-white text-sm font-medium">Medium</span>
+                <span className="text-cyphr-white text-sm font-medium font-mono">Medium</span>
               </div>
             </div>
 
             {/* Pool Overview Card */}
             <div className="elite-glass-card p-6 rounded-lg mb-6 animate-slide-up shadow-elite">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-cyphr-teal font-sf-pro text-sm font-semibold flex items-center gap-2">
+                <h3 className="text-cyphr-teal font-nulshock text-sm font-semibold flex items-center gap-2">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
                   </svg>
@@ -358,7 +358,7 @@ const Tracker: React.FC = () => {
             {/* Liquidity Events Card */}
             <div className="elite-glass-card p-6 rounded-lg mb-6 animate-slide-up shadow-elite">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-cyphr-teal font-sf-pro text-sm font-semibold flex items-center gap-2">
+                <h3 className="text-cyphr-teal font-nulshock text-sm font-semibold flex items-center gap-2">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
                   </svg>
@@ -392,7 +392,7 @@ const Tracker: React.FC = () => {
             {/* Who's In Card */}
             <div className="elite-glass-card p-6 rounded-lg mb-6 animate-slide-up shadow-elite">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-cyphr-teal font-sf-pro text-sm font-semibold flex items-center gap-2">
+                <h3 className="text-cyphr-teal font-nulshock text-sm font-semibold flex items-center gap-2">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
                   </svg>
@@ -423,7 +423,7 @@ const Tracker: React.FC = () => {
             {/* Deployer Insights Card */}
             <div className="elite-glass-card p-6 rounded-lg mb-6 animate-slide-up shadow-elite">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-cyphr-teal font-sf-pro text-sm font-semibold flex items-center gap-2">
+                <h3 className="text-cyphr-teal font-nulshock text-sm font-semibold flex items-center gap-2">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
@@ -454,7 +454,7 @@ const Tracker: React.FC = () => {
             {/* Historical Liquidity Events Card */}
             <div className="elite-glass-card p-6 rounded-lg mb-6 animate-slide-up shadow-elite">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-cyphr-teal font-sf-pro text-sm font-semibold flex items-center gap-2">
+                <h3 className="text-cyphr-teal font-nulshock text-sm font-semibold flex items-center gap-2">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
                   </svg>
@@ -495,7 +495,7 @@ const Tracker: React.FC = () => {
         {/* Interactive Bubble Map Section */}
         <div className="elite-glass-card p-6 rounded-lg animate-slide-up shadow-elite">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-cyphr-teal font-sf-pro text-sm font-semibold flex items-center gap-2">
+            <h3 className="text-cyphr-teal font-nulshock text-sm font-semibold flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 2a8 8 0 00-8 8c0 1.5.4 2.9 1.1 4.1a1 1 0 00.8.3h13.4a1 1 0 00.8-.3C17.6 13.9 18 12.5 18 11a8 8 0 00-8-8zm0 14a6 6 0 100-12 6 6 0 000 12zm-3-5a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/>
               </svg>

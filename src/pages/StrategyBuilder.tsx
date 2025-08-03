@@ -574,49 +574,47 @@ const StrategyBuilder: React.FC = () => {
   }, [selectedToken]);
 
   return (
-    <div className="strategy-builder animate-fade-in">
-      {/* Header Section */}
-      <div className="strategy-header animate-slide-up">
-        <div className="strategy-status">
-          <span className="status-indicator"></span>
-          <span>Live</span>
-        </div>
-        <div className="strategy-title">
-                      <h1>Strategy Builder</h1>
-                      <p className="strategy-tagline">Test your risk before you buy</p>
+    <div className="max-w-full mx-auto p-6 pb-24 animate-fade-in min-h-screen">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-cyphr-white mb-2 font-nulshock">Strategy Builder</h1>
+        <p className="text-cyphr-gray">Test your risk before you buy</p>
+      </div>
+
+      {/* Enhanced Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+        {/* Strategy Name Input */}
+        <div className="flex-1 max-w-md">
+          <input
+            type="text"
+            value={strategyName}
+            onChange={(e) => setStrategyName(e.target.value)}
+            placeholder="Enter strategy name..."
+            className="elite-input px-4 py-2 rounded-lg border border-cyphr-gray/30 focus:border-cyphr-teal text-cyphr-white text-sm w-full"
+          />
         </div>
         
-        <div className="strategy-controls">
-          <div className="strategy-name-input">
-            <input
-              type="text"
-              value={strategyName}
-              onChange={(e) => setStrategyName(e.target.value)}
-              placeholder="Enter strategy name..."
-            />
-          </div>
-          
-          <div className="strategy-actions">
-            <button 
-              className="cyphr-btn cyphr-btn-ai"
-              onClick={() => setShowAIBuilder(true)}
-            >
-                              AI Builder
-            </button>
-            <button 
-              className="cyphr-btn cyphr-btn-primary" 
-              onClick={simulateStrategy}
-              disabled={isSimulating}
-            >
-              {isSimulating ? 'Simulating...' : 'Simulate Strategy'}
-            </button>
-                          <button className="cyphr-btn cyphr-btn-secondary" onClick={saveStrategy}>
-                Save Strategy
-              </button>
-                          <button className="cyphr-btn cyphr-btn-social" onClick={() => setShowSocial(true)}>
-                Publish
-              </button>
-          </div>
+        {/* Strategy Actions */}
+        <div className="flex gap-2">
+          <button 
+            className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray"
+            onClick={() => setShowAIBuilder(true)}
+          >
+            AI Builder
+          </button>
+          <button 
+            className="cyphr-button-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
+            onClick={simulateStrategy}
+            disabled={isSimulating}
+          >
+            {isSimulating ? 'Simulating...' : 'Simulate Strategy'}
+          </button>
+          <button className="cyphr-button-secondary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" onClick={saveStrategy}>
+            Save Strategy
+          </button>
+          <button className="cyphr-button-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" onClick={() => setShowSocial(true)}>
+            Publish
+          </button>
         </div>
       </div>
 

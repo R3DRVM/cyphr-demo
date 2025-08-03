@@ -690,26 +690,23 @@ const ProTerminal: React.FC = () => {
   }
 
   return (
-    <div className="pro-terminal-container">
+    <div className="max-w-full mx-auto p-6 pb-24 animate-fade-in min-h-screen">
       {/* Header */}
-      <div className="pro-terminal-header">
-        <div className="pro-terminal-title">
-          <div className="pro-terminal-status">
-            <div className="status-indicator"></div>
-            <span className="text-green-400 text-sm">LIVE</span>
-          </div>
-          <div className="title-section">
-            <h1 className="text-2xl font-bold text-white">
-              {typedTitle}
-            </h1>
-            <div className="pro-terminal-subtitle">
-              <span className="text-xs text-gray-400">Professional Trading Intelligence Platform</span>
-            </div>
-          </div>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-cyphr-white mb-2 font-nulshock">Cyphr Terminal</h1>
+        <p className="text-cyphr-gray">Professional Trading Intelligence Platform</p>
+      </div>
+
+      {/* Enhanced Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+        {/* Status Indicator */}
+        <div className="flex items-center gap-2">
+          <div className="status-indicator"></div>
+          <span className="text-green-400 text-sm font-semibold">LIVE</span>
         </div>
         
         {/* Search Bar */}
-        <div className="pro-terminal-search">
+        <div className="flex-1 max-w-md">
           <div className="search-container">
             <div className="current-token-display">
               <span className="token-symbol-display">{selectedToken?.symbol || 'SOL'}</span>
@@ -764,7 +761,7 @@ const ProTerminal: React.FC = () => {
         </div>
 
         {/* Timeframe Selector */}
-        <div className="timeframe-selector">
+        <div className="flex gap-2">
           {['1H', '4H', '1D', '1W', '1M'].map((tf) => (
             <button
               key={tf}
@@ -816,11 +813,15 @@ const ProTerminal: React.FC = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="pro-tab-navigation">
+        <div className="flex rounded-2xl p-2 border border-cyphr-gray/30 premium-nav">
           {['overview', 'chart', 'insights', 'holders', 'liquidity'].map((tab) => (
             <button
               key={tab}
-              className={`pro-tab-btn ${activeTab === tab ? 'active' : ''}`}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 premium-nav-button ${
+                activeTab === tab
+                  ? 'text-cyphr-black active'
+                  : 'text-cyphr-gray hover:text-cyphr-white'
+              }`}
               onClick={() => setActiveTab(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}

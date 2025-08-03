@@ -119,10 +119,11 @@ html, body {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background-color: #000000;
+  background: linear-gradient(135deg, #000000 0%, #000000 40%, #0a0a0a 60%, #1a1a2e 85%, #16213e 100%);
   color: #ffffff;
   line-height: 1.6;
   overflow-y: auto;
+  min-height: 100vh;
 }
 
 /* Enhanced Animation Classes */
@@ -295,9 +296,24 @@ body {
   padding: 24px;
   padding-bottom: 120px; /* Increased space for fixed footer */
   min-height: calc(100vh - 200px); /* Ensure minimum height for content */
-  background: transparent;
+  background: linear-gradient(135deg, #000000 0%, #000000 40%, #0a0a0a 60%, #1a1a2e 85%, #16213e 100%);
   position: relative;
   z-index: 1;
+}
+
+.main-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 153, 204, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Enhanced Utility Classes */
@@ -1213,12 +1229,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--cyphr-teal) 0%, var(--cyphr-pink) 100%);
+  background: #9ca3af;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #1a8f7a 0%, #a03d5f 100%);
+  background: #6b7280;
 }
 
 /* Enhanced focus and selection styles */

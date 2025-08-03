@@ -120,6 +120,71 @@
   transform: scale(1.1);
 }
 
+/* Profile Dropdown Styles */
+.profile-dropdown-container {
+  position: relative;
+}
+
+.profile-button.active {
+  color: #6D8FC7;
+  background-color: rgba(109, 143, 199, 0.1);
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 180px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.profile-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #ffffff;
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(109, 143, 199, 0.1);
+  color: #6D8FC7;
+}
+
+.dropdown-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
 /* Star button with notification badge */
 .star-button {
   position: relative;
@@ -443,6 +508,12 @@
   .action-button:nth-child(n+4) {
     display: none;
   }
+
+  /* Adjust dropdown positioning on mobile */
+  .profile-dropdown {
+    right: -8px;
+    min-width: 160px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -474,5 +545,11 @@
   .mobile-action-btn {
     padding: 14px 16px;
     font-size: 15px;
+  }
+
+  /* Further adjust dropdown on very small screens */
+  .profile-dropdown {
+    right: -12px;
+    min-width: 140px;
   }
 } 
