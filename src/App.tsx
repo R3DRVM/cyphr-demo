@@ -34,7 +34,7 @@ const MobileBottomNav: React.FC = () => {
   const navItems = [
     { name: 'Strategy', path: '/strategy-builder', icon: '/WatchlistStar.png' },
     { name: 'Terminal', path: '/pro-terminal', icon: '/PhoneIcon.png' },
-    { name: 'Dashboard', path: '/dashboard', icon: '/PriceLogic.png' },
+    { name: 'Discover', path: '/discover', icon: '/PriceLogic.png' },
     { name: 'Insights', path: '/tracker', icon: '/SearchIcon.png' },
     { name: 'Perpetuals', path: '/perpetuals', icon: '/PNLIcon.png' },
     { name: 'Portfolio', path: '/portfolio', icon: '/WalletIcon.png' },

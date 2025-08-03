@@ -77,23 +77,23 @@ const TokenPage: React.FC = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.15) 0%, rgba(189,73,111,0.15) 100%)',
-              border: '2px solid rgba(45,186,161,0.3)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.12)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.15) 0%, rgba(189,73,111,0.15) 100%)',
+              border: '2px solid rgba(109,143,199,0.3)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.12)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
           >
             <div className="text-cyphr-gray text-sm font-semibold mb-2">Price</div>
             <div className="text-2xl font-bold text-cyphr-white mb-1">{tokenData.price}</div>
-            <div className="text-cyphr-teal font-semibold">{tokenData.change24h}</div>
+            <div className="text-cyphr-blue font-semibold">{tokenData.change24h}</div>
           </div>
           
           <div className="cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-              border: '2px solid rgba(45,186,161,0.25)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+              border: '2px solid rgba(109,143,199,0.25)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
@@ -104,9 +104,9 @@ const TokenPage: React.FC = () => {
           
           <div className="cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-              border: '2px solid rgba(45,186,161,0.25)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+              border: '2px solid rgba(109,143,199,0.25)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
@@ -117,9 +117,9 @@ const TokenPage: React.FC = () => {
           
           <div className="cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-              border: '2px solid rgba(45,186,161,0.25)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+              border: '2px solid rgba(109,143,199,0.25)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
@@ -132,18 +132,18 @@ const TokenPage: React.FC = () => {
 
       {/* Tab Navigation */}
       <div className="mb-8">
-        <div className="flex bg-cyphr-dark-gray rounded-2xl p-2 border border-cyphr-gray">
+        <div className="flex rounded-2xl p-2 border border-cyphr-gray/30 premium-nav">
           {['overview', 'chart', 'trading', 'holders'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 premium-nav-button ${
                 activeTab === tab
-                  ? 'bg-cyphr-teal text-cyphr-black shadow-lg'
-                  : 'text-cyphr-gray hover:text-cyphr-white hover:bg-cyphr-gray'
+                  ? 'text-cyphr-black active'
+                  : 'text-cyphr-gray hover:text-cyphr-white'
               }`}
             >
-              {tab.toUpperCase()}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
@@ -155,16 +155,16 @@ const TokenPage: React.FC = () => {
           {/* Token Info */}
           <div className="cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-              border: '2px solid rgba(45,186,161,0.25)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+              border: '2px solid rgba(109,143,199,0.25)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">Token Information</h3>
-              <span className="text-cyphr-teal text-lg">ℹ️</span>
+                          <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Token Information</h3>
+            <span className="text-cyphr-blue text-lg">ℹ️</span>
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 rounded-lg bg-cyphr-black/50 border border-cyphr-gray/30">
@@ -177,7 +177,7 @@ const TokenPage: React.FC = () => {
               </div>
               <div className="flex justify-between items-center p-3 rounded-lg bg-cyphr-black/50 border border-cyphr-gray/30">
                 <span className="text-cyphr-gray">Buy Tax</span>
-                <span className="text-cyphr-teal font-semibold">{tokenData.buyTax}</span>
+                <span className="text-cyphr-blue font-semibold">{tokenData.buyTax}</span>
               </div>
               <div className="flex justify-between items-center p-3 rounded-lg bg-cyphr-black/50 border border-cyphr-gray/30">
                 <span className="text-cyphr-gray">Sell Tax</span>
@@ -193,16 +193,16 @@ const TokenPage: React.FC = () => {
           {/* Description */}
           <div className="cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-              border: '2px solid rgba(45,186,161,0.25)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+              border: '2px solid rgba(109,143,199,0.25)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">About {tokenData.name}</h3>
-              <span className="text-cyphr-teal text-lg">📝</span>
+                          <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">About {tokenData.name}</h3>
+            <span className="text-cyphr-blue text-lg">📝</span>
             </div>
             <p className="text-cyphr-gray leading-relaxed mb-6">{tokenData.description}</p>
             
@@ -216,9 +216,9 @@ const TokenPage: React.FC = () => {
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 p-3 rounded-lg bg-cyphr-black/50 border border-cyphr-gray/30 hover:border-cyphr-teal transition-all duration-200"
+                    className="elite-button flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:scale-105 text-cyphr-gray"
                   >
-                    <span className="text-cyphr-teal">
+                    <span className="text-cyphr-blue">
                       {platform === 'website' ? '🌐' : platform === 'telegram' ? '📱' : platform === 'twitter' ? '🐦' : '💬'}
                     </span>
                     <span className="text-cyphr-white capitalize">{platform}</span>
@@ -233,24 +233,24 @@ const TokenPage: React.FC = () => {
       {activeTab === 'chart' && (
         <div className="cyphr-card p-6 rounded-2xl"
           style={{
-            background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-            border: '2px solid rgba(45,186,161,0.25)',
-            boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+            background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+            border: '2px solid rgba(109,143,199,0.25)',
+            boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
           }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">{tokenData.name} Price Chart</h3>
+            <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">{tokenData.name} Price Chart</h3>
             <div className="flex gap-2">
               {chartTimeframes.map((timeframe) => (
-                <button key={timeframe} className="px-3 py-1 rounded-lg text-xs font-semibold bg-cyphr-dark-gray text-cyphr-gray hover:text-cyphr-white hover:bg-cyphr-gray transition-all duration-200">
+                <button key={timeframe} className="elite-button px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray">
                   {timeframe}
                 </button>
               ))}
             </div>
           </div>
-          <div className="h-96 bg-gradient-to-br from-cyphr-teal/10 to-cyphr-pink/10 rounded-xl flex items-center justify-center border border-cyphr-gray/30">
+          <div className="h-96 bg-gradient-to-br from-cyphr-blue/10 to-cyphr-pink/10 rounded-xl flex items-center justify-center border border-cyphr-gray/30">
             <div className="text-center">
               <div className="text-cyphr-gray text-6xl mb-4">📈</div>
               <div className="text-cyphr-gray font-sf-pro text-xl">Price Chart</div>
@@ -265,16 +265,16 @@ const TokenPage: React.FC = () => {
           {/* Trading Interface */}
           <div className="cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-              border: '2px solid rgba(45,186,161,0.25)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+              border: '2px solid rgba(109,143,199,0.25)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">Trade {tokenData.name}</h3>
-              <span className="text-cyphr-teal text-lg">⚡</span>
+                          <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Trade {tokenData.name}</h3>
+            <span className="text-cyphr-blue text-lg">⚡</span>
             </div>
 
             {/* Buy/Sell Toggle */}
@@ -283,12 +283,12 @@ const TokenPage: React.FC = () => {
                 <button
                   key={side}
                   onClick={() => setTradeSide(side)}
-                  className={`px-4 py-3 rounded-xl font-bold text-lg transition-all duration-200 ${
+                  className={`px-4 py-3 rounded-xl font-bold text-lg transition-all duration-300 ${
                     tradeSide === side
                       ? side === 'buy' 
-                        ? 'bg-cyphr-teal text-cyphr-black shadow-lg'
-                        : 'bg-cyphr-pink text-cyphr-white shadow-lg'
-                      : 'bg-cyphr-dark-gray text-cyphr-gray hover:text-cyphr-white hover:bg-cyphr-gray border border-cyphr-gray/30'
+                        ? 'cyphr-button-primary'
+                        : 'cyphr-button-secondary'
+                      : 'elite-button text-cyphr-gray'
                   }`}
                 >
                   {side.toUpperCase()}
@@ -303,7 +303,7 @@ const TokenPage: React.FC = () => {
                 type="number"
                 value={tradeAmount}
                 onChange={(e) => setTradeAmount(e.target.value)}
-                className="w-full cyphr-input px-4 py-3 rounded-xl border-2 focus:border-cyphr-teal bg-cyphr-black/50"
+                className="w-full elite-input px-4 py-3 rounded-xl border border-cyphr-gray/30 focus:border-cyphr-blue text-cyphr-white bg-cyphr-black/50"
                 placeholder="Enter amount"
               />
             </div>
@@ -314,7 +314,7 @@ const TokenPage: React.FC = () => {
                 <button
                   key={amount}
                   onClick={() => setTradeAmount(amount)}
-                  className="px-3 py-2 rounded-lg text-sm font-semibold bg-cyphr-dark-gray text-cyphr-gray hover:text-cyphr-white hover:bg-cyphr-gray transition-all duration-200 border border-cyphr-gray/30"
+                  className="elite-button px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray"
                 >
                   ${amount}
                 </button>
@@ -322,10 +322,10 @@ const TokenPage: React.FC = () => {
             </div>
 
             {/* Execute Button */}
-            <button className={`w-full py-4 rounded-xl font-bold text-xl shadow-lg hover:shadow-xl transition-all duration-200 ${
+            <button className={`w-full py-4 rounded-xl font-bold text-xl transition-all duration-300 hover:scale-105 ${
               tradeSide === 'buy' 
-                ? 'bg-cyphr-teal text-cyphr-black hover:bg-cyphr-teal/90' 
-                : 'bg-cyphr-pink text-cyphr-white hover:bg-cyphr-pink/90'
+                ? 'cyphr-button-primary' 
+                : 'cyphr-button-secondary'
             }`}>
               {tradeSide.toUpperCase()} {tokenData.name}
             </button>
@@ -334,23 +334,23 @@ const TokenPage: React.FC = () => {
           {/* Trading History */}
           <div className="lg:col-span-2 cyphr-card p-6 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-              border: '2px solid rgba(45,186,161,0.25)',
-              boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+              background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+              border: '2px solid rgba(109,143,199,0.25)',
+              boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
             }}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">Recent Trades</h3>
-              <span className="text-cyphr-teal text-lg">📋</span>
+                          <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Recent Trades</h3>
+            <span className="text-cyphr-blue text-lg">📋</span>
             </div>
             <div className="space-y-2">
               {tradingHistory.map((trade, index) => (
                 <div key={index} className="flex justify-between items-center p-3 rounded-lg bg-cyphr-black/50 border border-cyphr-gray/30">
                   <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${trade.side === 'buy' ? 'bg-cyphr-teal' : 'bg-cyphr-pink'}`}></div>
-                    <span className={`font-mono font-semibold ${trade.side === 'buy' ? 'text-cyphr-teal' : 'text-cyphr-pink'}`}>
+                                      <div className={`w-2 h-2 rounded-full ${trade.side === 'buy' ? 'bg-cyphr-blue' : 'bg-cyphr-pink'}`}></div>
+                  <span className={`font-mono font-semibold ${trade.side === 'buy' ? 'text-cyphr-blue' : 'text-cyphr-pink'}`}>
                       {trade.price}
                     </span>
                   </div>
@@ -366,16 +366,16 @@ const TokenPage: React.FC = () => {
       {activeTab === 'holders' && (
         <div className="cyphr-card p-6 rounded-2xl"
           style={{
-            background: 'linear-gradient(135deg, rgba(45,186,161,0.12) 0%, rgba(189,73,111,0.12) 100%)',
-            border: '2px solid rgba(45,186,161,0.25)',
-            boxShadow: '0 8px 32px 0 rgba(45,186,161,0.10)',
+            background: 'linear-gradient(135deg, rgba(109,143,199,0.12) 0%, rgba(189,73,111,0.12) 100%)',
+            border: '2px solid rgba(109,143,199,0.25)',
+            boxShadow: '0 8px 32px 0 rgba(109,143,199,0.10)',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
           }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold">Holder Distribution</h3>
-            <span className="text-cyphr-teal text-lg">👥</span>
+            <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Holder Distribution</h3>
+            <span className="text-cyphr-blue text-lg">👥</span>
           </div>
           <div className="space-y-4">
             {holderDistribution.map((holder, index) => (
