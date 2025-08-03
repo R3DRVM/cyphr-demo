@@ -32,12 +32,12 @@ const MobileBottomNav: React.FC = () => {
   if (!isVisible) return null;
 
   const navItems = [
-    { name: 'Strategy', path: '/strategy-builder', icon: '🧠' },
-    { name: 'Terminal', path: '/pro-terminal', icon: '📊' },
-    { name: 'Dashboard', path: '/dashboard', icon: '📈' },
-    { name: 'Insights', path: '/tracker', icon: '🔍' },
-    { name: 'Perpetuals', path: '/perpetuals', icon: '📊' },
-    { name: 'Portfolio', path: '/portfolio', icon: '💼' },
+    { name: 'Strategy', path: '/strategy-builder', icon: '/WatchlistStar.png' },
+    { name: 'Terminal', path: '/pro-terminal', icon: '/PhoneIcon.png' },
+    { name: 'Dashboard', path: '/dashboard', icon: '/PriceLogic.png' },
+    { name: 'Insights', path: '/tracker', icon: '/SearchIcon.png' },
+    { name: 'Perpetuals', path: '/perpetuals', icon: '/PNLIcon.png' },
+    { name: 'Portfolio', path: '/portfolio', icon: '/WalletIcon.png' },
   ];
 
   return (
@@ -49,7 +49,7 @@ const MobileBottomNav: React.FC = () => {
           className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
         >
           <span className="mobile-nav-icon">
-            {item.icon}
+            <img src={item.icon} alt={item.name} style={{ width: '20px', height: '20px' }} />
           </span>
           <span className="mobile-nav-label">{item.name}</span>
         </Link>

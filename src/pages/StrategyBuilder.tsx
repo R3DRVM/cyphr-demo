@@ -184,7 +184,7 @@ const LogicNode: React.FC<{ data: any }> = ({ data }) => (
       
       {data.logicType === 'ai' && (
         <div className="ai-logic-info">
-          <div className="ai-badge">🤖 AI-Powered</div>
+          <div className="ai-badge"><img src="/RobotIcon.png" alt="AI" style={{ width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' }} /> AI-Powered</div>
           <p>AI analyzes market conditions and optimizes entry/exit timing</p>
           <div className="ai-improvement">
             <span>Estimated Improvement:</span>
@@ -603,16 +603,16 @@ const StrategyBuilder: React.FC = () => {
             AI Builder
           </button>
           <button 
-            className="cyphr-button-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
+            className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray" 
             onClick={simulateStrategy}
             disabled={isSimulating}
           >
             {isSimulating ? 'Simulating...' : 'Simulate Strategy'}
           </button>
-          <button className="cyphr-button-secondary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" onClick={saveStrategy}>
+          <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray" onClick={saveStrategy}>
             Save Strategy
           </button>
-          <button className="cyphr-button-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" onClick={() => setShowSocial(true)}>
+          <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray" onClick={() => setShowSocial(true)}>
             Publish
           </button>
         </div>
@@ -690,7 +690,7 @@ const StrategyBuilder: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h3>🤖 AI Strategy Builder</h3>
+              <h3><img src="/RobotIcon.png" alt="AI" style={{ width: '20px', height: '20px', marginRight: '8px', verticalAlign: 'middle' }} /> AI Strategy Builder</h3>
               <button className="modal-close" onClick={() => setShowAIBuilder(false)}>×</button>
             </div>
             <div className="modal-body">
@@ -823,7 +823,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add AI-optimized logic"
               >
-                <span className="palette-icon">🤖</span>
+                <img src="/RobotIcon.png" alt="AI" className="palette-icon" style={{ width: '20px', height: '20px', margin: '0 -4px' }} />
                 <span>AI-Optimized Logic</span>
                 <span className="ai-badge">+75%</span>
               </div>

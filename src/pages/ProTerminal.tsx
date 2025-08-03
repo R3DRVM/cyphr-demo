@@ -698,7 +698,7 @@ const ProTerminal: React.FC = () => {
       </div>
 
       {/* Enhanced Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
         {/* Status Indicator */}
         <div className="flex items-center gap-2">
           <div className="status-indicator"></div>
@@ -706,7 +706,7 @@ const ProTerminal: React.FC = () => {
         </div>
         
         {/* Search Bar */}
-        <div className="flex-1 max-w-md">
+        <div className="flex-1 w-full lg:max-w-md">
           <div className="search-container">
             <div className="current-token-display">
               <span className="token-symbol-display">{selectedToken?.symbol || 'SOL'}</span>
@@ -761,11 +761,11 @@ const ProTerminal: React.FC = () => {
         </div>
 
         {/* Timeframe Selector */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full lg:w-auto">
           {['1H', '4H', '1D', '1W', '1M'].map((tf) => (
             <button
               key={tf}
-              className={`timeframe-btn ${timeframe === tf ? 'active' : ''}`}
+              className={`timeframe-btn flex-1 lg:flex-none ${timeframe === tf ? 'active' : ''}`}
               onClick={() => setTimeframe(tf)}
             >
               {tf}

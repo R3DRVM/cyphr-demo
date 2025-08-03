@@ -109,18 +109,20 @@
   50% { opacity: 0.5; }
 }
 
-/* Search Section */
 .pro-terminal-search {
   flex: 1;
-  max-width: 600px;
-  position: relative;
+  max-width: 400px;
 }
 
 .search-container {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .current-token-display {
@@ -130,29 +132,28 @@
   padding: 0.375rem 0.75rem;
   background: rgba(109, 143, 199, 0.1);
   border: 1px solid rgba(109, 143, 199, 0.3);
-  min-width: 200px;
+  min-width: 240px;
   font-family: 'ModeSeven', monospace;
   border-radius: 6px;
 }
 
 .token-symbol-display {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: #6D8FC7;
+  font-size: 0.875rem;
 }
 
 .token-price-display {
-  font-size: 0.875rem;
-  font-weight: 600;
   color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .token-change-display {
+  font-weight: 700;
   font-size: 0.75rem;
-  font-weight: 600;
   padding: 0.125rem 0.375rem;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .token-change-display.positive {
@@ -166,57 +167,53 @@
 }
 
 .pro-search-input {
-  width: 250px;
-  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex: 1;
+  background: transparent;
+  border: none;
   color: #ffffff;
+  padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  font-family: 'Nulshock', 'ModeSeven', monospace;
-  transition: all 0.3s ease;
-  border-radius: 6px;
+  outline: none;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .pro-search-input:focus {
-  outline: none;
-  border-color: #6D8FC7;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(109, 143, 199, 0.1);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .pro-search-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
-  font-family: 'ModeSeven', monospace;
+  font-style: italic;
 }
 
 .clear-search-btn {
   position: absolute;
-  right: 2.5rem;
+  right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
   width: 20px;
   height: 20px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  cursor: pointer;
+  font-size: 0.75rem;
   transition: all 0.2s ease;
+  font-weight: bold;
 }
 
 .clear-search-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
 }
 
 .search-spinner {
   position: absolute;
-  right: 1rem;
+  right: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -235,20 +232,20 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Search Results */
 .search-results {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(10, 10, 10, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  margin-top: 0.5rem;
   max-height: 300px;
   overflow-y: auto;
   z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  margin-top: 0.25rem;
 }
 
 .search-result-item {
@@ -257,7 +254,7 @@
   justify-content: space-between;
   padding: 0.75rem 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -270,46 +267,44 @@
 }
 
 .result-symbol {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #ffffff;
+  font-weight: 700;
+  color: #6D8FC7;
+  font-size: 0.875rem;
 }
 
 .result-name {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  flex: 1;
   margin-left: 0.5rem;
 }
 
 .result-change {
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
-/* Timeframe Selector */
 .timeframe-selector {
   display: flex;
-  background: rgba(26, 26, 26, 0.8);
-  backdrop-filter: blur(20px);
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 4px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  padding: 0.25rem;
 }
 
 .timeframe-btn {
-  padding: 8px 16px;
+  background: transparent;
   border: none;
-  background: rgba(255, 255, 255, 0.05);
-  color: #999999;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: 'ModeSeven', monospace;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0.375rem 0.75rem;
   border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  font-family: 'ModeSeven', monospace;
   position: relative;
   overflow: hidden;
 }
@@ -321,19 +316,13 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
 }
 
 .timeframe-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
-  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .timeframe-btn:hover::before {
@@ -341,13 +330,9 @@
 }
 
 .timeframe-btn.active {
-  background: rgba(109, 143, 199, 0.4);
-  color: #ffffff;
-  border-color: rgba(109, 143, 199, 0.6);
-  box-shadow: 
-    0 0 20px rgba(109, 143, 199, 0.4),
-    0 0 30px rgba(109, 143, 199, 0.2);
-  backdrop-filter: blur(20px);
+  background: rgba(109, 143, 199, 0.2);
+  color: #6D8FC7;
+  border: 1px solid rgba(109, 143, 199, 0.3);
 }
 
 /* Main Content */
@@ -1539,266 +1524,294 @@
 
 @media (max-width: 768px) {
   .pro-terminal-header {
+    padding: 0.5rem 1rem;
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem;
+    align-items: stretch;
   }
-  
-  .pro-terminal-search {
-    max-width: 100%;
+
+  .pro-terminal-title {
+    justify-content: center;
+    gap: 1rem;
   }
-  
+
+  .pro-terminal-title h1 {
+    font-size: 1.5rem;
+  }
+
   .search-container {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
-  
+
   .current-token-display {
     min-width: auto;
     width: 100%;
     justify-content: center;
+    padding: 0.5rem;
   }
-  
+
   .pro-search-input {
-    width: 100%;
-    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    padding: 0.75rem;
     font-size: 1rem;
+    text-align: center;
   }
-  
+
   .token-info-bar {
     flex-direction: column;
     gap: 1rem;
-    text-align: center;
-    padding: 1.5rem 1rem;
+    padding: 1rem;
   }
-  
+
   .token-stats {
-    justify-content: center;
-    flex-wrap: wrap;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
-  
+
   .pro-tab-navigation {
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    gap: 0.125rem;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.5rem;
   }
-  
+
   .pro-tab-btn {
-    white-space: nowrap;
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
+    flex: 1;
+    min-width: 80px;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
   }
-  
+
   .pro-terminal-content {
     padding: 0.5rem;
   }
-  
+
   .overview-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .chart-section,
   .insights-section {
     padding: 1rem;
   }
-  
+
   .ai-overview-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .ai-overview-card {
     padding: 1rem;
   }
-  
+
   .welcome-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
-  
+
   .welcome-subtitle {
     font-size: 1rem;
   }
-  
+
   .welcome-features {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .feature {
     padding: 1rem;
   }
-  
-  /* Mobile-specific chart optimizations */
+
   .interactive-chart-container {
-    padding: 1rem;
-    min-height: 300px;
+    height: 300px;
   }
-  
+
   .chart-controls {
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.25rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
   }
-  
+
   .chart-control-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 0.7rem;
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
   }
-  
-  /* Mobile search results */
+
   .search-results {
     max-height: 250px;
-    margin-top: 0.25rem;
   }
-  
+
   .search-result-item {
     padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
-  
-  /* Mobile insights */
+
   .insights-list {
     gap: 1rem;
   }
-  
+
   .insight-card {
     padding: 1rem;
   }
-  
+
   .insight-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
-  /* Mobile stats */
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .stat-card {
     padding: 1rem;
   }
-  
-  /* Mobile holders */
+
   .holders-content {
-    gap: 1rem;
-  }
-  
-  .holder-stat {
     padding: 1rem;
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
   }
-  
-  /* Mobile liquidity */
+
+  .holder-stat {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+
   .liquidity-events {
     gap: 1rem;
   }
-  
+
   .liquidity-event-card {
     padding: 1rem;
   }
-  
+
   .event-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .event-details {
     flex-direction: column;
     gap: 0.5rem;
-    align-items: flex-start;
   }
-  
-  /* Mobile timeframe selector */
+
   .timeframe-selector {
+    flex-wrap: wrap;
     gap: 0.25rem;
-    padding: 0.25rem;
   }
-  
+
   .timeframe-btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
+    flex: 1;
+    min-width: 60px;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
   }
-  
-  /* Mobile zoom popup */
+
   .zoom-popup-content {
-    padding: 1rem;
-    margin: 1rem;
-    max-width: 95vw;
-    max-height: 90vh;
+    width: 95%;
+    height: 90%;
+    margin: 2.5% auto;
   }
-  
+
   .zoom-popup-header h3 {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
 }
 
-/* Extra small mobile devices */
 @media (max-width: 480px) {
   .pro-terminal-header {
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
-  
+
   .pro-terminal-title h1 {
     font-size: 1.25rem;
   }
-  
+
   .token-symbol {
-    font-size: 1rem;
+    font-size: 1.5rem;
   }
-  
+
   .current-price {
     font-size: 1.25rem;
   }
-  
+
   .pro-tab-btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.2rem;
   }
-  
+
   .chart-section,
   .insights-section {
     padding: 0.75rem;
   }
-  
+
   .interactive-chart-container {
-    padding: 0.75rem;
-    min-height: 250px;
+    height: 250px;
   }
-  
+
   .welcome-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
-  
+
   .welcome-subtitle {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
   }
-  
-  /* Touch-friendly buttons */
+
   .chart-control-btn,
-  .timeframe-btn,
-  .pro-tab-btn {
-    min-height: 44px;
-    min-width: 44px;
+  .clear-search-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
   }
-  
-  /* Better touch targets */
+
   .search-result-item {
-    padding: 1.25rem;
+    padding: 0.75rem;
   }
-  
+
   .insight-card,
   .stat-card,
-  .holder-stat,
   .liquidity-event-card {
-    padding: 1.25rem;
+    padding: 0.75rem;
+  }
+
+  /* Touch-friendly improvements */
+  .timeframe-btn,
+  .pro-tab-btn,
+  .chart-control-btn {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .search-result-item {
+    min-height: 60px;
+    touch-action: manipulation;
+  }
+
+  /* Better spacing for mobile */
+  .pro-terminal-container {
+    padding-top: 0.5rem;
+  }
+
+  .pro-terminal-content {
+    padding: 0.25rem;
+  }
+
+  /* Improved readability */
+  .token-symbol-display,
+  .token-price-display {
+    font-size: 1rem;
+  }
+
+  .result-symbol {
+    font-size: 1rem;
+  }
+
+  .result-name {
+    font-size: 0.875rem;
   }
 }
 
