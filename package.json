@@ -4,6 +4,11 @@
   "private": true,
   "homepage": "https://R3DRVM.github.io/cyphr-demo",
   "dependencies": {
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
+    "@solana/web3.js": "^1.98.4",
     "@types/d3": "^7.4.3",
     "@types/node": "^20.19.0",
     "@types/react": "^18.2.0",

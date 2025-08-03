@@ -1057,6 +1057,330 @@
   color: #ffffff;
 }
 
+/* Staking Section Styles */
+.staking-section {
+  margin: 2rem 0;
+}
+
+.staking-card {
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.staking-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  font-family: 'Nulshock', sans-serif;
+}
+
+/* Wallet Connection Styles */
+.wallet-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+}
+
+.wallet-connect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.wallet-info {
+  flex: 1;
+}
+
+.wallet-connected {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wallet-address,
+.wallet-balance {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wallet-address .label,
+.wallet-balance .label {
+  font-size: 0.875rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.wallet-address .address,
+.wallet-balance .balance {
+  font-size: 0.875rem;
+  color: #00d4ff;
+  font-weight: 600;
+  font-family: 'ModeSeven', monospace;
+}
+
+.wallet-disconnected .label {
+  font-size: 0.875rem;
+  color: #888;
+  font-style: italic;
+}
+
+.wallet-button {
+  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  color: #000;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.wallet-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+}
+
+/* Vault Selection Styles */
+.vault-section {
+  margin-bottom: 2rem;
+}
+
+.vault-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.vault-header h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.vault-selector {
+  margin-top: 1rem;
+}
+
+.vault-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.vault-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.vault-card:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.vault-card.selected {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+.vault-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.vault-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.vault-apy {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #000;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.vault-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vault-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.vault-address {
+  font-size: 0.75rem;
+  color: #666;
+  font-family: 'ModeSeven', monospace;
+}
+
+.selected-vault {
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.selected-vault h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #00d4ff;
+  margin: 0 0 0.5rem 0;
+}
+
+.selected-vault p {
+  font-size: 0.875rem;
+  color: #888;
+  margin: 0;
+}
+
+/* Staking Configuration Styles */
+.staking-config {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.staking-config .config-item {
+  flex: 1;
+}
+
+.staking-config label {
+  display: block;
+  font-size: 0.875rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.execute-btn {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  color: #000;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.execute-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+}
+
+.execute-btn:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Execution Results Styles */
+.execution-result {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid;
+}
+
+.execution-result.success {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.execution-result.error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.execution-result h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.execution-result p {
+  font-size: 0.875rem;
+  color: #888;
+  margin: 0 0 1rem 0;
+}
+
+.returns-display {
+  margin-top: 1rem;
+}
+
+.returns-display h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+}
+
+.returns-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.return-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.return-item span:first-child {
+  font-size: 0.875rem;
+  color: #888;
+}
+
+.return-item span:last-child {
+  font-size: 0.875rem;
+  color: #00d4ff;
+  font-weight: 600;
+  font-family: 'ModeSeven', monospace;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .sidebar {
@@ -1138,6 +1462,28 @@
   .modal-content {
     margin: 1rem;
     max-height: 90vh;
+  }
+
+  .staking-card {
+    padding: 1.5rem;
+  }
+  
+  .wallet-connect {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .vault-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .staking-config {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .returns-grid {
+    grid-template-columns: 1fr;
   }
 }
 

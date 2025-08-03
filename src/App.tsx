@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { ColorProvider } from './contexts/ColorContext';
+import { WalletContextProvider } from './contexts/WalletContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Discover from './pages/Discover';
@@ -82,30 +83,32 @@ function App() {
     }(window.location))
   }, []);
   return (
-    <ColorProvider>
-      <Router>
-        <div className="app">
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Navigate to="/discover" replace />} />
-              <Route path="/pro-terminal" element={<ProTerminal />} />
-              <Route path="/discover" element={<Discover />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/perpetuals" element={<Perpetuals />} />
-              <Route path="/tracker" element={<Tracker />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/token/:id" element={<TokenPage />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/spot" element={<Spot />} />
-              <Route path="/strategy-builder" element={<StrategyBuilder />} />
-            </Routes>
-          </main>
-          <Footer />
-          <MobileBottomNav />
-        </div>
-      </Router>
-    </ColorProvider>
+    <WalletContextProvider>
+      <ColorProvider>
+        <Router>
+          <div className="app">
+            <Header />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Navigate to="/strategy-builder" replace />} />
+                <Route path="/pro-terminal" element={<ProTerminal />} />
+                <Route path="/discover" element={<Discover />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/perpetuals" element={<Perpetuals />} />
+                <Route path="/tracker" element={<Tracker />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/token/:id" element={<TokenPage />} />
+                <Route path="/portfolio" element={<Portfolio />} />
+                <Route path="/spot" element={<Spot />} />
+                <Route path="/strategy-builder" element={<StrategyBuilder />} />
+              </Routes>
+            </main>
+            <Footer />
+            <MobileBottomNav />
+          </div>
+        </Router>
+      </ColorProvider>
+    </WalletContextProvider>
   );
 }
 

@@ -25,6 +25,11 @@ import {
   Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection } from '@solana/wallet-adapter-react';
+import WalletConnect from '../components/WalletConnect';
+import VaultSelector from '../components/VaultSelector';
+import { VaultContract, DEMO_VAULTS, simulateStakeTransaction, calculateStrategyReturns } from '../utils/vaultContract';
 import 'reactflow/dist/style.css';
 import './StrategyBuilder.css';
 
@@ -301,6 +306,17 @@ const StrategyBuilder: React.FC = () => {
   const [strategyRisk, setStrategyRisk] = useState('medium');
   const [showSocial, setShowSocial] = useState(false);
 
+  // Staking functionality state
+  const [selectedVault, setSelectedVault] = useState<VaultContract | null>(null);
+  const [stakeAmount, setStakeAmount] = useState('1');
+  const [isExecuting, setIsExecuting] = useState(false);
+  const [executionResult, setExecutionResult] = useState<any>(null);
+  const [showVaultSelector, setShowVaultSelector] = useState(false);
+
+  // Wallet and connection
+  const { publicKey, connected } = useWallet();
+  const { connection } = useConnection();
+
   // Calculate USD values
   const totalCostUSD = useMemo(() => {
     const amount = parseFloat(depositAmount) || 0;
@@ -523,6 +539,62 @@ const StrategyBuilder: React.FC = () => {
     alert('Strategy published! (Check console for details)');
   }, [strategyName, nodes, edges, calculateStrategyRisk]);
 
+  // Execute staking strategy
+  const executeStakingStrategy = useCallback(async () => {
+    if (!connected || !publicKey) {
+      alert('Please connect your wallet first');
+      return;
+    }
+
+    if (!selectedVault) {
+      alert('Please select a vault first');
+      return;
+    }
+
+    const amount = parseFloat(stakeAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid stake amount');
+      return;
+    }
+
+    if (amount < selectedVault.minStake || amount > selectedVault.maxStake) {
+      alert(`Stake amount must be between ${selectedVault.minStake} and ${selectedVault.maxStake} SOL`);
+      return;
+    }
+
+    setIsExecuting(true);
+    try {
+      // Simulate the staking transaction
+      const result = await simulateStakeTransaction(connection, amount, selectedVault);
+      
+      if (result.success) {
+        // Calculate strategy returns
+        const returns = calculateStrategyReturns(amount, selectedVault, 30); // 30 days
+        
+        setExecutionResult({
+          success: true,
+          transaction: result,
+          returns: returns,
+          message: `Successfully staked ${amount} SOL in ${selectedVault.name}`
+        });
+      } else {
+        setExecutionResult({
+          success: false,
+          error: result.error,
+          message: 'Transaction failed'
+        });
+      }
+    } catch (error) {
+      setExecutionResult({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        message: 'Execution failed'
+      });
+    } finally {
+      setIsExecuting(false);
+    }
+  }, [connected, publicKey, selectedVault, stakeAmount, connection]);
+
   // Initialize with sample nodes for demonstration
   React.useEffect(() => {
     const sampleNodes: Node[] = [
@@ -682,6 +754,103 @@ const StrategyBuilder: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Wallet Connection & Staking Section */}
+      <div className="staking-section animate-slide-up">
+        <div className="staking-card">
+          <h3>🚀 Execute Strategy on Testnet</h3>
+          
+          {/* Wallet Connection */}
+          <div className="wallet-section">
+            <WalletConnect />
+          </div>
+
+          {/* Vault Selection */}
+          <div className="vault-section">
+            <div className="vault-header">
+              <h4>Select Vault for Staking</h4>
+              <button 
+                className="cyphr-btn cyphr-btn-secondary"
+                onClick={() => setShowVaultSelector(!showVaultSelector)}
+              >
+                {showVaultSelector ? 'Hide' : 'Show'} Vaults
+              </button>
+            </div>
+            
+            {showVaultSelector && (
+              <VaultSelector 
+                selectedVault={selectedVault}
+                onVaultSelect={setSelectedVault}
+              />
+            )}
+
+            {selectedVault && (
+              <div className="selected-vault">
+                <h5>Selected: {selectedVault.name}</h5>
+                <p>APY: {selectedVault.apy}% | Min: {selectedVault.minStake} SOL | Max: {selectedVault.maxStake} SOL</p>
+              </div>
+            )}
+          </div>
+
+          {/* Staking Configuration */}
+          {selectedVault && (
+            <div className="staking-config">
+              <div className="config-item">
+                <label>Stake Amount (SOL):</label>
+                <input 
+                  type="number"
+                  value={stakeAmount}
+                  onChange={(e) => setStakeAmount(e.target.value)}
+                  placeholder="1"
+                  min={selectedVault.minStake}
+                  max={selectedVault.maxStake}
+                  className="cyphr-input"
+                />
+              </div>
+              
+              <button 
+                className="cyphr-btn cyphr-btn-primary execute-btn"
+                onClick={executeStakingStrategy}
+                disabled={!connected || isExecuting}
+              >
+                {isExecuting ? 'Executing...' : 'Execute Strategy'}
+              </button>
+            </div>
+          )}
+
+          {/* Execution Results */}
+          {executionResult && (
+            <div className={`execution-result ${executionResult.success ? 'success' : 'error'}`}>
+              <h4>{executionResult.success ? '✅ Strategy Executed!' : '❌ Execution Failed'}</h4>
+              <p>{executionResult.message}</p>
+              
+              {executionResult.success && executionResult.returns && (
+                <div className="returns-display">
+                  <h5>Projected Returns (30 days):</h5>
+                  <div className="returns-grid">
+                    <div className="return-item">
+                      <span>Initial Deposit:</span>
+                      <span>{executionResult.returns.initialDeposit} SOL</span>
+                    </div>
+                    <div className="return-item">
+                      <span>Total Return:</span>
+                      <span>{executionResult.returns.totalReturn.toFixed(4)} SOL</span>
+                    </div>
+                    <div className="return-item">
+                      <span>Final Amount:</span>
+                      <span>{executionResult.returns.finalAmount.toFixed(4)} SOL</span>
+                    </div>
+                    <div className="return-item">
+                      <span>APY:</span>
+                      <span>{executionResult.returns.apy}%</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
