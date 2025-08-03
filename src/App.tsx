@@ -47,11 +47,11 @@ const MobileBottomNav: React.FC = () => {
           key={item.name}
           to={item.path}
           className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+          title={item.name}
         >
           <span className="mobile-nav-icon">
-            <img src={item.icon} alt={item.name} style={{ width: '20px', height: '20px' }} />
+            <img src={item.icon} alt={item.name} style={{ width: '24px', height: '24px' }} />
           </span>
-          <span className="mobile-nav-label">{item.name}</span>
         </Link>
       ))}
     </div>

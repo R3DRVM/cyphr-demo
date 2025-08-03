@@ -698,26 +698,20 @@ const ProTerminal: React.FC = () => {
       </div>
 
       {/* Enhanced Controls */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-        {/* Status Indicator */}
-        <div className="flex items-center gap-2">
-          <div className="status-indicator"></div>
-          <span className="text-green-400 text-sm font-semibold">LIVE</span>
-        </div>
+      <div className="flex items-center justify-between gap-4 mb-4">
         
-        {/* Search Bar */}
-        <div className="flex-1 w-full lg:max-w-md">
+        {/* Status Indicator - Left Aligned */}
+                  <div className="flex items-center gap-2">
+            <div className="status-indicator"></div>
+            <span className="text-green-400 text-sm font-semibold bg-green-400/10 border border-green-400/30 px-2 py-1 rounded-md">LIVE</span>
+          </div>
+        
+        {/* Search Bar - Right Aligned */}
+        <div className="w-64">
           <div className="search-container">
-            <div className="current-token-display">
-              <span className="token-symbol-display">{selectedToken?.symbol || 'SOL'}</span>
-              <span className="token-price-display">${selectedToken?.price?.toLocaleString() || '98.45'}</span>
-              <span className={`token-change-display ${selectedToken?.change24h && selectedToken.change24h >= 0 ? 'positive' : 'negative'}`}>
-                {selectedToken?.change24h ? (selectedToken.change24h >= 0 ? '+' : '') + selectedToken.change24h.toFixed(2) + '%' : '+5.67%'}
-              </span>
-            </div>
             <input
               type="text"
-              placeholder="Search tokens (BTC, ETH, PEPE...) or contract address"
+              placeholder="Search tokens..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setShowSearchDropdown(true)}
@@ -760,18 +754,7 @@ const ProTerminal: React.FC = () => {
           )}
         </div>
 
-        {/* Timeframe Selector */}
-        <div className="flex gap-2 w-full lg:w-auto">
-          {['1H', '4H', '1D', '1W', '1M'].map((tf) => (
-            <button
-              key={tf}
-              className={`timeframe-btn flex-1 lg:flex-none ${timeframe === tf ? 'active' : ''}`}
-              onClick={() => setTimeframe(tf)}
-            >
-              {tf}
-            </button>
-          ))}
-        </div>
+
       </div>
 
       {/* Main Content */}
@@ -835,7 +818,20 @@ const ProTerminal: React.FC = () => {
             <div className="overview-grid">
               {/* Chart Section */}
               <div className="chart-section">
-                <h3 className="section-title">Price Chart</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="section-title">Price Chart</h3>
+                  <div className="flex gap-2">
+                    {['1H', '4H', '1D', '1W', '1M'].map((tf) => (
+                      <button
+                        key={tf}
+                        className={`timeframe-btn flex-1 lg:flex-none ${timeframe === tf ? 'active' : ''}`}
+                        onClick={() => setTimeframe(tf)}
+                      >
+                        {tf}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div className="chart-container">
                   <SimpleChart data={chartData} />
                 </div>
