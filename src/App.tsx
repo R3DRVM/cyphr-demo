@@ -1,111 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ColorProvider } from './contexts/ColorContext';
-// import { WalletContextProvider } from './contexts/WalletContext';
+import { Web3ModalProvider } from './providers/Web3ModalProvider';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Discover from './pages/Discover';
 import Dashboard from './pages/Dashboard';
-import Perpetuals from './pages/Perpetuals';
-import Tracker from './pages/Tracker';
-import TokenPage from './pages/TokenPage';
-import Orders from './pages/Orders';
+import Discover from './pages/Discover';
 import Portfolio from './pages/Portfolio';
 import Spot from './pages/Spot';
-import ProTerminal from './pages/ProTerminal';
+import Perpetuals from './pages/Perpetuals';
+import Orders from './pages/Orders';
+import Tracker from './pages/Tracker';
 import StrategyBuilder from './pages/StrategyBuilder';
-
-// Mobile Bottom Navigation Component
-const MobileBottomNav: React.FC = () => {
-  const location = useLocation();
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsVisible(window.innerWidth <= 768);
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  if (!isVisible) return null;
-
-  const navItems = [
-    { name: 'Strategy', path: '/strategy-builder', icon: '/WatchlistStar.png' },
-    { name: 'Terminal', path: '/pro-terminal', icon: '/PhoneIcon.png' },
-    { name: 'Discover', path: '/discover', icon: '/PriceLogic.png' },
-    { name: 'Insights', path: '/tracker', icon: '/SearchIcon.png' },
-    { name: 'Perpetuals', path: '/perpetuals', icon: '/PNLIcon.png' },
-    { name: 'Portfolio', path: '/portfolio', icon: '/WalletIcon.png' },
-  ];
-
-  return (
-    <div className="mobile-bottom-nav">
-      {navItems.map((item) => (
-        <Link
-          key={item.name}
-          to={item.path}
-          className={`mobile-nav-item ${location.pathname === item.path ? 'active' : ''}`}
-          title={item.name}
-        >
-          <span className="mobile-nav-icon">
-            <img src={item.icon} alt={item.name} style={{ width: '24px', height: '24px' }} />
-          </span>
-        </Link>
-      ))}
-    </div>
-  );
-};
+import TokenPage from './pages/TokenPage';
+import ProTerminal from './pages/ProTerminal';
+import './App.css';
 
 function App() {
-  useEffect(() => {
-    // Single Page Apps for GitHub Pages
-    // MIT License
-    // https://github.com/rafgraph/spa-github-pages
-    // This script checks to see if a redirect is present in the query string,
-    // converts it back into the correct url and adds it to the
-    // browser's history using window.history.replaceState(...),
-    // which won't cause the browser to attempt to load the new url.
-    // When the single page app is loaded further down in this file,
-    // the correct url will be waiting in the browser's history for
-    // the single page app to route accordingly.
-    (function(l) {
-      if (l.search[1] === '/' ) {
-        var decoded = l.search.slice(1).split('&').map(function(s) { 
-          return s.replace(/~and~/g, '&')
-        }).join('?');
-        window.history.replaceState(null, '',
-            l.pathname.slice(0, -1) + decoded + l.hash
-        );
-      }
-    }(window.location))
-  }, []);
   return (
-    <ColorProvider>
-      <Router>
-        <div className="app">
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Navigate to="/strategy-builder" replace />} />
-              <Route path="/pro-terminal" element={<ProTerminal />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/perpetuals" element={<Perpetuals />} />
-              <Route path="/tracker" element={<Tracker />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/token/:id" element={<TokenPage />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/spot" element={<Spot />} />
-              <Route path="/strategy-builder" element={<StrategyBuilder />} />
-            </Routes>
-          </main>
-          <Footer />
-          <MobileBottomNav />
-        </div>
-      </Router>
-    </ColorProvider>
+    <Web3ModalProvider>
+      <ColorProvider>
+        <Router>
+          <div className="App">
+            <Header />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Navigate to="/strategy-builder" replace />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/discover" element={<Discover />} />
+                <Route path="/portfolio" element={<Portfolio />} />
+                <Route path="/spot" element={<Spot />} />
+                <Route path="/perpetuals" element={<Perpetuals />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/tracker" element={<Tracker />} />
+                <Route path="/strategy-builder" element={<StrategyBuilder />} />
+                <Route path="/token/:address" element={<TokenPage />} />
+                <Route path="/pro-terminal" element={<ProTerminal />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </ColorProvider>
+    </Web3ModalProvider>
   );
 }
 
