@@ -69,7 +69,6 @@ const Header: React.FC = () => {
                 className={`nav-link ${
                   location.pathname === item.path ? 'active' : ''
                 }`}
-                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {item.name}
               </Link>
