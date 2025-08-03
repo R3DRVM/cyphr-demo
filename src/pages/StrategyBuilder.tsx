@@ -25,10 +25,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useConnection } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import DynamicWalletConnect from '../components/DynamicWalletConnect';
 import 'reactflow/dist/style.css';
 import './StrategyBuilder.css';
 
@@ -305,19 +302,8 @@ const StrategyBuilder: React.FC = () => {
   const [strategyRisk, setStrategyRisk] = useState('medium');
   const [showSocial, setShowSocial] = useState(false);
 
-  // Wallet connection state
-  const { publicKey, connected } = useWallet();
-  const { connection } = useConnection();
-  const [walletBalance, setWalletBalance] = useState<number | null>(null);
-
-  // Update wallet balance when connected
-  React.useEffect(() => {
-    if (connected && publicKey && connection) {
-      connection.getBalance(publicKey).then(setWalletBalance);
-    } else {
-      setWalletBalance(null);
-    }
-  }, [connected, publicKey, connection]);
+  // Wallet connection state (simplified)
+  const [walletConnected, setWalletConnected] = useState(false);
 
   // Calculate USD values
   const totalCostUSD = useMemo(() => {
@@ -756,26 +742,7 @@ const StrategyBuilder: React.FC = () => {
               </div>
             </div>
             
-            <div className="config-item wallet-connect-item">
-              <label>Wallet Connection:</label>
-              <div className="wallet-section">
-                {connected ? (
-                  <div className="wallet-info">
-                    <div className="wallet-address">
-                      <span>Connected: {publicKey?.toBase58().slice(0, 4)}...{publicKey?.toBase58().slice(-4)}</span>
-                    </div>
-                    <div className="wallet-balance">
-                      <span>Balance: {walletBalance ? (walletBalance / LAMPORTS_PER_SOL).toFixed(4) : '0'} SOL</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="wallet-disconnected">
-                    <span>Connect wallet to execute strategies</span>
-                  </div>
-                )}
-                <WalletMultiButton className="wallet-button" />
-              </div>
-            </div>
+            <DynamicWalletConnect />
           </div>
         </div>
       </div>

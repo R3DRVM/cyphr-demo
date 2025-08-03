@@ -1499,6 +1499,19 @@
   box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
 }
 
+.wallet-error {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+}
+
+.wallet-error span {
+  font-size: 0.875rem;
+  color: #ef4444;
+}
+
 @media (max-width: 768px) {
   .wallet-section {
     flex-direction: column;
