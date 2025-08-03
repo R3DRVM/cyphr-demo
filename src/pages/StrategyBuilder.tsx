@@ -25,11 +25,11 @@ import {
   Filler,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useConnection } from '@solana/wallet-adapter-react';
-import WalletConnect from '../components/WalletConnect';
-import VaultSelector from '../components/VaultSelector';
-import { VaultContract, DEMO_VAULTS, simulateStakeTransaction, calculateStrategyReturns } from '../utils/vaultContract';
+// import { useWallet } from '@solana/wallet-adapter-react';
+// import { useConnection } from '@solana/wallet-adapter-react';
+// import WalletConnect from '../components/WalletConnect';
+// import VaultSelector from '../components/VaultSelector';
+// import { VaultContract, DEMO_VAULTS, simulateStakeTransaction, calculateStrategyReturns } from '../utils/vaultContract';
 import 'reactflow/dist/style.css';
 import './StrategyBuilder.css';
 
@@ -307,15 +307,15 @@ const StrategyBuilder: React.FC = () => {
   const [showSocial, setShowSocial] = useState(false);
 
   // Staking functionality state
-  const [selectedVault, setSelectedVault] = useState<VaultContract | null>(null);
-  const [stakeAmount, setStakeAmount] = useState('1');
-  const [isExecuting, setIsExecuting] = useState(false);
-  const [executionResult, setExecutionResult] = useState<any>(null);
-  const [showVaultSelector, setShowVaultSelector] = useState(false);
+  // const [selectedVault, setSelectedVault] = useState<VaultContract | null>(null);
+  // const [stakeAmount, setStakeAmount] = useState('1');
+  // const [isExecuting, setIsExecuting] = useState(false);
+  // const [executionResult, setExecutionResult] = useState<any>(null);
+  // const [showVaultSelector, setShowVaultSelector] = useState(false);
 
   // Wallet and connection
-  const { publicKey, connected } = useWallet();
-  const { connection } = useConnection();
+  // const { publicKey, connected } = useWallet();
+  // const { connection } = useConnection();
 
   // Calculate USD values
   const totalCostUSD = useMemo(() => {
@@ -539,61 +539,61 @@ const StrategyBuilder: React.FC = () => {
     alert('Strategy published! (Check console for details)');
   }, [strategyName, nodes, edges, calculateStrategyRisk]);
 
-  // Execute staking strategy
-  const executeStakingStrategy = useCallback(async () => {
-    if (!connected || !publicKey) {
-      alert('Please connect your wallet first');
-      return;
-    }
+  // Execute staking strategy - Temporarily Disabled
+  // const executeStakingStrategy = useCallback(async () => {
+  //   if (!connected || !publicKey) {
+  //     alert('Please connect your wallet first');
+  //     return;
+  //   }
 
-    if (!selectedVault) {
-      alert('Please select a vault first');
-      return;
-    }
+  //   if (!selectedVault) {
+  //     alert('Please select a vault first');
+  //     return;
+  //   }
 
-    const amount = parseFloat(stakeAmount);
-    if (isNaN(amount) || amount <= 0) {
-      alert('Please enter a valid stake amount');
-      return;
-    }
+  //   const amount = parseFloat(stakeAmount);
+  //   if (isNaN(amount) || amount <= 0) {
+  //     alert('Please enter a valid stake amount');
+  //     return;
+  //   }
 
-    if (amount < selectedVault.minStake || amount > selectedVault.maxStake) {
-      alert(`Stake amount must be between ${selectedVault.minStake} and ${selectedVault.maxStake} SOL`);
-      return;
-    }
+  //   if (amount < selectedVault.minStake || amount > selectedVault.maxStake) {
+  //     alert(`Stake amount must be between ${selectedVault.minStake} and ${selectedVault.maxStake} SOL`);
+  //     return;
+  //   }
 
-    setIsExecuting(true);
-    try {
-      // Simulate the staking transaction
-      const result = await simulateStakeTransaction(connection, amount, selectedVault);
+  //   setIsExecuting(true);
+  //   try {
+  //     // Simulate the staking transaction
+  //     const result = await simulateStakeTransaction(connection, amount, selectedVault);
       
-      if (result.success) {
-        // Calculate strategy returns
-        const returns = calculateStrategyReturns(amount, selectedVault, 30); // 30 days
+  //     if (result.success) {
+  //       // Calculate strategy returns
+  //       const returns = calculateStrategyReturns(amount, selectedVault, 30); // 30 days
         
-        setExecutionResult({
-          success: true,
-          transaction: result,
-          returns: returns,
-          message: `Successfully staked ${amount} SOL in ${selectedVault.name}`
-        });
-      } else {
-        setExecutionResult({
-          success: false,
-          error: result.error,
-          message: 'Transaction failed'
-        });
-      }
-    } catch (error) {
-      setExecutionResult({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        message: 'Execution failed'
-      });
-    } finally {
-      setIsExecuting(false);
-    }
-  }, [connected, publicKey, selectedVault, stakeAmount, connection]);
+  //       setExecutionResult({
+  //         success: true,
+  //         transaction: result,
+  //         returns: returns,
+  //         message: `Successfully staked ${amount} SOL in ${selectedVault.name}`
+  //       });
+  //     } else {
+  //       setExecutionResult({
+  //         success: false,
+  //         error: result.error,
+  //         message: 'Transaction failed'
+  //       });
+  //     }
+  //   } catch (error) {
+  //     setExecutionResult({
+  //       success: false,
+  //       error: error instanceof Error ? error.message : 'Unknown error',
+  //       message: 'Execution failed'
+  //     });
+  //   } finally {
+  //     setIsExecuting(false);
+  //   }
+  // }, [connected, publicKey, selectedVault, stakeAmount, connection]);
 
   // Initialize with sample nodes for demonstration
   React.useEffect(() => {
@@ -757,17 +757,15 @@ const StrategyBuilder: React.FC = () => {
         </div>
       </div>
 
-      {/* Wallet Connection & Staking Section */}
-      <div className="staking-section animate-slide-up">
+      {/* Wallet Connection & Staking Section - Temporarily Disabled */}
+      {/* <div className="staking-section animate-slide-up">
         <div className="staking-card">
           <h3>🚀 Execute Strategy on Testnet</h3>
           
-          {/* Wallet Connection */}
           <div className="wallet-section">
             <WalletConnect />
           </div>
 
-          {/* Vault Selection */}
           <div className="vault-section">
             <div className="vault-header">
               <h4>Select Vault for Staking</h4>
@@ -794,7 +792,6 @@ const StrategyBuilder: React.FC = () => {
             )}
           </div>
 
-          {/* Staking Configuration */}
           {selectedVault && (
             <div className="staking-config">
               <div className="config-item">
@@ -820,7 +817,6 @@ const StrategyBuilder: React.FC = () => {
             </div>
           )}
 
-          {/* Execution Results */}
           {executionResult && (
             <div className={`execution-result ${executionResult.success ? 'success' : 'error'}`}>
               <h4>{executionResult.success ? '✅ Strategy Executed!' : '❌ Execution Failed'}</h4>
@@ -852,7 +848,7 @@ const StrategyBuilder: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* AI Builder Modal */}
       {showAIBuilder && (
