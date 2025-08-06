@@ -24,7 +24,7 @@ const TokenAddress: React.FC<TokenAddressProps> = ({ address, className = '' }) 
     <div className={`flex items-center gap-1 ${className}`}>
       <span className="text-cyphr-gray font-sf-pro">{formatAddress(address)}</span>
       <img 
-        src="/CopyIcon.png" 
+        src="/assets/icons/CopyIcon.png" 
         alt="Copy" 
         width="10" 
         height="10"

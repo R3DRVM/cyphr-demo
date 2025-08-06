@@ -16,19 +16,19 @@ const Footer: React.FC = () => {
         {/* Center - Trackers */}
         <div className="footer-center">
           <button className="footer-button">
-            <img src="/WalletIcon.png" alt="Wallet" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+            <img src="/assets/icons/WalletIcon.png" alt="Wallet" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
             Wallet Tracker
           </button>
           <button className="footer-button">
-            <img src="/PhoneIcon.png" alt="Phone" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+            <img src="/assets/icons/PhoneIcon.png" alt="Phone" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
             Twitter Tracker
           </button>
           <button className="footer-button">
-            <img src="/PulseIcon.png" alt="Pulse" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+            <img src="/assets/icons/PulseIcon.png" alt="Pulse" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
             Pulse Tracker
           </button>
           <button className="footer-button">
-            <img src="/PNLIcon.png" alt="PnL" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
+            <img src="/assets/icons/PNLIcon.png" alt="PnL" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} />
             PnL Tracker
           </button>
         </div>

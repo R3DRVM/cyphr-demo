@@ -35,12 +35,12 @@ const MobileBottomNav: React.FC = () => {
   if (!isVisible) return null;
 
   const navItems = [
-    { name: 'Strategy', path: '/strategy-builder', icon: '/WatchlistStar.png' },
-    { name: 'Terminal', path: '/pro-terminal', icon: '/PhoneIcon.png' },
-    { name: 'Discover', path: '/discover', icon: '/PriceLogic.png' },
-    { name: 'Insights', path: '/tracker', icon: '/SearchIcon.png' },
-    { name: 'Perpetuals', path: '/perpetuals', icon: '/PNLIcon.png' },
-    { name: 'Portfolio', path: '/portfolio', icon: '/WalletIcon.png' },
+    { name: 'Strategy', path: '/strategy-builder', icon: '/assets/icons/WatchlistStar.png' },
+    { name: 'Terminal', path: '/pro-terminal', icon: '/assets/icons/PhoneIcon.png' },
+    { name: 'Discover', path: '/discover', icon: '/assets/icons/PriceLogic.png' },
+    { name: 'Insights', path: '/tracker', icon: '/assets/icons/SearchIcon.png' },
+    { name: 'Perpetuals', path: '/perpetuals', icon: '/assets/icons/PNLIcon.png' },
+    { name: 'Portfolio', path: '/portfolio', icon: '/assets/icons/WalletIcon.png' },
   ];
 
   return (

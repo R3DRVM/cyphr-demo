@@ -49,7 +49,7 @@ const InputNode: React.FC<{ data: any }> = ({ data }) => (
   <div className="strategy-node input-node" title="Data Source: Provides real-time token data for strategy execution">
     <Handle type="source" position={Position.Right} />
     <div className="node-header">
-      <img src="/TokenDataIcon.png" alt="Token Data" className="node-icon" style={{ width: '20px', height: '20px' }} />
+      <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="node-icon" style={{ width: '20px', height: '20px' }} />
       <span className="node-title">{data.label}</span>
       <div className="node-risk-badge low-risk">Low Risk</div>
     </div>
@@ -84,7 +84,7 @@ const LogicNode: React.FC<{ data: any }> = ({ data }) => (
     <Handle type="target" position={Position.Left} />
     <Handle type="source" position={Position.Right} />
     <div className="node-header">
-      <img src="/StrategyLogicIcon.png" alt="Strategy Logic" className="node-icon" style={{ width: '20px', height: '20px' }} />
+      <img src="/assets/icons/StrategyLogicIcon.png" alt="Strategy Logic" className="node-icon" style={{ width: '20px', height: '20px' }} />
       <span className="node-title">{data.label}</span>
       <div className={`node-risk-badge ${data.riskLevel || 'medium-risk'}`}>
         {data.riskLevel === 'low-risk' ? 'Low Risk' : 
@@ -189,7 +189,7 @@ const LogicNode: React.FC<{ data: any }> = ({ data }) => (
       
       {data.logicType === 'ai' && (
         <div className="ai-logic-info">
-          <div className="ai-badge"><img src="/RobotIcon.png" alt="AI" style={{ width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' }} /> AI-Powered</div>
+          <div className="ai-badge"><img src="/assets/icons/RobotIcon.png" alt="AI" style={{ width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' }} /> AI-Powered</div>
           <p>AI analyzes market conditions and optimizes entry/exit timing</p>
           <div className="ai-improvement">
             <span>Estimated Improvement:</span>
@@ -205,7 +205,7 @@ const ActionNode: React.FC<{ data: any }> = ({ data }) => (
   <div className="strategy-node action-node" title="Action: Defines what happens when conditions are met">
     <Handle type="target" position={Position.Left} />
     <div className="node-header">
-      <img src="/ActionIcon.png" alt="Action" className="node-icon" style={{ width: '20px', height: '20px' }} />
+      <img src="/assets/icons/ActionIcon.png" alt="Action" className="node-icon" style={{ width: '20px', height: '20px' }} />
       <span className="node-title">{data.label}</span>
       <div className={`node-risk-badge ${data.riskLevel || 'medium-risk'}`}>
         {data.riskLevel === 'low-risk' ? 'Low Risk' : 
@@ -896,7 +896,7 @@ const StrategyBuilder: React.FC = () => {
       {/* Deposit Configuration */}
       <div className="deposit-config animate-slide-up">
         <div className="config-card">
-          <h3><img src="/DepositIcon.png" alt="Deposit" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} /> Deposit Configuration</h3>
+          <h3><img src="/assets/icons/DepositIcon.png" alt="Deposit" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} /> Deposit Configuration</h3>
           <div className="config-grid">
             <div className="config-item">
               <label>Token:</label>
@@ -939,7 +939,7 @@ const StrategyBuilder: React.FC = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h3><img src="/RobotIcon.png" alt="AI" style={{ width: '20px', height: '20px', marginRight: '8px', verticalAlign: 'middle' }} /> AI Strategy Builder</h3>
+              <h3><img src="/assets/icons/RobotIcon.png" alt="AI" style={{ width: '20px', height: '20px', marginRight: '8px', verticalAlign: 'middle' }} /> AI Strategy Builder</h3>
               <button className="modal-close" onClick={() => setShowAIBuilder(false)}>×</button>
             </div>
             <div className="modal-body">
@@ -983,7 +983,7 @@ const StrategyBuilder: React.FC = () => {
               <p>Share your strategy with the community and earn from referrals:</p>
               <div className="social-benefits">
                 <div className="benefit-item">
-                  <img src="/DepositIcon.png" alt="Deposit" className="benefit-icon" style={{ width: '16px', height: '16px' }} />
+                  <img src="/assets/icons/DepositIcon.png" alt="Deposit" className="benefit-icon" style={{ width: '16px', height: '16px' }} />
                   <span>Earn 5% from strategy forks</span>
                 </div>
                 <div className="benefit-item">
@@ -1012,7 +1012,7 @@ const StrategyBuilder: React.FC = () => {
       <div className="builder-content animate-slide-up">
         <div className="sidebar animate-slide-up">
           <div className="sidebar-section">
-            <h3><img src="/TokenDataIcon.png" alt="Token Data" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Data Sources</h3>
+            <h3><img src="/assets/icons/TokenDataIcon.png" alt="Token Data" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Data Sources</h3>
             <div className="node-palette">
               <div 
                 className="palette-item"
@@ -1022,14 +1022,14 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add data source node"
               >
-                <img src="/TokenDataIcon.png" alt="Token Data" className="palette-icon" style={{ width: '16px', height: '16px' }} />
+                <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="palette-icon" style={{ width: '16px', height: '16px' }} />
                 <span>Token Data</span>
               </div>
             </div>
           </div>
 
           <div className="sidebar-section">
-            <h3><img src="/StrategyLogicIcon.png" alt="Strategy Logic" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Strategy Logic</h3>
+            <h3><img src="/assets/icons/StrategyLogicIcon.png" alt="Strategy Logic" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Strategy Logic</h3>
             <div className="node-palette">
               <div 
                 className="palette-item"
@@ -1039,7 +1039,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add logic node"
               >
-                <img src="/TimeProfitIcon.png" alt="Time & Profit" className="palette-icon" style={{ width: '16px', height: '16px' }} />
+                <img src="/assets/icons/TimeProfitIcon.png" alt="Time & Profit" className="palette-icon" style={{ width: '16px', height: '16px' }} />
                 <span>Time & Profit Logic</span>
               </div>
               <div 
@@ -1050,7 +1050,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add price-based logic"
               >
-                <img src="/PriceLogic.png" alt="Price Logic" className="palette-icon" style={{ width: '16px', height: '16px' }} />
+                <img src="/assets/icons/PriceLogic.png" alt="Price Logic" className="palette-icon" style={{ width: '16px', height: '16px' }} />
                 <span>Price-Based Logic</span>
               </div>
               <div 
@@ -1061,7 +1061,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add volatility-based logic"
               >
-                <img src="/TokenDataIcon.png" alt="Token Data" className="palette-icon" style={{ width: '16px', height: '16px' }} />
+                <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="palette-icon" style={{ width: '16px', height: '16px' }} />
                 <span>Volatility Logic</span>
               </div>
               <div 
@@ -1072,7 +1072,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add AI-optimized logic"
               >
-                <img src="/RobotIcon.png" alt="AI" className="palette-icon" style={{ width: '20px', height: '20px', margin: '0 -4px' }} />
+                <img src="/assets/icons/RobotIcon.png" alt="AI" className="palette-icon" style={{ width: '20px', height: '20px', margin: '0 -4px' }} />
                 <span>AI-Optimized Logic</span>
                 <span className="ai-badge">+75%</span>
               </div>
@@ -1080,7 +1080,7 @@ const StrategyBuilder: React.FC = () => {
           </div>
 
           <div className="sidebar-section">
-            <h3><img src="/ActionIcon.png" alt="Action" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Actions</h3>
+            <h3><img src="/assets/icons/ActionIcon.png" alt="Action" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Actions</h3>
             <div className="node-palette">
               <div 
                 className="palette-item"
@@ -1090,7 +1090,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add action node"
               >
-                <img src="/ActionIcon.png" alt="Action" className="palette-icon" style={{ width: '16px', height: '16px' }} />
+                <img src="/assets/icons/ActionIcon.png" alt="Action" className="palette-icon" style={{ width: '16px', height: '16px' }} />
                 <span>Entry & Exit</span>
               </div>
               <div 
@@ -1101,7 +1101,7 @@ const StrategyBuilder: React.FC = () => {
                 }}
                 title="Drag to add hedge action"
               >
-                <img src="/HedgeIcon.png" alt="Hedge" className="palette-icon" style={{ width: '16px', height: '16px' }} />
+                <img src="/assets/icons/HedgeIcon.png" alt="Hedge" className="palette-icon" style={{ width: '16px', height: '16px' }} />
                 <span>Hedge Action</span>
               </div>
             </div>
@@ -1116,15 +1116,15 @@ const StrategyBuilder: React.FC = () => {
                 <p>Drag and drop components from the sidebar to create your strategy</p>
                 <div className="canvas-instructions">
                   <div className="instruction">
-                    <img src="/TokenDataIcon.png" alt="Token Data" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
+                    <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
                     <span>Start with Token Data</span>
                   </div>
                   <div className="instruction">
-                    <img src="/TimeProfitIcon.png" alt="Time & Profit" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
+                    <img src="/assets/icons/TimeProfitIcon.png" alt="Time & Profit" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
                     <span>Add Time & Profit Logic</span>
                   </div>
                   <div className="instruction">
-                    <img src="/ActionIcon.png" alt="Action" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
+                    <img src="/assets/icons/ActionIcon.png" alt="Action" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
                     <span>Configure Entry & Exit</span>
                   </div>
                 </div>
@@ -1155,7 +1155,7 @@ const StrategyBuilder: React.FC = () => {
         </div>
 
         <div className="results-panel animate-slide-up">
-          <h3><img src="/TokenDataIcon.png" alt="Token Data" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Strategy Results</h3>
+          <h3><img src="/assets/icons/TokenDataIcon.png" alt="Token Data" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Strategy Results</h3>
           {isSimulating ? (
             <div className="simulation-loading">
               <div className="loading-spinner"></div>

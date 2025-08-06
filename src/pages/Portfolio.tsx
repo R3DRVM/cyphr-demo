@@ -61,7 +61,7 @@ const Portfolio: React.FC = () => {
         {/* Wallet Info */}
         <div className="flex items-center gap-3">
           <span className="text-cyphr-white font-sf-pro text-base font-semibold">Axiom Main</span>
-          <img src="/DepositIcon.png" alt="Deposit" style={{ width: '20px', height: '20px' }} />
+          <img src="/assets/icons/DepositIcon.png" alt="Deposit" style={{ width: '20px', height: '20px' }} />
           <span className="text-cyphr-white font-sf-pro text-base font-semibold">2.47 SOL</span>
         </div>
         
@@ -87,7 +87,7 @@ const Portfolio: React.FC = () => {
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold flex items-center gap-2">
-              <img src="/WalletIcon.png" alt="Wallet" style={{ width: '20px', height: '20px' }} />
+              <img src="/assets/icons/WalletIcon.png" alt="Wallet" style={{ width: '20px', height: '20px' }} />
               Wallets
             </h3>
           </div>

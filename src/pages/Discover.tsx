@@ -256,11 +256,11 @@ const Discover: React.FC = () => {
         {/* Actions */}
         <div className="flex gap-3">
           <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray flex items-center">
-            <img src="/SearchIcon.png" alt="Search" className="w-4 h-4" style={{ marginRight: '8px' }} />
+            <img src="/assets/icons/SearchIcon.png" alt="Search" className="w-4 h-4" style={{ marginRight: '8px' }} />
             Search
           </button>
           <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray flex items-center">
-            <img src="/WatchlistStar.png" alt="Watchlist" className="w-4 h-4" style={{ marginRight: '8px' }} />
+            <img src="/assets/icons/WatchlistStar.png" alt="Watchlist" className="w-4 h-4" style={{ marginRight: '8px' }} />
             Watchlist
           </button>
         </div>
@@ -346,7 +346,7 @@ const Discover: React.FC = () => {
                         View
                       </Link>
                       <button className="cyphr-button px-3 py-1 text-xs font-semibold transition-all duration-300 hover:scale-105 flex items-center justify-center">
-                        <img src="/WatchlistStar.png" alt="Watchlist" className="w-4 h-4" />
+                        <img src="/assets/icons/WatchlistStar.png" alt="Watchlist" className="w-4 h-4" />
                       </button>
                     </div>
                   </td>

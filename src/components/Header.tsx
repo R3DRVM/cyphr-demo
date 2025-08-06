@@ -52,7 +52,7 @@ const Header: React.FC = () => {
           <Link to="/" className="logo-link">
             <div className="logo-container">
               <img
-                src="/White 3d Logo.png"
+                src="/assets/logos/White 3d Logo.png"
                 alt="Cyphr Logo"
                 className="logo-image"
                 onLoad={() => console.log('Logo loaded successfully')}
