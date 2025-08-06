@@ -4,7 +4,7 @@
   "deployer": "DB7XzymPsL4Vr6hbHcbwnJ4WKM92jBoovuSg837gV9ne",
   "contracts": {
     "strategyVault": {
-      "programId": "BeXTyu8CpHkiWzbJGVpy5bhUDSMYBDL9bQFNEAD42rJv",
+      "programId": "5iVtTdPWLN8Qk6BN2vudJU4myvu9nnnjsDnhCnCR2C52",
       "name": "StrategyVault",
       "description": "Advanced DeFi strategy vault with multi-token support",
       "version": "1.0.0",
@@ -13,7 +13,7 @@
       "deployer": "DB7XzymPsL4Vr6hbHcbwnJ4WKM92jBoovuSg837gV9ne"
     },
     "basicVault": {
-      "programId": "E1PTBixpegytvCDLTnXz1ULFYauZuRNRRCYE1XiXWVcX",
+      "programId": "5iVtTdPWLN8Qk6BN2vudJU4myvu9nnnjsDnhCnCR2C52",
       "name": "BasicVault",
       "description": "Simple SOL vault with yield generation",
       "version": "1.0.0",
