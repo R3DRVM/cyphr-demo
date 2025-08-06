@@ -95,7 +95,7 @@ export interface TransactionResult {
 
 // Main service class for interacting with the Cyphr Vaults program
 export class CyphrVaultService {
-  private program: Program;
+  private program: any;
   private connection: Connection;
   private wallet: any;
 
@@ -104,10 +104,10 @@ export class CyphrVaultService {
     this.connection = new Connection(DEVNET_RPC, 'confirmed');
     
     // Create the provider for Anchor
-    const provider = new AnchorProvider(
+        const provider = new AnchorProvider(
       this.connection,
-      { 
-        publicKey: wallet.publicKey, 
+      {
+        publicKey: wallet.publicKey,
         signTransaction: (tx) => wallet.signTransaction(tx),
         signAllTransactions: (txs) => wallet.signAllTransactions(txs)
       },
@@ -115,7 +115,7 @@ export class CyphrVaultService {
     );
 
     // Create the program instance using our IDL and program ID
-    this.program = new Program(IDL, PROGRAM_ID, provider) as any;
+    this.program = new (Program as any)(IDL, PROGRAM_ID, provider);
   }
 
   // Helper method to find Program Derived Addresses (PDAs) - these are deterministic addresses

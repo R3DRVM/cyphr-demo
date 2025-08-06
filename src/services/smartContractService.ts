@@ -67,7 +67,7 @@ export class SmartContractService {
 
   constructor() {
     this.network = deploymentInfo.network;
-    this.connection = new Connection(clusterApiUrl(this.network), 'confirmed');
+    this.connection = new Connection(clusterApiUrl(this.network as any), 'confirmed');
     this.strategyVaultAddress = new PublicKey(deploymentInfo.contracts.strategyVault.programId);
     this.basicVaultAddress = new PublicKey(deploymentInfo.contracts.basicVault.programId);
     this.explorerUrl = `https://explorer.solana.com/?cluster=${this.network}`;
@@ -79,7 +79,7 @@ export class SmartContractService {
   getNetworkInfo() {
     return {
       network: this.network,
-      rpcUrl: clusterApiUrl(this.network),
+      rpcUrl: clusterApiUrl(this.network as any),
       explorerUrl: this.explorerUrl,
       strategyVaultAddress: this.strategyVaultAddress.toString(),
       basicVaultAddress: this.basicVaultAddress.toString()
@@ -190,7 +190,7 @@ export class SmartContractService {
           { pubkey: vaultAddress, isSigner: false, isWritable: true }, // strategy account
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
         ],
-        data: new Uint8Array([0x03, ...this.serializeBytes(configBuffer)]) // createStrategy instruction
+        data: Buffer.from([0x03, ...this.serializeBytes(configBuffer)]) // createStrategy instruction
       });
 
       return {
@@ -226,7 +226,7 @@ export class SmartContractService {
           { pubkey: vaultAddress, isSigner: false, isWritable: true }, // strategy account
           { pubkey: vaultAddress, isSigner: false, isWritable: false } // user account
         ],
-        data: new Uint8Array([0x04, ...this.serializeString(strategyId)]) // executeStrategy instruction
+        data: Buffer.from([0x04, ...this.serializeString(strategyId)]) // executeStrategy instruction
       });
 
       return {
@@ -262,7 +262,7 @@ export class SmartContractService {
           { pubkey: userPublicKey, isSigner: true, isWritable: true },
           { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
         ],
-        data: new Uint8Array([0x05]) // claimYield instruction
+        data: Buffer.from([0x05]) // claimYield instruction
       });
 
       return {
