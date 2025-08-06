@@ -38,16 +38,19 @@ export const SolanaWalletProvider: React.FC<SolanaWalletProviderProps> = ({ chil
     try {
       let selectedWallet: any = null;
 
+      // Add a small delay to ensure wallet extensions are ready
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       switch (walletType) {
         case 'phantom':
           if (!window.solana || !window.solana.isPhantom) {
-            throw new Error('Phantom wallet is not installed!');
+            throw new Error('Phantom wallet is not installed! Please install Phantom wallet extension.');
           }
           selectedWallet = window.solana;
           break;
         case 'solflare':
           if (!window.solflare) {
-            throw new Error('Solflare wallet is not installed!');
+            throw new Error('Solflare wallet is not installed! Please install Solflare wallet extension.');
           }
           selectedWallet = window.solflare;
           break;
