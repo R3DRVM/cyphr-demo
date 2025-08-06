@@ -1,0 +1,335 @@
+{
+  "programId": "BeXTyu8CpHkiWzbJGVpy5bhUDSMYBDL9bQFNEAD42rJv",
+  "name": "StrategyVault",
+  "instructions": [
+    {
+      "name": "initializeVault",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "depositSol",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawSol",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "createStrategy",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "strategy",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "strategyConfig",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "executeStrategy",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "strategy",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "strategyId",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "claimYield",
+      "accounts": [
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "VaultState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "totalDeposits",
+            "type": "u64"
+          },
+          {
+            "name": "totalUsers",
+            "type": "u32"
+          },
+          {
+            "name": "isPaused",
+            "type": "bool"
+          },
+          {
+            "name": "vaultAddress",
+            "type": "publicKey"
+          },
+          {
+            "name": "totalYieldGenerated",
+            "type": "u64"
+          },
+          {
+            "name": "lastYieldCalculation",
+            "type": "i64"
+          },
+          {
+            "name": "yieldRate",
+            "type": "f64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StrategyState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "userId",
+            "type": "publicKey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": "string"
+          },
+          {
+            "name": "totalPnl",
+            "type": "f64"
+          },
+          {
+            "name": "executions",
+            "type": "u32"
+          },
+          {
+            "name": "baseToken",
+            "type": "string"
+          },
+          {
+            "name": "positionSize",
+            "type": "f64"
+          },
+          {
+            "name": "timeFrame",
+            "type": "string"
+          },
+          {
+            "name": "yieldTarget",
+            "type": "f64"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "VaultInitialized",
+      "fields": [
+        {
+          "name": "vaultAddress",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "DepositMade",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "WithdrawalMade",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "StrategyCreated",
+      "fields": [
+        {
+          "name": "strategyId",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "StrategyExecuted",
+      "fields": [
+        {
+          "name": "strategyId",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "index": false
+        },
+        {
+          "name": "pnl",
+          "type": "f64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "YieldClaimed",
+      "fields": [
+        {
+          "name": "user",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "amount",
+          "type": "u64",
+          "index": false
+        }
+      ]
+    }
+  ]
+}

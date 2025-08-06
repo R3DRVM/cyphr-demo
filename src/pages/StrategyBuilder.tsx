@@ -26,6 +26,11 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import 'reactflow/dist/style.css';
+import { useSolanaWallet } from '../providers/SolanaWalletProvider';
+import { smartContractService, DepositResult, TransactionStatus as TxStatus, StrategyConfig } from '../services/smartContractService';
+import TransactionStatus from '../components/TransactionStatus';
+import SmartContractIntegration from '../components/SmartContractIntegration';
+import { Transaction, SystemProgram } from '@solana/web3.js';
 import './StrategyBuilder.css';
 
 ChartJS.register(
@@ -292,7 +297,10 @@ const StrategyBuilder: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [strategyName, setStrategyName] = useState('My DeFi Strategy');
   const [isSimulating, setIsSimulating] = useState(false);
+  const [isExecuting, setIsExecuting] = useState(false);
   const [simulationResults, setSimulationResults] = useState<any>(null);
+  const [executionResults, setExecutionResults] = useState<DepositResult | null>(null);
+  const [transactionStatus, setTransactionStatus] = useState<TxStatus | null>(null);
   const [depositAmount, setDepositAmount] = useState('20');
   const [selectedToken, setSelectedToken] = useState('SOL');
   const [tokenPrice, setTokenPrice] = useState(150);
@@ -300,6 +308,9 @@ const StrategyBuilder: React.FC = () => {
   const [aiPrompt, setAiPrompt] = useState('');
   const [strategyRisk, setStrategyRisk] = useState('medium');
   const [showSocial, setShowSocial] = useState(false);
+
+  // Wallet integration
+  const { connected, publicKey, sendTransaction } = useSolanaWallet();
 
   // Calculate USD values
   const totalCostUSD = useMemo(() => {
@@ -395,9 +406,15 @@ const StrategyBuilder: React.FC = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const onDragStart = (event: React.DragEvent, nodeType: string) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
   const generateAIStrategy = useCallback(() => {
     if (!aiPrompt.trim()) return;
     
+    // Simulate AI strategy generation
     setIsSimulating(true);
     setTimeout(() => {
       // AI generates strategy based on prompt
@@ -491,6 +508,210 @@ const StrategyBuilder: React.FC = () => {
       setIsSimulating(false);
     }, 2000);
   }, [nodes, depositAmount, selectedToken, calculateStrategyRisk]);
+
+  const executeStrategy = async () => {
+    if (!connected || !publicKey) {
+      alert('Please connect your wallet first!');
+      return;
+    }
+
+    const amount = parseFloat(depositAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid deposit amount!');
+      return;
+    }
+
+    setIsExecuting(true);
+    setExecutionResults(null);
+
+    try {
+      console.log('Starting strategy execution...');
+      console.log('Public Key:', publicKey.toString());
+      console.log('Amount:', amount);
+      console.log('Wallet connected:', connected);
+
+      // First, let's test a simple transaction to verify wallet connection
+      const testTransaction = new Transaction();
+      testTransaction.add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: publicKey, // Send to self for testing
+          lamports: 1000 // Very small amount
+        })
+      );
+
+      console.log('Testing wallet transaction signing...');
+      const testSignature = await sendTransaction(testTransaction);
+      console.log('Test transaction successful:', testSignature);
+
+      // Now proceed with the actual strategy execution
+      const simulation = await smartContractService.simulateDeposit(publicKey, amount);
+      
+      if (!simulation.success) {
+        setExecutionResults({
+          success: false,
+          error: simulation.error || 'Simulation failed'
+        });
+        return;
+      }
+
+      // Execute the actual deposit
+      const result = await smartContractService.depositSol(
+        publicKey,
+        amount,
+        sendTransaction
+      );
+
+      // Set transaction status for real-time updates
+      if (result.status) {
+        setTransactionStatus(result.status);
+      }
+
+      setExecutionResults(result);
+
+      if (result.success) {
+        alert(`Strategy executed successfully! Transaction: ${result.transactionId}`);
+      } else {
+        alert(`Execution failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Strategy execution failed:', error);
+      setExecutionResults({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
+  const withdrawSol = async () => {
+    if (!connected || !publicKey) {
+      alert('Please connect your wallet first!');
+      return;
+    }
+
+    const amount = parseFloat(depositAmount);
+    if (isNaN(amount) || amount <= 0) {
+      alert('Please enter a valid withdrawal amount!');
+      return;
+    }
+
+    setIsExecuting(true);
+    setExecutionResults(null);
+
+    try {
+      const result = await smartContractService.withdrawSol(
+        publicKey,
+        amount,
+        sendTransaction
+      );
+
+      if (result.status) {
+        setTransactionStatus(result.status);
+      }
+
+      setExecutionResults(result);
+
+      if (result.success) {
+        alert(`Withdrawal successful! Transaction: ${result.transactionId}`);
+      } else {
+        alert(`Withdrawal failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Withdrawal failed:', error);
+      setExecutionResults({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
+  const claimYield = async () => {
+    if (!connected || !publicKey) {
+      alert('Please connect your wallet first!');
+      return;
+    }
+
+    setIsExecuting(true);
+    setExecutionResults(null);
+
+    try {
+      const result = await smartContractService.claimYield(
+        publicKey,
+        sendTransaction
+      );
+
+      if (result.status) {
+        setTransactionStatus(result.status);
+      }
+
+      setExecutionResults(result);
+
+      if (result.success) {
+        alert(`Yield claimed successfully! Transaction: ${result.transactionId}`);
+      } else {
+        alert(`Yield claim failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Yield claim failed:', error);
+      setExecutionResults({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
+  const testWalletConnection = async () => {
+    if (!connected || !publicKey) {
+      alert('Please connect your wallet first!');
+      return;
+    }
+
+    setIsExecuting(true);
+    setExecutionResults(null);
+
+    try {
+      console.log('Testing wallet connection...');
+      console.log('Public Key:', publicKey.toString());
+      console.log('Wallet connected:', connected);
+
+      // Create a simple test transaction
+      const testTransaction = new Transaction();
+      testTransaction.add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: publicKey, // Send to self for testing
+          lamports: 1000 // Very small amount
+        })
+      );
+
+      console.log('Sending test transaction...');
+      const signature = await sendTransaction(testTransaction);
+      console.log('Test transaction successful:', signature);
+
+      setExecutionResults({
+        success: true,
+        transactionId: signature,
+        error: undefined
+      });
+
+      alert(`Wallet test successful! Transaction: ${signature}`);
+    } catch (error) {
+      console.error('Wallet test failed:', error);
+      setExecutionResults({
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      alert(`Wallet test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsExecuting(false);
+    }
+  };
 
   const saveStrategy = useCallback(() => {
     const strategy = {
@@ -614,6 +835,34 @@ const StrategyBuilder: React.FC = () => {
           </button>
           <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray" onClick={() => setShowSocial(true)}>
             Publish
+          </button>
+          <button 
+            className="cyphr-btn cyphr-btn-social px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
+            onClick={executeStrategy}
+            disabled={isExecuting || !connected}
+          >
+            {isExecuting ? 'Executing...' : '🚀 Execute Strategy'}
+          </button>
+          <button 
+            className="cyphr-btn cyphr-btn-secondary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
+            onClick={withdrawSol}
+            disabled={isExecuting || !connected}
+          >
+            {isExecuting ? 'Withdrawing...' : '💸 Withdraw SOL'}
+          </button>
+          <button 
+            className="cyphr-btn cyphr-btn-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
+            onClick={claimYield}
+            disabled={isExecuting || !connected}
+          >
+            {isExecuting ? 'Claiming...' : '🎁 Claim Yield'}
+          </button>
+          <button 
+            className="cyphr-btn cyphr-btn-secondary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
+            onClick={testWalletConnection}
+            disabled={isExecuting || !connected}
+          >
+            🧪 Test Wallet
           </button>
         </div>
       </div>
@@ -999,6 +1248,27 @@ const StrategyBuilder: React.FC = () => {
               <p>Click "Simulate Strategy" to see results</p>
             </div>
           )}
+
+          {/* Execution Results */}
+          {executionResults && (
+            <div className="execution-results">
+              <h4>🚀 Execution Results</h4>
+              <div className={`result ${executionResults.success ? 'success' : 'error'}`}>
+                {executionResults.success ? (
+                  <div>
+                    <p>✅ Strategy executed successfully!</p>
+                    <p>Transaction ID: {executionResults.transactionId}</p>
+                    <p>Amount: {depositAmount} SOL deposited to vault</p>
+                  </div>
+                ) : (
+                  <p>❌ Execution failed: {executionResults.error}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Smart Contract Integration */}
+          <SmartContractIntegration />
         </div>
       </div>
 

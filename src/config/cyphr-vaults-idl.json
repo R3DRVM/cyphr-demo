@@ -1,0 +1,603 @@
+{
+  "version": "0.1.0",
+  "name": "cyphr_vaults",
+  "instructions": [
+    {
+      "name": "initializeBasicVault",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "depositSol",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userDeposit",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawSol",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userDeposit",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claimYield",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userDeposit",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initializeStrategyVault",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createStrategy",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "strategyState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "strategyConfig",
+          "type": {
+            "defined": "StrategyConfig"
+          }
+        }
+      ]
+    },
+    {
+      "name": "executeStrategy",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "strategyState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "strategyId",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "depositStrategySol",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userDeposit",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claimStrategyYield",
+      "accounts": [
+        {
+          "name": "vaultState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "userDeposit",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BasicVaultState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "totalDeposits",
+            "type": "u64"
+          },
+          {
+            "name": "totalUsers",
+            "type": "u32"
+          },
+          {
+            "name": "isPaused",
+            "type": "bool"
+          },
+          {
+            "name": "totalYieldGenerated",
+            "type": "u64"
+          },
+          {
+            "name": "lastYieldCalculation",
+            "type": "i64"
+          },
+          {
+            "name": "yieldRate",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserDeposit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "publicKey"
+          },
+          {
+            "name": "depositAmount",
+            "type": "u64"
+          },
+          {
+            "name": "yieldEarned",
+            "type": "u64"
+          },
+          {
+            "name": "lastYieldUpdate",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StrategyVaultState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "totalDeposits",
+            "type": "u64"
+          },
+          {
+            "name": "totalUsers",
+            "type": "u32"
+          },
+          {
+            "name": "isPaused",
+            "type": "bool"
+          },
+          {
+            "name": "totalYieldGenerated",
+            "type": "u64"
+          },
+          {
+            "name": "lastYieldCalculation",
+            "type": "i64"
+          },
+          {
+            "name": "yieldRate",
+            "type": "u64"
+          },
+          {
+            "name": "activeStrategies",
+            "type": "u32"
+          },
+          {
+            "name": "totalPnl",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StrategyState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "baseToken",
+            "type": "string"
+          },
+          {
+            "name": "quoteToken",
+            "type": "string"
+          },
+          {
+            "name": "positionSize",
+            "type": "u64"
+          },
+          {
+            "name": "timeFrame",
+            "type": "string"
+          },
+          {
+            "name": "executionInterval",
+            "type": "u64"
+          },
+          {
+            "name": "yieldTarget",
+            "type": "u64"
+          },
+          {
+            "name": "yieldAccumulation",
+            "type": "bool"
+          },
+          {
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "name": "createdAt",
+            "type": "i64"
+          },
+          {
+            "name": "lastExecution",
+            "type": "i64"
+          },
+          {
+            "name": "totalPnl",
+            "type": "i64"
+          },
+          {
+            "name": "entryConditions",
+            "type": {
+              "vec": {
+                "defined": "Condition"
+              }
+            }
+          },
+          {
+            "name": "exitConditions",
+            "type": {
+              "vec": {
+                "defined": "Condition"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "Condition",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "conditionType",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StrategyConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "baseToken",
+            "type": "string"
+          },
+          {
+            "name": "quoteToken",
+            "type": "string"
+          },
+          {
+            "name": "positionSize",
+            "type": "u64"
+          },
+          {
+            "name": "timeFrame",
+            "type": "string"
+          },
+          {
+            "name": "executionInterval",
+            "type": "u64"
+          },
+          {
+            "name": "yieldTarget",
+            "type": "u64"
+          },
+          {
+            "name": "yieldAccumulation",
+            "type": "bool"
+          },
+          {
+            "name": "entryConditions",
+            "type": {
+              "vec": {
+                "defined": "Condition"
+              }
+            }
+          },
+          {
+            "name": "exitConditions",
+            "type": {
+              "vec": {
+                "defined": "Condition"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "VaultPaused",
+      "msg": "Vault is paused"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientBalance",
+      "msg": "Insufficient balance"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount"
+    },
+    {
+      "code": 6003,
+      "name": "UserNotFound",
+      "msg": "User not found"
+    },
+    {
+      "code": 6004,
+      "name": "StrategyNotFound",
+      "msg": "Strategy not found"
+    },
+    {
+      "code": 6005,
+      "name": "StrategyNotActive",
+      "msg": "Strategy is not active"
+    },
+    {
+      "code": 6006,
+      "name": "Unauthorized",
+      "msg": "Unauthorized access"
+    },
+    {
+      "code": 6007,
+      "name": "NoYieldToClaim",
+      "msg": "No yield to claim"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidStrategyConfig",
+      "msg": "Invalid strategy configuration"
+    },
+    {
+      "code": 6009,
+      "name": "StrategyExecutionFailed",
+      "msg": "Strategy execution failed"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidTimeFrame",
+      "msg": "Invalid time frame"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidYieldTarget",
+      "msg": "Invalid yield target"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidPositionSize",
+      "msg": "Invalid position size"
+    }
+  ]
+} 

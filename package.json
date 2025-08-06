@@ -4,11 +4,20 @@
   "private": true,
   "homepage": "https://R3DRVM.github.io/cyphr-demo",
   "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@rainbow-me/rainbowkit": "^2.2.8",
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
+    "@solana/web3.js": "^1.98.4",
+    "@tanstack/react-query": "^5.84.1",
     "@types/d3": "^7.4.3",
     "@types/node": "^20.19.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/react-router-dom": "^5.3.3",
+    "@walletconnect/web3-provider": "^1.8.0",
     "chart.js": "^4.5.0",
     "d3": "^7.9.0",
     "react": "^18.2.0",
@@ -16,7 +25,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
     "reactflow": "^11.11.4",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "viem": "^2.33.2",
+    "wagmi": "^2.16.1"
   },
   "scripts": {
     "dev": "vite",

@@ -1,0 +1,29 @@
+{
+  "network": "devnet",
+  "deployedAt": "2025-08-05T21:27:55.683Z",
+  "deployer": "DB7XzymPsL4Vr6hbHcbwnJ4WKM92jBoovuSg837gV9ne",
+  "contracts": {
+    "strategyVault": {
+      "programId": "BeXTyu8CpHkiWzbJGVpy5bhUDSMYBDL9bQFNEAD42rJv",
+      "name": "StrategyVault",
+      "description": "Advanced DeFi strategy vault with multi-token support",
+      "version": "1.0.0",
+      "network": "devnet",
+      "deployedAt": "2025-08-05T21:27:55.680Z",
+      "deployer": "DB7XzymPsL4Vr6hbHcbwnJ4WKM92jBoovuSg837gV9ne"
+    },
+    "basicVault": {
+      "programId": "E1PTBixpegytvCDLTnXz1ULFYauZuRNRRCYE1XiXWVcX",
+      "name": "BasicVault",
+      "description": "Simple SOL vault with yield generation",
+      "version": "1.0.0",
+      "network": "devnet",
+      "deployedAt": "2025-08-05T21:27:55.681Z",
+      "deployer": "DB7XzymPsL4Vr6hbHcbwnJ4WKM92jBoovuSg837gV9ne"
+    }
+  },
+  "abiFiles": {
+    "strategyVault": "abi/strategy-vault-abi.json",
+    "basicVault": "abi/basic-vault-abi.json"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "cyphr-smart-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for Cyphr DeFi Strategy Builder",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "deploy:devnet": "node scripts/deploy-devnet.js",
+    "deploy:testnet": "node scripts/deploy-testnet.js",
+    "test:contracts": "node tests/test-contracts.js",
+    "test:integration": "jest tests/test-integration.js",
+    "test:wallet": "node tests/test-wallet-integration.js",
+    "test:setup": "node scripts/test-setup.js",
+    "test:comprehensive": "node scripts/test-smart-contracts.js",
+    "test:yield": "node scripts/test-yield-functionality.js",
+    "test:strategy": "node scripts/test-strategy-vault.js",
+    "test:realworld": "node scripts/test-real-world-strategy.js",
+    "test:15percent": "node scripts/test-15-percent-target.js",
+    "test:time": "node scripts/test-time-constraints.js",
+    "check:contracts": "node scripts/check-deployed-contracts.js",
+    "deploy:devnet": "node deploy/deploy-contracts.js devnet",
+    "deploy:mainnet": "node deploy/deploy-contracts.js mainnet",
+    "test:integration": "node scripts/test-contract-integration.js",
+    "validate:final": "node scripts/final-contract-validation.js",
+    "setup": "node scripts/setup-environment.js",
+    "clean": "rm -rf node_modules package-lock.json"
+  },
+  "keywords": ["solana", "defi", "smart-contracts", "anchor", "vault"],
+  "author": "Cyphr Team",
+  "license": "MIT",
+  "dependencies": {
+    "@solana/web3.js": "^1.87.6",
+    "@solana/spl-token": "^0.3.9",
+    "@project-serum/anchor": "^0.26.0",
+    "bs58": "^5.0.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.8",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2",
+    "@types/node": "^20.8.10"
+  },
+  "type": "commonjs"
+}

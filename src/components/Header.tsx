@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccentColor } from '../contexts/ColorContext';
+import WalletConnect from './WalletConnect';
 
 import './Header.css';
 
@@ -76,14 +77,10 @@ const Header: React.FC = () => {
           </nav>
         </div>
 
-
-
         {/* Right Side Actions */}
         <div className="header-right">
-          {/* Deposit Button */}
-          <button className="deposit-button">
-            Deposit
-          </button>
+          {/* Wallet Connect Component */}
+          <WalletConnect />
 
           {/* Star */}
           <button className="action-button star-button">
@@ -134,8 +131,6 @@ const Header: React.FC = () => {
           </div>
         </div>
       </div>
-
-
     </header>
   );
 };
