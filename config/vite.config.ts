@@ -1,23 +1,36 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+// config/vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    nodePolyfills({
+      protocolImports: true,
+    }),
+  ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '../src'),
+      buffer: 'buffer',
+      process: 'process/browser',
     },
   },
-  server: {
-    port: 5173,
-    open: true,
+  optimizeDeps: {
+    include: [
+      'buffer',
+      'process',
+      '@solana/web3.js',
+      '@solana/spl-token',
+      '@solana/spl-token-swap',
+    ],
+    esbuildOptions: {
+      define: {
+        global: 'globalThis',
+      },
+    },
   },
-  base: '/',
-  build: {
-    outDir: 'docs',
-    sourcemap: true,
+  define: {
+    'process.env': {},
   },
-  publicDir: 'public',
-}) 
+});
