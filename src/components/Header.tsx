@@ -31,7 +31,6 @@ const Header: React.FC = () => {
     { name: 'TERMINAL', path: '/pro-terminal' },
     { name: 'STRATEGY', path: '/strategy-builder' },
     { name: 'INSIGHTS', path: '/tracker' },
-    { name: 'PERPETUALS', path: '/perpetuals' },
     { name: 'PORTFOLIO', path: '/portfolio' },
   ];
 

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProTerminal.css';
+import LendingSection from '../components/LendingSection';
+import BorrowPanel from '../components/borrow/BorrowPanel';
 
 interface TokenData {
   symbol: string;
@@ -695,6 +697,38 @@ const ProTerminal: React.FC = () => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-cyphr-white mb-2 font-nulshock">Cyphr Terminal</h1>
         <p className="text-cyphr-gray">Professional Trading Intelligence Platform</p>
+      </div>
+
+      {/* Lending & Borrowing Section - Top Card */}
+      <div className="lending-borrowing-card mb-6">
+        <div className="card-header">
+          <div className="header-content">
+            <div className="header-icon">
+              <img src="/assets/icons/WalletIcon.png" alt="Lending" className="w-6 h-6" />
+            </div>
+            <div>
+              <h2>Capital Management</h2>
+              <p>Powered by Roots - Deposit assets and borrow capital to fund your strategies</p>
+            </div>
+          </div>
+          <div className="header-badge">
+            <span className="badge-text">Roots Integration</span>
+          </div>
+        </div>
+        
+        <div className="lending-content">
+          <div className="lending-grid">
+            <div className="lending-section">
+              <LendingSection
+                onNavigateToTerminal={() => {}}
+                preflightOk={true}
+              />
+            </div>
+            <div className="borrow-section">
+              <BorrowPanel preflightOk={true} />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Enhanced Controls */}

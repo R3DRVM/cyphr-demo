@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import ReactFlow, {
   Node,
   Edge,
@@ -27,10 +27,17 @@ import {
 import { Line } from 'react-chartjs-2';
 import 'reactflow/dist/style.css';
 import { useSolanaWallet } from '../providers/SolanaWalletProvider';
-import { smartContractService, DepositResult, TransactionStatus as TxStatus, StrategyConfig } from '../services/smartContractService';
-import TransactionStatus from '../components/TransactionStatus';
-import SmartContractIntegration from '../components/SmartContractIntegration';
-import { Transaction, SystemProgram } from '@solana/web3.js';
+import { usePosition } from '../hooks/usePosition';
+import { useTxToasts } from '../hooks/useTxToasts';
+import { enableCollateral, borrow, repay } from '../adapters/lender';
+import { swap } from '../adapters/dex';
+import { enforcePolicy } from '../utils/enforcePolicy';
+import { DEFAULT_POLICY } from '../config/policy';
+import { PositionCard } from '../components/PositionCard';
+import NumericInput from '../components/ui/NumericInput';
+import BorrowPanel from '../components/borrow/BorrowPanel';
+import LendingSection from '../components/LendingSection';
+import { usePreflight, PreflightBanner } from '../debug/Preflight';
 import './StrategyBuilder.css';
 
 ChartJS.register(
@@ -105,98 +112,6 @@ const LogicNode: React.FC<{ data: any }> = ({ data }) => (
           <option value="ai">AI-Optimized</option>
         </select>
       </div>
-      
-      {data.logicType === 'time' && (
-        <>
-          <div className="parameter">
-            <label>Duration:</label>
-            <select 
-              value={data.duration || '3'}
-              onChange={(e) => data.onChange('duration', e.target.value)}
-            >
-              <option value="1">1 Week</option>
-              <option value="2">2 Weeks</option>
-              <option value="3">3 Weeks</option>
-              <option value="4">1 Month</option>
-              <option value="8">2 Months</option>
-              <option value="12">3 Months</option>
-            </select>
-          </div>
-          <div className="parameter">
-            <label>Profit Target (%):</label>
-            <input 
-              type="number" 
-              placeholder="15"
-              value={data.profitTarget || ''}
-              onChange={(e) => data.onChange('profitTarget', e.target.value)}
-            />
-          </div>
-        </>
-      )}
-      
-      {data.logicType === 'price' && (
-        <>
-          <div className="parameter">
-            <label>Condition:</label>
-            <select 
-              value={data.condition || 'above'}
-              onChange={(e) => data.onChange('condition', e.target.value)}
-            >
-              <option value="above">Price Above</option>
-              <option value="below">Price Below</option>
-              <option value="crosses">Price Crosses</option>
-              <option value="percent_change">% Change</option>
-            </select>
-          </div>
-          <div className="parameter">
-            <label>Value:</label>
-            <input 
-              type="number" 
-              placeholder="0.00"
-              value={data.value || ''}
-              onChange={(e) => data.onChange('value', e.target.value)}
-            />
-          </div>
-        </>
-      )}
-      
-      {data.logicType === 'volatility' && (
-        <>
-          <div className="parameter">
-            <label>Volatility Threshold:</label>
-            <select 
-              value={data.volatilityThreshold || 'high'}
-              onChange={(e) => data.onChange('volatilityThreshold', e.target.value)}
-            >
-              <option value="low">Low (&lt; 20%)</option>
-              <option value="medium">Medium (20-50%)</option>
-              <option value="high">High (&gt; 50%)</option>
-            </select>
-          </div>
-          <div className="parameter">
-            <label>Action:</label>
-            <select 
-              value={data.volatilityAction || 'exit'}
-              onChange={(e) => data.onChange('volatilityAction', e.target.value)}
-            >
-              <option value="exit">Exit Position</option>
-              <option value="hedge">Hedge Position</option>
-              <option value="rebalance">Rebalance</option>
-            </select>
-          </div>
-        </>
-      )}
-      
-      {data.logicType === 'ai' && (
-        <div className="ai-logic-info">
-          <div className="ai-badge"><img src="/assets/icons/RobotIcon.png" alt="AI" style={{ width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle' }} /> AI-Powered</div>
-          <p>AI analyzes market conditions and optimizes entry/exit timing</p>
-          <div className="ai-improvement">
-            <span>Estimated Improvement:</span>
-            <span className="improvement-value">+75%</span>
-          </div>
-        </div>
-      )}
     </div>
   </div>
 );
@@ -225,62 +140,6 @@ const ActionNode: React.FC<{ data: any }> = ({ data }) => (
           <option value="hedge">Hedge</option>
         </select>
       </div>
-      
-      {data.actionType === 'entry' && (
-        <>
-          <div className="parameter">
-            <label>Action:</label>
-            <select 
-              value={data.action || 'stake'}
-              onChange={(e) => data.onChange('action', e.target.value)}
-            >
-              <option value="stake">Stake</option>
-              <option value="buy">Buy</option>
-              <option value="liquidity">Add Liquidity</option>
-              <option value="yield_farm">Yield Farm</option>
-            </select>
-          </div>
-        </>
-      )}
-      
-      {data.actionType === 'exit' && (
-        <>
-          <div className="parameter">
-            <label>Exit Strategy:</label>
-            <select 
-              value={data.exitStrategy || 'all'}
-              onChange={(e) => data.onChange('exitStrategy', e.target.value)}
-            >
-              <option value="all">All (Initial + Earnings)</option>
-              <option value="earnings">Earnings Only</option>
-              <option value="partial">Partial Exit</option>
-              <option value="stop_loss">Stop Loss</option>
-            </select>
-          </div>
-          {data.exitStrategy === 'stop_loss' && (
-            <div className="parameter">
-              <label>Stop Loss (%):</label>
-              <input 
-                type="number" 
-                placeholder="10"
-                value={data.stopLoss || ''}
-                onChange={(e) => data.onChange('stopLoss', e.target.value)}
-              />
-            </div>
-          )}
-        </>
-      )}
-      
-      <div className="parameter">
-        <label>Auto Execute:</label>
-        <select 
-          value={data.autoExecute || 'true'}
-          onChange={(e) => data.onChange('autoExecute', e.target.value)}
-        >
-          <option value="true">Yes (Automated)</option>
-          <option value="false">No (Manual Approval)</option>
-        </select>
-      </div>
     </div>
   </div>
 );
@@ -292,58 +151,41 @@ const nodeTypes: NodeTypes = {
 };
 
 const StrategyBuilder: React.FC = () => {
+  // State for ReactFlow
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [strategyName, setStrategyName] = useState('My DeFi Strategy');
-  const [isSimulating, setIsSimulating] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
-  const [simulationResults, setSimulationResults] = useState<any>(null);
-  const [executionResults, setExecutionResults] = useState<DepositResult | null>(null);
-  const [transactionStatus, setTransactionStatus] = useState<TxStatus | null>(null);
-  const [depositAmount, setDepositAmount] = useState('20');
-  const [selectedToken, setSelectedToken] = useState('SOL');
-  const [tokenPrice, setTokenPrice] = useState(150);
-  const [showAIBuilder, setShowAIBuilder] = useState(false);
-  const [aiPrompt, setAiPrompt] = useState('');
-  const [strategyRisk, setStrategyRisk] = useState('medium');
-  const [showSocial, setShowSocial] = useState(false);
+  const [collateralAmount, setCollateralAmount] = useState('10');
+  const [borrowAmountStr, setBorrowAmountStr] = useState('500');
+  const borrowAmount = borrowAmountStr === '' || borrowAmountStr === '.' ? 0 : Number(borrowAmountStr);
+  const [ltvPct, setLtvPct] = useState(String(DEFAULT_POLICY.maxLtv * 100));
+  const [slippagePct, setSlippagePct] = useState(String(DEFAULT_POLICY.maxSlippageBps / 100));
 
   // Wallet integration
-  const { connected, publicKey, sendTransaction } = useSolanaWallet();
+  const { connected, publicKey } = useSolanaWallet();
+  const position = usePosition();
+  const { withTxToasts } = useTxToasts();
 
-  // Calculate USD values
-  const totalCostUSD = useMemo(() => {
-    const amount = parseFloat(depositAmount) || 0;
-    return amount * tokenPrice;
-  }, [depositAmount, tokenPrice]);
+  // Preflight check
+  const { ok: preflightOk } = usePreflight();
 
-  const averageCostUSD = useMemo(() => {
-    return tokenPrice;
-  }, [tokenPrice]);
+  // Safe config loading with fallback
+  const [config, setConfig] = useState<any>({});
 
-  // Risk calculation based on strategy components
-  const calculateStrategyRisk = useCallback(() => {
-    const logicNodes = nodes.filter(n => n.type === 'logicNode');
-    const actionNodes = nodes.filter(n => n.type === 'actionNode');
-    
-    let riskScore = 0;
-    
-    logicNodes.forEach(node => {
-      if (node.data?.logicType === 'volatility') riskScore += 2;
-      if (node.data?.logicType === 'ai') riskScore += 1;
-      if (node.data?.logicType === 'price') riskScore += 1;
-    });
-    
-    actionNodes.forEach(node => {
-      if (node.data?.actionType === 'hedge') riskScore -= 1;
-      if (node.data?.exitStrategy === 'stop_loss') riskScore -= 1;
-    });
-    
-    if (riskScore <= 0) return 'low';
-    if (riskScore <= 2) return 'medium';
-    return 'high';
-  }, [nodes]);
+  useEffect(() => {
+    const loadConfig = async () => {
+      try {
+        const configModule = await import('../config/tokens.devnet.json');
+        setConfig(configModule.default || configModule);
+      } catch (e) {
+        console.warn('Could not load tokens.devnet.json, using empty config');
+        setConfig({});
+      }
+    };
+    loadConfig();
+  }, []);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -371,381 +213,169 @@ const StrategyBuilder: React.FC = () => {
     );
   }, [setNodes]);
 
-  const addNode = useCallback((type: string, position: { x: number; y: number }) => {
-    const newNode: Node = {
-      id: `${type}-${Date.now()}`,
-      type: type === 'input' ? 'inputNode' : type === 'logic' ? 'logicNode' : 'actionNode',
-      position,
-      data: {
-        label: type === 'input' ? 'Data Input' : type === 'logic' ? 'Strategy Logic' : 'Action',
-        onChange: (field: string, value: any) => updateNodeData(newNode.id, field, value),
-        token: selectedToken,
-        duration: '3',
-        profitTarget: '15',
-        action: 'stake',
-        exitStrategy: 'all',
-        logicType: 'time',
-        riskLevel: 'medium-risk',
-      },
+  const borrowAndTrade = async () => {
+    if (!connected || !publicKey) {
+      throw new Error('Wallet not connected');
+    }
+
+    // Validate config is loaded
+    if (!config.mintA || !config.mintB) {
+      throw new Error('Token configuration not loaded. Please run setup:devnet first.');
+    }
+
+    const collateralAmountNum = parseFloat(collateralAmount);
+    const borrowAmountNum = borrowAmount;
+    const ltvPctNum = parseFloat(ltvPct);
+    const slippageBpsNum = parseFloat(slippagePct) * 100;
+
+    // Validate amounts
+    if (isNaN(collateralAmountNum) || collateralAmountNum <= 0) {
+      throw new Error('Invalid collateral amount');
+    }
+    if (isNaN(borrowAmountNum) || borrowAmountNum <= 0) {
+      throw new Error('Invalid borrow amount');
+    }
+
+    // Enforce policy caps
+    const intent = {
+      collateralMint: config.mintA,
+      collateralAmount: collateralAmountNum,
+      borrowMint: config.mintB,
+      borrowAmount: borrowAmountNum,
+      targetMint: config.mintA,
+      slippageBps: slippageBpsNum,
+      borrowAmountUsd: borrowAmountNum,
+      ltv: ltvPctNum / 100,
     };
-    setNodes((nds) => [...nds, newNode]);
-  }, [setNodes, updateNodeData, selectedToken]);
 
-  const onDrop = useCallback(
-    (event: React.DragEvent) => {
-      event.preventDefault();
-      const type = event.dataTransfer.getData('application/reactflow');
-      const position = { x: event.clientX - 280, y: event.clientY - 100 };
-      addNode(type, position);
-    },
-    [addNode]
-  );
+    enforcePolicy(intent);
 
-  const onDragOver = useCallback((event: React.DragEvent) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-  }, []);
-
-  const onDragStart = (event: React.DragEvent, nodeType: string) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
-
-  const generateAIStrategy = useCallback(() => {
-    if (!aiPrompt.trim()) return;
-    
-    // Simulate AI strategy generation
-    setIsSimulating(true);
-    setTimeout(() => {
-      // AI generates strategy based on prompt
-      const aiNodes: Node[] = [
+    setIsExecuting(true);
+    try {
+      // Step 1: Enable collateral
+      await withTxToasts(
+        enableCollateral(config.mintA, collateralAmountNum),
         {
-          id: 'ai-input-1',
-          type: 'inputNode',
-          position: { x: 100, y: 100 },
-          data: {
-            label: 'AI Data Source',
-            onChange: (field: string, value: any) => updateNodeData('ai-input-1', field, value),
-            token: selectedToken,
-            dataType: 'price',
-          },
-        },
-        {
-          id: 'ai-logic-1',
-          type: 'logicNode',
-          position: { x: 400, y: 100 },
-          data: {
-            label: 'AI-Optimized Logic',
-            onChange: (field: string, value: any) => updateNodeData('ai-logic-1', field, value),
-            logicType: 'ai',
-            duration: '4',
-            profitTarget: '12',
-            riskLevel: 'low-risk',
-          },
-        },
-        {
-          id: 'ai-action-1',
-          type: 'actionNode',
-          position: { x: 700, y: 100 },
-          data: {
-            label: 'AI Action',
-            onChange: (field: string, value: any) => updateNodeData('ai-action-1', field, value),
-            actionType: 'entry',
-            action: 'stake',
-            riskLevel: 'low-risk',
-          },
-        },
-      ];
-
-      const aiEdges: Edge[] = [
-        { id: 'ai-e1-2', source: 'ai-input-1', target: 'ai-logic-1' },
-        { id: 'ai-e2-3', source: 'ai-logic-1', target: 'ai-action-1' },
-      ];
-
-      setNodes(aiNodes);
-      setEdges(aiEdges);
-      setShowAIBuilder(false);
-      setIsSimulating(false);
-    }, 2000);
-  }, [aiPrompt, selectedToken, setNodes, setEdges, updateNodeData]);
-
-  const simulateStrategy = useCallback(() => {
-    setIsSimulating(true);
-    setTimeout(() => {
-      const profitTarget = parseFloat(nodes.find(n => n.type === 'logicNode')?.data?.profitTarget || '15');
-      const duration = parseInt(nodes.find(n => n.type === 'logicNode')?.data?.duration || '3');
-      const amount = parseFloat(depositAmount);
-      const expectedProfit = (amount * profitTarget) / 100;
-      const riskLevel = calculateStrategyRisk();
-      const aiImprovement = nodes.some(n => n.data?.logicType === 'ai') ? 75 : 0;
-      
-      setSimulationResults({
-        totalReturn: profitTarget + aiImprovement,
-        timeToExit: `${duration} weeks`,
-        expectedProfit: expectedProfit.toFixed(2),
-        initialInvestment: amount,
-        finalValue: (amount + expectedProfit).toFixed(2),
-        successRate: 95.0,
-        riskLevel: riskLevel,
-        maxDrawdown: riskLevel === 'high' ? 25 : riskLevel === 'medium' ? 15 : 8,
-        sharpeRatio: riskLevel === 'high' ? 1.2 : riskLevel === 'medium' ? 1.8 : 2.5,
-        aiImprovement: aiImprovement,
-        chartData: {
-          labels: Array.from({length: duration}, (_, i) => `Week ${i + 1}`),
-          datasets: [{
-            label: `${selectedToken} Value`,
-            data: Array.from({length: duration}, (_, i) => {
-              const weeklyGrowth = (profitTarget + aiImprovement) / duration;
-              return amount + (amount * weeklyGrowth * (i + 1)) / 100;
-            }),
-            borderColor: '#6D8FC7',
-            backgroundColor: 'rgba(109, 143, 199, 0.1)',
-            tension: 0.4,
-            fill: true,
-          }]
+          pending: 'Enabling collateral...',
+          success: 'Collateral enabled',
+          error: 'Failed to enable collateral',
         }
-      });
-      setIsSimulating(false);
-    }, 2000);
-  }, [nodes, depositAmount, selectedToken, calculateStrategyRisk]);
-
-  const executeStrategy = async () => {
-    if (!connected || !publicKey) {
-      alert('Please connect your wallet first!');
-      return;
-    }
-
-    const amount = parseFloat(depositAmount);
-    if (isNaN(amount) || amount <= 0) {
-      alert('Please enter a valid deposit amount!');
-      return;
-    }
-
-    setIsExecuting(true);
-    setExecutionResults(null);
-
-    try {
-      console.log('Starting strategy execution...');
-      console.log('Public Key:', publicKey.toString());
-      console.log('Amount:', amount);
-      console.log('Wallet connected:', connected);
-
-      // First, let's test a simple transaction to verify wallet connection
-      const testTransaction = new Transaction();
-      testTransaction.add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: publicKey, // Send to self for testing
-          lamports: 1000 // Very small amount
-        })
       );
 
-      console.log('Testing wallet transaction signing...');
-      const testSignature = await sendTransaction(testTransaction);
-      console.log('Test transaction successful:', testSignature);
-
-      // Now proceed with the actual strategy execution
-      const simulation = await smartContractService.simulateDeposit(publicKey, amount);
-      
-      if (!simulation.success) {
-        setExecutionResults({
-          success: false,
-          error: simulation.error || 'Simulation failed'
-        });
-        return;
-      }
-
-      // Execute the actual deposit
-      const result = await smartContractService.depositSol(
-        publicKey,
-        amount,
-        sendTransaction
+      // Step 2: Borrow
+      await withTxToasts(
+        borrow(config.mintB, borrowAmountNum),
+        {
+          pending: `Borrowing ${borrowAmountNum}...`,
+          success: 'Borrow successful',
+          error: 'Borrow failed',
+        }
       );
 
-      // Set transaction status for real-time updates
-      if (result.status) {
-        setTransactionStatus(result.status);
-      }
+      // Step 3: Swap
+      await withTxToasts(
+        swap(config.mintB, config.mintA, borrowAmountNum, slippageBpsNum),
+        {
+          pending: 'Executing swap...',
+          success: 'Trade executed',
+          error: 'Swap failed',
+        }
+      );
 
-      setExecutionResults(result);
-
-      if (result.success) {
-        alert(`Strategy executed successfully! Transaction: ${result.transactionId}`);
-      } else {
-        alert(`Execution failed: ${result.error}`);
-      }
+      // Refresh position
+      await position.refresh();
     } catch (error) {
-      console.error('Strategy execution failed:', error);
-      setExecutionResults({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
+      console.error('Borrow & Trade failed:', error);
+      throw error;
     } finally {
       setIsExecuting(false);
     }
   };
 
-  const withdrawSol = async () => {
-    if (!connected || !publicKey) {
-      alert('Please connect your wallet first!');
-      return;
-    }
-
-    const amount = parseFloat(depositAmount);
-    if (isNaN(amount) || amount <= 0) {
-      alert('Please enter a valid withdrawal amount!');
-      return;
-    }
-
-    setIsExecuting(true);
-    setExecutionResults(null);
-
+  const handleBorrowAndTrade = async () => {
     try {
-      const result = await smartContractService.withdrawSol(
-        publicKey,
-        amount,
-        sendTransaction
-      );
-
-      if (result.status) {
-        setTransactionStatus(result.status);
-      }
-
-      setExecutionResults(result);
-
-      if (result.success) {
-        alert(`Withdrawal successful! Transaction: ${result.transactionId}`);
-      } else {
-        alert(`Withdrawal failed: ${result.error}`);
-      }
+      await borrowAndTrade();
     } catch (error) {
-      console.error('Withdrawal failed:', error);
-      setExecutionResults({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
+      console.error('Error in borrow and trade:', error);
+    }
+  };
+
+  const handleRepay = async () => {
+    if (!position.position) return;
+    
+    try {
+      setIsExecuting(true);
+      // Implementation for repay would go here
+      console.log('Repay functionality to be implemented');
+    } catch (error) {
+      console.error('Repay failed:', error);
     } finally {
       setIsExecuting(false);
     }
   };
 
-  const claimYield = async () => {
-    if (!connected || !publicKey) {
-      alert('Please connect your wallet first!');
-      return;
-    }
-
-    setIsExecuting(true);
-    setExecutionResults(null);
-
+  const handleUnwind = async () => {
+    if (!position.position) return;
+    
     try {
-      const result = await smartContractService.claimYield(
-        publicKey,
-        sendTransaction
-      );
-
-      if (result.status) {
-        setTransactionStatus(result.status);
-      }
-
-      setExecutionResults(result);
-
-      if (result.success) {
-        alert(`Yield claimed successfully! Transaction: ${result.transactionId}`);
-      } else {
-        alert(`Yield claim failed: ${result.error}`);
-      }
+      setIsExecuting(true);
+      // Implementation for unwind would go here
+      console.log('Unwind functionality to be implemented');
     } catch (error) {
-      console.error('Yield claim failed:', error);
-      setExecutionResults({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
+      console.error('Unwind failed:', error);
     } finally {
       setIsExecuting(false);
     }
   };
 
-  const testWalletConnection = async () => {
-    if (!connected || !publicKey) {
-      alert('Please connect your wallet first!');
-      return;
-    }
-
-    setIsExecuting(true);
-    setExecutionResults(null);
+  const handleRepayAndUnwind = async () => {
+    if (!position.position || !connected || !publicKey) return;
 
     try {
-      console.log('Testing wallet connection...');
-      console.log('Public Key:', publicKey.toString());
-      console.log('Wallet connected:', connected);
+      setIsExecuting(true);
+      const pos = position.position;
+      const slippageBpsNum = 100; // 1% slippage for unwind
 
-      // Create a simple test transaction
-      const testTransaction = new Transaction();
-      testTransaction.add(
-        SystemProgram.transfer({
-          fromPubkey: publicKey,
-          toPubkey: publicKey, // Send to self for testing
-          lamports: 1000 // Very small amount
-        })
-      );
+      // Step 1: If exposure token != borrow asset, swap back
+      if (pos.exposure.amount > 0 && pos.exposure.symbol !== pos.debt.symbol) {
+        await withTxToasts(
+          swap(
+            config.mintA, // exposure asset (assuming mintA is collateral/exposure)
+            config.mintB, // debt asset
+            pos.exposure.amount,
+            slippageBpsNum
+          ),
+          {
+            pending: 'Converting exposure back to debt asset...',
+            success: 'Exposure converted',
+            error: 'Failed to convert exposure',
+          }
+        );
+      }
 
-      console.log('Sending test transaction...');
-      const signature = await sendTransaction(testTransaction);
-      console.log('Test transaction successful:', signature);
+      // Step 2: Repay outstanding debt
+      if (pos.debt.amount > 0) {
+        await withTxToasts(
+          repay(config.mintB, pos.debt.amount),
+          {
+            pending: `Repaying ${pos.debt.amount} ${pos.debt.symbol}...`,
+            success: 'Debt repaid successfully',
+            error: 'Failed to repay debt',
+          }
+        );
+      }
 
-      setExecutionResults({
-        success: true,
-        transactionId: signature,
-        error: undefined
-      });
-
-      alert(`Wallet test successful! Transaction: ${signature}`);
+      // Step 3: Refresh position
+      await position.refresh();
     } catch (error) {
-      console.error('Wallet test failed:', error);
-      setExecutionResults({
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-      alert(`Wallet test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('Repay & Unwind failed:', error);
     } finally {
       setIsExecuting(false);
     }
   };
-
-  const saveStrategy = useCallback(() => {
-    const strategy = {
-      name: strategyName,
-      nodes,
-      edges,
-      depositAmount,
-      selectedToken,
-      totalCostUSD,
-      riskLevel: calculateStrategyRisk(),
-      timestamp: new Date().toISOString(),
-    };
-    console.log('Saving strategy:', strategy);
-    alert('Strategy saved! (Check console for details)');
-  }, [strategyName, nodes, edges, depositAmount, selectedToken, totalCostUSD, calculateStrategyRisk]);
-
-  const publishStrategy = useCallback(() => {
-    const strategy = {
-      name: strategyName,
-      nodes,
-      edges,
-      riskLevel: calculateStrategyRisk(),
-      publishedAt: new Date().toISOString(),
-      author: 'User',
-      forks: 0,
-      likes: 0,
-    };
-    console.log('Publishing strategy:', strategy);
-    setShowSocial(false);
-    alert('Strategy published! (Check console for details)');
-  }, [strategyName, nodes, edges, calculateStrategyRisk]);
 
   // Initialize with sample nodes for demonstration
-  React.useEffect(() => {
+  useEffect(() => {
     const sampleNodes: Node[] = [
       {
         id: 'input-1',
@@ -754,7 +384,7 @@ const StrategyBuilder: React.FC = () => {
         data: {
           label: 'Token Data',
           onChange: (field: string, value: any) => updateNodeData('input-1', field, value),
-          token: selectedToken,
+          token: 'SOL',
           dataType: 'price',
         },
       },
@@ -766,8 +396,6 @@ const StrategyBuilder: React.FC = () => {
           label: 'Strategy Logic',
           onChange: (field: string, value: any) => updateNodeData('logic-1', field, value),
           logicType: 'time',
-          duration: '3',
-          profitTarget: '15',
           riskLevel: 'medium-risk',
         },
       },
@@ -779,7 +407,6 @@ const StrategyBuilder: React.FC = () => {
           label: 'Action',
           onChange: (field: string, value: any) => updateNodeData('action-1', field, value),
           actionType: 'entry',
-          action: 'stake',
           riskLevel: 'medium-risk',
         },
       },
@@ -792,351 +419,507 @@ const StrategyBuilder: React.FC = () => {
 
     setNodes(sampleNodes);
     setEdges(sampleEdges);
-  }, [selectedToken]);
+  }, []);
 
   return (
-    <div className="max-w-full mx-auto p-6 pb-24 animate-fade-in min-h-screen">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-cyphr-white mb-2 font-nulshock">Strategy Builder</h1>
-        <p className="text-cyphr-gray">Test your risk before you buy</p>
-      </div>
+    <div className="strategy-builder">
+      {/* Preflight Check */}
+      <PreflightBanner />
 
-      {/* Enhanced Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        {/* Strategy Name Input */}
-        <div className="flex-1 max-w-md">
-          <input
-            type="text"
-            value={strategyName}
-            onChange={(e) => setStrategyName(e.target.value)}
-            placeholder="Enter strategy name..."
-            className="elite-input px-4 py-2 rounded-lg border border-cyphr-gray/30 focus:border-cyphr-teal text-cyphr-white text-sm w-full"
-          />
+      {/* Header Section */}
+      <div className="strategy-header">
+        <div className="strategy-title">
+          <h1>STRATEGY BUILDER</h1>
+          <p className="strategy-tagline">Build and execute DeFi strategies</p>
         </div>
         
-        {/* Strategy Actions */}
-        <div className="flex gap-2">
-          <button 
-            className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray"
-            onClick={() => setShowAIBuilder(true)}
-          >
-            AI Builder
-          </button>
-          <button 
-            className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray" 
-            onClick={simulateStrategy}
-            disabled={isSimulating}
-          >
-            {isSimulating ? 'Simulating...' : 'Simulate Strategy'}
-          </button>
-          <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray" onClick={saveStrategy}>
-            Save Strategy
-          </button>
-          <button className="elite-button px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 text-cyphr-gray" onClick={() => setShowSocial(true)}>
-            Publish
-          </button>
-          <button 
-            className="cyphr-btn cyphr-btn-social px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
-            onClick={executeStrategy}
-            disabled={isExecuting || !connected}
-          >
-            {isExecuting ? 'Executing...' : '🚀 Execute Strategy'}
-          </button>
-          <button 
-            className="cyphr-btn cyphr-btn-secondary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
-            onClick={withdrawSol}
-            disabled={isExecuting || !connected}
-          >
-            {isExecuting ? 'Withdrawing...' : '💸 Withdraw SOL'}
-          </button>
-          <button 
-            className="cyphr-btn cyphr-btn-primary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
-            onClick={claimYield}
-            disabled={isExecuting || !connected}
-          >
-            {isExecuting ? 'Claiming...' : '🎁 Claim Yield'}
-          </button>
-          <button 
-            className="cyphr-btn cyphr-btn-secondary px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105" 
-            onClick={testWalletConnection}
-            disabled={isExecuting || !connected}
-          >
-            🧪 Test Wallet
-          </button>
+        <div className="strategy-status">
+          <div className="status-indicator"></div>
+          <span>Live</span>
+        </div>
+
+        <div className="strategy-controls">
+          <div className="strategy-name-input">
+            <input
+              type="text"
+              value={strategyName}
+              onChange={(e) => setStrategyName(e.target.value)}
+              placeholder="Enter strategy name..."
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Lending & Borrowing Section - Top Card */}
+      <div className="lending-borrowing-card">
+        <div className="card-header">
+          <div className="header-content">
+            <div className="header-icon">
+              <img src="/assets/icons/WalletIcon.png" alt="Lending" className="w-6 h-6" />
+            </div>
+            <div>
+              <h2>Capital Management</h2>
+              <p>Powered by Roots - Deposit assets and borrow capital to fund your strategies</p>
+            </div>
+          </div>
+          <div className="header-badge">
+            <span className="badge-text">Roots Integration</span>
+          </div>
+        </div>
+        
+        <div className="lending-content">
+          <div className="lending-grid">
+            <div className="lending-section">
+              <LendingSection
+                onNavigateToTerminal={() => {}}
+                preflightOk={preflightOk}
+              />
+            </div>
+            <div className="borrow-section">
+              <BorrowPanel preflightOk={preflightOk} />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Risk Profile Banner */}
-      <div className="risk-profile-banner animate-slide-up">
+      <div className="risk-profile-banner">
         <div className="risk-indicator">
-          <span className="risk-label">Strategy Risk Level:</span>
-          <span className={`risk-badge ${calculateStrategyRisk()}-risk`}>
-            {calculateStrategyRisk().toUpperCase()} RISK
-          </span>
+          <span className="risk-label">Current Risk Profile:</span>
+          <div className="risk-badge medium-risk">Medium Risk</div>
         </div>
+        
         <div className="risk-metrics">
           <div className="risk-metric">
-            <span>Max Drawdown:</span>
-            <span className="metric-value">
-              {calculateStrategyRisk() === 'high' ? '25%' : 
-               calculateStrategyRisk() === 'medium' ? '15%' : '8%'}
-            </span>
+            <span>Max LTV</span>
+            <span className="metric-value">75%</span>
           </div>
           <div className="risk-metric">
+            <span>Max Slippage</span>
+            <span className="metric-value">1%</span>
+          </div>
+          <div className="risk-metric">
+            <span>Health Factor</span>
+            <span className="metric-value">1.8</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Strategy Execution Panel */}
+      <div className="strategy-execution-panel">
+        <div className="panel-header">
+          <h3>
+            <img src="/assets/icons/StrategyLogicIcon.png" alt="Strategy" className="w-5 h-5" />
+            Strategy Execution
+          </h3>
+          <p>Configure and execute your DeFi strategy with borrowed capital</p>
+        </div>
+        
+        <div className="execution-grid">
+          <div className="execution-item">
+            <label>Strategy Name</label>
+            <input
+              type="text"
+              value={strategyName}
+              onChange={(e) => setStrategyName(e.target.value)}
+              placeholder="My DeFi Strategy"
+              className="cyphr-input"
+            />
+          </div>
+          
+          <div className="execution-item">
+            <label>Collateral Amount (SOL)</label>
+            <input
+              type="number"
+              value={collateralAmount}
+              onChange={(e) => setCollateralAmount(e.target.value)}
+              placeholder="10"
+              className="cyphr-input"
+              disabled={isExecuting}
+            />
+          </div>
+          
+          <div className="execution-item">
+            <label>Borrow Amount (USDC)</label>
+            <NumericInput
+              value={borrowAmountStr}
+              onChange={setBorrowAmountStr}
+              maxDecimals={9}
+              placeholder="500"
+              disabled={isExecuting}
+              className="cyphr-input"
+            />
+          </div>
+          
+          <div className="execution-item">
+            <label>LTV %</label>
+            <input
+              type="number"
+              value={ltvPct}
+              onChange={(e) => setLtvPct(e.target.value)}
+              placeholder={String(DEFAULT_POLICY.maxLtv * 100)}
+              max={DEFAULT_POLICY.maxLtv * 100}
+              className="cyphr-input"
+              disabled={isExecuting}
+            />
+          </div>
+          
+          <div className="execution-item">
+            <label>Slippage %</label>
+            <input
+              type="number"
+              value={slippagePct}
+              onChange={(e) => setSlippagePct(e.target.value)}
+              placeholder={String(DEFAULT_POLICY.maxSlippageBps / 100)}
+              max={DEFAULT_POLICY.maxSlippageBps / 100}
+              className="cyphr-input"
+              disabled={isExecuting}
+            />
+          </div>
+          
+          <div className="execution-item">
+            <label>Strategy Type</label>
+            <select className="cyphr-input" disabled={isExecuting}>
+              <option value="momentum">Momentum Trading</option>
+              <option value="mean-reversion">Mean Reversion</option>
+              <option value="arbitrage">Arbitrage</option>
+              <option value="trend-following">Trend Following</option>
+              <option value="ai-optimized">AI Optimized</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="execution-summary">
+          <div className="summary-item">
+            <span>Expected Return:</span>
+            <span className="summary-value positive">+12.5%</span>
+          </div>
+          <div className="summary-item">
+            <span>Risk Level:</span>
+            <span className="summary-value medium">Medium</span>
+          </div>
+          <div className="summary-item">
+            <span>Max Drawdown:</span>
+            <span className="summary-value negative">-8.2%</span>
+          </div>
+          <div className="summary-item">
             <span>Sharpe Ratio:</span>
-            <span className="metric-value">
-              {calculateStrategyRisk() === 'high' ? '1.2' : 
-               calculateStrategyRisk() === 'medium' ? '1.8' : '2.5'}
-            </span>
+            <span className="summary-value positive">1.8</span>
           </div>
+        </div>
+
+        <div className="execution-actions">
+          <button
+            onClick={handleBorrowAndTrade}
+            disabled={!preflightOk || isExecuting || !connected || !config.mintA || !config.mintB || borrowAmount <= 0}
+            className="cyphr-btn cyphr-btn-primary execution-btn"
+            title={!preflightOk ? 'System not ready - check preflight banner' : !connected ? 'Connect wallet first' : (!config.mintA || !config.mintB) ? 'Token configuration missing. Run setup:devnet first.' : borrowAmount <= 0 ? 'Enter a valid borrow amount' : ''}
+          >
+            {isExecuting ? (
+              <div className="btn-loading">
+                <div className="loading-spinner"></div>
+                <span>Executing Strategy...</span>
+              </div>
+            ) : (
+              <>
+                <span className="btn-icon">🚀</span>
+                <span>Execute Strategy</span>
+              </>
+            )}
+          </button>
+          
+          <button className="cyphr-btn cyphr-btn-secondary">
+            <span className="btn-icon">💾</span>
+            <span>Save Strategy</span>
+          </button>
+          
+          <button className="cyphr-btn cyphr-btn-secondary">
+            <span className="btn-icon">📊</span>
+            <span>Backtest</span>
+          </button>
         </div>
       </div>
-
-      {/* Deposit Configuration */}
-      <div className="deposit-config animate-slide-up">
-        <div className="config-card">
-          <h3><img src="/assets/icons/DepositIcon.png" alt="Deposit" style={{ width: '16px', height: '16px', marginRight: '8px', verticalAlign: 'middle' }} /> Deposit Configuration</h3>
-          <div className="config-grid">
-            <div className="config-item">
-              <label>Token:</label>
-              <select 
-                value={selectedToken}
-                onChange={(e) => setSelectedToken(e.target.value)}
-                className="cyphr-select"
-              >
-                <option value="SOL">SOL</option>
-                <option value="ETH">ETH</option>
-                <option value="BTC">BTC</option>
-                <option value="USDC">USDC</option>
-              </select>
-            </div>
-            
-            <div className="config-item">
-              <label>Amount:</label>
-              <input 
-                type="number"
-                value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-                placeholder="20"
-                className="cyphr-input"
-              />
-            </div>
-            
-            <div className="config-item">
-              <label>Total Cost (USD):</label>
-              <div className="cost-display">
-                <span className="cost-amount">${totalCostUSD.toFixed(2)}</span>
-                <span className="cost-per-token">@ ${averageCostUSD.toFixed(2)} per {selectedToken}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* AI Builder Modal */}
-      {showAIBuilder && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3><img src="/assets/icons/RobotIcon.png" alt="AI" style={{ width: '20px', height: '20px', marginRight: '8px', verticalAlign: 'middle' }} /> AI Strategy Builder</h3>
-              <button className="modal-close" onClick={() => setShowAIBuilder(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <p>Describe your strategy and AI will generate it for you:</p>
-              <textarea
-                value={aiPrompt}
-                onChange={(e) => setAiPrompt(e.target.value)}
-                placeholder="e.g., 'I want a low-risk staking strategy for SOL with 10% yield and stop-loss protection'"
-                className="ai-prompt-input"
-              />
-              <div className="ai-examples">
-                <h4>Example Prompts:</h4>
-                <ul>
-                  <li>"Conservative yield farming with USDC, max 5% risk"</li>
-                  <li>"Aggressive SOL trading with AI optimization"</li>
-                  <li>"Balanced portfolio with automatic rebalancing"</li>
-                </ul>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="cyphr-btn cyphr-btn-secondary" onClick={() => setShowAIBuilder(false)}>
-                Cancel
-              </button>
-              <button className="cyphr-btn cyphr-btn-primary" onClick={generateAIStrategy}>
-                Generate Strategy
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Social Publishing Modal */}
-      {showSocial && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>Publish Strategy</h3>
-              <button className="modal-close" onClick={() => setShowSocial(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <p>Share your strategy with the community and earn from referrals:</p>
-              <div className="social-benefits">
-                <div className="benefit-item">
-                  <img src="/assets/icons/DepositIcon.png" alt="Deposit" className="benefit-icon" style={{ width: '16px', height: '16px' }} />
-                  <span>Earn 5% from strategy forks</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">📈</span>
-                  <span>Build reputation in the community</span>
-                </div>
-                <div className="benefit-item">
-                  <span className="benefit-icon">🤝</span>
-                  <span>Collaborate with other builders</span>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="cyphr-btn cyphr-btn-secondary" onClick={() => setShowSocial(false)}>
-                Cancel
-              </button>
-              <button className="cyphr-btn cyphr-btn-primary" onClick={publishStrategy}>
-                Publish Strategy
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Main Builder Content */}
-      <div className="builder-content animate-slide-up">
-        <div className="sidebar animate-slide-up">
+      <div className="builder-content">
+        {/* Sidebar */}
+        <div className="sidebar">
           <div className="sidebar-section">
-            <h3><img src="/assets/icons/TokenDataIcon.png" alt="Token Data" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Data Sources</h3>
+            <h3>Strategy Inputs</h3>
             <div className="node-palette">
-              <div 
-                className="palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/reactflow', 'input');
-                }}
-                title="Drag to add data source node"
-              >
-                <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="palette-icon" style={{ width: '16px', height: '16px' }} />
-                <span>Token Data</span>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>Price Data</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📈</span>
+                <span>Volume Data</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">⚡</span>
+                <span>Volatility Data</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">💰</span>
+                <span>Market Cap Data</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔄</span>
+                <span>RSI Indicator</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>MACD Indicator</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📉</span>
+                <span>Moving Average</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🎯</span>
+                <span>Bollinger Bands</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔥</span>
+                <span>Stochastic Oscillator</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">⚖️</span>
+                <span>Williams %R</span>
               </div>
             </div>
           </div>
 
           <div className="sidebar-section">
-            <h3><img src="/assets/icons/StrategyLogicIcon.png" alt="Strategy Logic" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Strategy Logic</h3>
+            <h3>Logic Operators</h3>
             <div className="node-palette">
-              <div 
-                className="palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/reactflow', 'logic');
-                }}
-                title="Drag to add logic node"
-              >
-                <img src="/assets/icons/TimeProfitIcon.png" alt="Time & Profit" className="palette-icon" style={{ width: '16px', height: '16px' }} />
-                <span>Time & Profit Logic</span>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">➕</span>
+                <span>Add</span>
               </div>
-              <div 
-                className="palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/reactflow', 'logic');
-                }}
-                title="Drag to add price-based logic"
-              >
-                <img src="/assets/icons/PriceLogic.png" alt="Price Logic" className="palette-icon" style={{ width: '16px', height: '16px' }} />
-                <span>Price-Based Logic</span>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">➖</span>
+                <span>Subtract</span>
               </div>
-              <div 
-                className="palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/reactflow', 'logic');
-                }}
-                title="Drag to add volatility-based logic"
-              >
-                <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="palette-icon" style={{ width: '16px', height: '16px' }} />
-                <span>Volatility Logic</span>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">✖️</span>
+                <span>Multiply</span>
               </div>
-              <div 
-                className="palette-item ai-palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/reactflow', 'logic');
-                }}
-                title="Drag to add AI-optimized logic"
-              >
-                <img src="/assets/icons/RobotIcon.png" alt="AI" className="palette-icon" style={{ width: '20px', height: '20px', margin: '0 -4px' }} />
-                <span>AI-Optimized Logic</span>
-                <span className="ai-badge">+75%</span>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">➗</span>
+                <span>Divide</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔀</span>
+                <span>Compare</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔗</span>
+                <span>AND Logic</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔗</span>
+                <span>OR Logic</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">❌</span>
+                <span>NOT Logic</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">⏰</span>
+                <span>Time Delay</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔄</span>
+                <span>Loop</span>
               </div>
             </div>
           </div>
 
           <div className="sidebar-section">
-            <h3><img src="/assets/icons/ActionIcon.png" alt="Action" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Actions</h3>
+            <h3>Strategy Actions</h3>
             <div className="node-palette">
-              <div 
-                className="palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/reactflow', 'action');
-                }}
-                title="Drag to add action node"
-              >
-                <img src="/assets/icons/ActionIcon.png" alt="Action" className="palette-icon" style={{ width: '16px', height: '16px' }} />
-                <span>Entry & Exit</span>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🚀</span>
+                <span>Buy Order</span>
               </div>
-              <div 
-                className="palette-item"
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('application/reactflow', 'action');
-                }}
-                title="Drag to add hedge action"
-              >
-                <img src="/assets/icons/HedgeIcon.png" alt="Hedge" className="palette-icon" style={{ width: '16px', height: '16px' }} />
-                <span>Hedge Action</span>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📉</span>
+                <span>Sell Order</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">⚖️</span>
+                <span>Rebalance</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🛡️</span>
+                <span>Stop Loss</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🎯</span>
+                <span>Take Profit</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>Set Position Size</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔒</span>
+                <span>Lock Position</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📈</span>
+                <span>DCA Strategy</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🎲</span>
+                <span>Random Entry</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📝</span>
+                <span>Log Event</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-section">
+            <h3>Risk Management</h3>
+            <div className="node-palette">
+              <div className="palette-item" draggable>
+                <span className="palette-icon">⚠️</span>
+                <span>Risk Check</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>Position Sizing</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔄</span>
+                <span>Dynamic Stop Loss</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📈</span>
+                <span>Trailing Stop</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">⚖️</span>
+                <span>Portfolio Balance</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🎯</span>
+                <span>Max Drawdown</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>Correlation Check</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🛡️</span>
+                <span>Hedging</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-section">
+            <h3>AI & Advanced</h3>
+            <div className="node-palette">
+              <div className="palette-item ai-palette-item" draggable>
+                <span className="palette-icon">🤖</span>
+                <span>AI Prediction</span>
+                <div className="ai-badge">AI</div>
+              </div>
+              <div className="palette-item ai-palette-item" draggable>
+                <span className="palette-icon">🧠</span>
+                <span>Neural Network</span>
+                <div className="ai-badge">AI</div>
+              </div>
+              <div className="palette-item ai-palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>Sentiment Analysis</span>
+                <div className="ai-badge">AI</div>
+              </div>
+              <div className="palette-item ai-palette-item" draggable>
+                <span className="palette-icon">🔍</span>
+                <span>Pattern Recognition</span>
+                <div className="ai-badge">AI</div>
+              </div>
+              <div className="palette-item ai-palette-item" draggable>
+                <span className="palette-icon">📈</span>
+                <span>ML Model</span>
+                <div className="ai-badge">AI</div>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🌐</span>
+                <span>Social Signals</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📰</span>
+                <span>News Sentiment</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔗</span>
+                <span>On-Chain Data</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>Whale Tracking</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-section">
+            <h3>Market Conditions</h3>
+            <div className="node-palette">
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🌍</span>
+                <span>Market Regime</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📊</span>
+                <span>Volatility State</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🌊</span>
+                <span>Trend Direction</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">⚡</span>
+                <span>Momentum</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🎯</span>
+                <span>Support/Resistance</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">📈</span>
+                <span>Breakout Detection</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🔄</span>
+                <span>Mean Reversion</span>
+              </div>
+              <div className="palette-item" draggable>
+                <span className="palette-icon">🌊</span>
+                <span>Wave Analysis</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar-section">
+            <h3>AI Logic</h3>
+            <div className="ai-logic-info">
+              <div className="ai-badge">AI</div>
+              <p>AI-powered strategy optimization</p>
+              <div className="ai-improvement">
+                <span>Expected Improvement:</span>
+                <span className="improvement-value">+15.3%</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="canvas-container animate-slide-up" onDrop={onDrop} onDragOver={onDragOver}>
-          {nodes.length === 0 && (
-            <div className="empty-canvas">
-              <div className="empty-canvas-content">
-                <h2>Build Your DeFi Strategy</h2>
-                <p>Drag and drop components from the sidebar to create your strategy</p>
-                <div className="canvas-instructions">
-                  <div className="instruction">
-                    <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
-                    <span>Start with Token Data</span>
-                  </div>
-                  <div className="instruction">
-                    <img src="/assets/icons/TimeProfitIcon.png" alt="Time & Profit" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
-                    <span>Add Time & Profit Logic</span>
-                  </div>
-                  <div className="instruction">
-                    <img src="/assets/icons/ActionIcon.png" alt="Action" className="instruction-icon" style={{ width: '16px', height: '16px' }} />
-                    <span>Configure Entry & Exit</span>
-                  </div>
-                </div>
-                <button 
-                  className="cyphr-btn cyphr-btn-ai"
-                  onClick={() => setShowAIBuilder(true)}
-                >
-                  Or use AI Builder
-                </button>
-              </div>
-            </div>
-          )}
+        {/* Canvas Container */}
+        <div className="canvas-container">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -1154,124 +937,31 @@ const StrategyBuilder: React.FC = () => {
           </ReactFlow>
         </div>
 
-        <div className="results-panel animate-slide-up">
-          <h3><img src="/assets/icons/TokenDataIcon.png" alt="Token Data" style={{ width: '16px', height: '16px', marginRight: '8px' }} /> Strategy Results</h3>
-          {isSimulating ? (
-            <div className="simulation-loading">
-              <div className="loading-spinner"></div>
-              <p>Running simulation...</p>
-            </div>
-          ) : simulationResults ? (
-            <div className="simulation-results">
-              <div className="result-metrics">
-                <div className="metric">
-                  <span className="metric-label">Total Return</span>
-                  <span className="metric-value positive">+{simulationResults.totalReturn}%</span>
-                </div>
-                {simulationResults.aiImprovement > 0 && (
-                  <div className="metric ai-improvement">
-                    <span className="metric-label">AI Improvement</span>
-                    <span className="metric-value positive">+{simulationResults.aiImprovement}%</span>
-                  </div>
-                )}
-                <div className="metric">
-                  <span className="metric-label">Time to Exit</span>
-                  <span className="metric-value">{simulationResults.timeToExit}</span>
-                </div>
-                <div className="metric">
-                  <span className="metric-label">Expected Profit</span>
-                  <span className="metric-value positive">+{simulationResults.expectedProfit} {selectedToken}</span>
-                </div>
-                <div className="metric">
-                  <span className="metric-label">Initial Investment</span>
-                  <span className="metric-value">{simulationResults.initialInvestment} {selectedToken}</span>
-                </div>
-                <div className="metric">
-                  <span className="metric-label">Final Value</span>
-                  <span className="metric-value">{simulationResults.finalValue} {selectedToken}</span>
-                </div>
-                <div className="metric">
-                  <span className="metric-label">Success Rate</span>
-                  <span className="metric-value">{simulationResults.successRate}%</span>
-                </div>
-                <div className="metric">
-                  <span className="metric-label">Max Drawdown</span>
-                  <span className="metric-value">{simulationResults.maxDrawdown}%</span>
-                </div>
-                <div className="metric">
-                  <span className="metric-label">Sharpe Ratio</span>
-                  <span className="metric-value">{simulationResults.sharpeRatio}</span>
-                </div>
-              </div>
-              <div className="result-chart">
-                <Line
-                  data={simulationResults.chartData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        display: false,
-                      },
-                      tooltip: {
-                        backgroundColor: '#1a1a1a',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        borderColor: '#333',
-                        borderWidth: 1,
-                      },
-                    },
-                    scales: {
-                      x: {
-                        grid: {
-                          color: '#333',
-                        },
-                        ticks: {
-                          color: '#888',
-                        },
-                      },
-                      y: {
-                        grid: {
-                          color: '#333',
-                        },
-                        ticks: {
-                          color: '#888',
-                        },
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="no-results">
-              <p>Click "Simulate Strategy" to see results</p>
-            </div>
-          )}
-
-          {/* Execution Results */}
-          {executionResults && (
-            <div className="execution-results">
-              <h4>🚀 Execution Results</h4>
-              <div className={`result ${executionResults.success ? 'success' : 'error'}`}>
-                {executionResults.success ? (
-                  <div>
-                    <p>✅ Strategy executed successfully!</p>
-                    <p>Transaction ID: {executionResults.transactionId}</p>
-                    <p>Amount: {depositAmount} SOL deposited to vault</p>
-                  </div>
-                ) : (
-                  <p>❌ Execution failed: {executionResults.error}</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Smart Contract Integration */}
-          <SmartContractIntegration />
+        {/* Results Panel */}
+        <div className="results-panel">
+          <h3>Strategy Results</h3>
+          
+          <div className="simulation-loading">
+            <div className="loading-spinner"></div>
+            <span>Simulating strategy...</span>
+          </div>
         </div>
       </div>
 
+      {/* Position Card */}
+      {position.position && (
+        <div className="position-section">
+          <PositionCard
+            position={position.position}
+            onRepay={handleRepay}
+            onUnwind={handleUnwind}
+            onRepayAndUnwind={handleRepayAndUnwind}
+            preflightOk={preflightOk}
+          />
+        </div>
+      )}
+
+      {/* Node Properties */}
       {selectedNode && (
         <div className="node-properties">
           <h3>⚙️ Node Properties</h3>
@@ -1283,7 +973,7 @@ const StrategyBuilder: React.FC = () => {
             <label>Node ID:</label>
             <span>{selectedNode.id}</span>
           </div>
-          <button 
+          <button
             className="cyphr-btn cyphr-btn-danger"
             onClick={() => {
               setNodes((nds) => nds.filter((n) => n.id !== selectedNode.id));
@@ -1298,4 +988,4 @@ const StrategyBuilder: React.FC = () => {
   );
 };
 
-export default StrategyBuilder; 
+export default StrategyBuilder;

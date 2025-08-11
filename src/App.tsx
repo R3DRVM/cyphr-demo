@@ -4,11 +4,12 @@ import { ColorProvider } from './contexts/ColorContext';
 import { SolanaWalletProvider } from './providers/SolanaWalletProvider';
 import { TransactionProvider } from './contexts/TransactionContext';
 import Header from './components/Header';
+import { ToastProvider } from './components/Toast';
 import Footer from './components/Footer';
 import TransactionStatus from './components/TransactionStatus';
+import { BootDebug } from './debug/BootDebug';
 import Discover from './pages/Discover';
 import Dashboard from './pages/Dashboard';
-import Perpetuals from './pages/Perpetuals';
 import Tracker from './pages/Tracker';
 import TokenPage from './pages/TokenPage';
 import Orders from './pages/Orders';
@@ -39,7 +40,6 @@ const MobileBottomNav: React.FC = () => {
     { name: 'Terminal', path: '/pro-terminal', icon: '/assets/icons/PhoneIcon.png' },
     { name: 'Discover', path: '/discover', icon: '/assets/icons/PriceLogic.png' },
     { name: 'Insights', path: '/tracker', icon: '/assets/icons/SearchIcon.png' },
-    { name: 'Perpetuals', path: '/perpetuals', icon: '/assets/icons/PNLIcon.png' },
     { name: 'Portfolio', path: '/portfolio', icon: '/assets/icons/WalletIcon.png' },
   ];
 
@@ -68,7 +68,8 @@ function App() {
     <ColorProvider>
       <SolanaWalletProvider>
         <TransactionProvider>
-          <Router>
+          <ToastProvider>
+            <Router>
             <div className="app">
               <Header />
               <main className="main-content">
@@ -77,7 +78,6 @@ function App() {
                   <Route path="/pro-terminal" element={<ProTerminal />} />
                   <Route path="/discover" element={<Discover />} />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/perpetuals" element={<Perpetuals />} />
                   <Route path="/tracker" element={<Tracker />} />
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/token/:id" element={<TokenPage />} />
@@ -90,7 +90,9 @@ function App() {
               <MobileBottomNav />
               <TransactionStatus />
             </div>
-          </Router>
+            </Router>
+            <BootDebug />
+          </ToastProvider>
         </TransactionProvider>
       </SolanaWalletProvider>
     </ColorProvider>

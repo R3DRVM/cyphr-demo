@@ -1,0 +1,25 @@
+{
+  "swapState": "placeholder_swap_state",
+  "swapAuthority": "placeholder_swap_authority", 
+  "poolTokenMint": "placeholder_pool_token_mint",
+  "feeAccount": "placeholder_fee_account",
+  "mintA": "So11111111111111111111111111111111111111112",
+  "mintB": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU", 
+  "vaultA": "placeholder_vault_a",
+  "vaultB": "placeholder_vault_b",
+  "hostFeeAccount": null,
+  "tokens": {
+    "collateral": {
+      "symbol": "WSOL",
+      "mint": "So11111111111111111111111111111111111111112",
+      "decimals": 9,
+      "name": "Wrapped SOL (Devnet)"
+    },
+    "debt": {
+      "symbol": "USDC",
+      "mint": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU", 
+      "decimals": 6,
+      "name": "USD Coin (Devnet)"
+    }
+  }
+}

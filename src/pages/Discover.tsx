@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import TokenIcon from '../components/TokenIcon';
 import TokenAddress from '../components/TokenAddress';
+import LendingSection from '../components/LendingSection';
+import BorrowPanel from '../components/borrow/BorrowPanel';
+import { usePreflight } from '../debug/Preflight';
 
 const Discover: React.FC = () => {
   const [activeTab, setActiveTab] = useState('trending');
   const [activeTimeframe, setActiveTimeframe] = useState('1m');
+  const { ok: preflightOk } = usePreflight();
 
   const timeframes = ['1m', '5m', '30m', '1h'];
   
@@ -202,6 +206,38 @@ const Discover: React.FC = () => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-cyphr-white mb-2 font-nulshock">Discover</h1>
         <p className="text-cyphr-gray">Find the latest trending tokens and opportunities</p>
+      </div>
+
+      {/* Lending & Borrowing Section - Top Card */}
+      <div className="lending-borrowing-card mb-6">
+        <div className="card-header">
+          <div className="header-content">
+            <div className="header-icon">
+              <img src="/assets/icons/WalletIcon.png" alt="Lending" className="w-6 h-6" />
+            </div>
+            <div>
+              <h2>Capital Management</h2>
+              <p>Powered by Roots - Deposit assets and borrow capital to fund your strategies</p>
+            </div>
+          </div>
+          <div className="header-badge">
+            <span className="badge-text">Roots Integration</span>
+          </div>
+        </div>
+        
+        <div className="lending-content">
+          <div className="lending-grid">
+            <div className="lending-section">
+              <LendingSection
+                onNavigateToTerminal={() => {}}
+                preflightOk={preflightOk}
+              />
+            </div>
+            <div className="borrow-section">
+              <BorrowPanel preflightOk={preflightOk} />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Controls */}
