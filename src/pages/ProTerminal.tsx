@@ -37,6 +37,22 @@ const ProTerminal: React.FC = () => {
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [typedTitle, setTypedTitle] = useState('');
   const [isTyping, setIsTyping] = useState(true);
+  
+  // Lending & Borrowing State
+  const [depositAmount, setDepositAmount] = useState(0);
+  const [borrowAmount, setBorrowAmount] = useState(0);
+  const [userPosition, setUserPosition] = useState({
+    collateral: 0,
+    debt: 0,
+    available: 10 // Mock available SOL
+  });
+  const [lendingHealth, setLendingHealth] = useState({
+    ltv: 0,
+    healthFactor: 2.0,
+    apr: 0.08
+  });
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Typing effect for title
   useEffect(() => {
@@ -93,36 +109,285 @@ const ProTerminal: React.FC = () => {
       
       if (data.coins && data.coins.length > 0) {
         // Get detailed data for top results
-        const topCoins = data.coins.slice(0, 5);
+        const topCoins = data.coins.slice(0, 8); // Increased to 8 for better selection
         const coinIds = topCoins.map((coin: any) => coin.id).join(',');
         
         const priceResponse = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`);
         const priceData = await priceResponse.json();
         
-        const results = topCoins.map((coin: any) => {
+        // Combine search and price data
+        const enrichedResults = topCoins.map((coin: any) => {
           const priceInfo = priceData[coin.id];
           return {
             id: coin.id,
             symbol: coin.symbol.toUpperCase(),
             name: coin.name,
-            price: priceInfo?.usd || 0,
-            change24h: priceInfo?.usd_24h_change || 0,
-            volume24h: priceInfo?.usd_24h_vol || 0,
-            marketCap: priceInfo?.usd_market_cap || 0,
-            image: coin.large,
-            contractAddress: coin.contract_address || null
+            change24h: priceInfo ? priceInfo.usd_24h_change || 0 : 0,
+            price: priceInfo ? priceInfo.usd || 0 : 0,
+            volume24h: priceInfo ? priceInfo.usd_24h_vol || 0 : 0,
+            marketCap: priceInfo ? priceInfo.usd_market_cap || 0 : 0
           };
         });
         
-        return results;
+        setSearchResults(enrichedResults);
+        return enrichedResults;
       }
+      
+      return [];
     } catch (error) {
-      console.log('API error, using mock data:', error);
+      console.error('Search failed:', error);
+      return [];
+    } finally {
+      setIsSearching(false);
     }
-    
-    setIsSearching(false);
-    return [];
   };
+
+  // Real-time market data for popular pairs
+  const [marketData, setMarketData] = useState<any[]>([]);
+  const [isLoadingMarketData, setIsLoadingMarketData] = useState(false);
+
+  // Initialize with default market data to ensure something shows
+  useEffect(() => {
+    if (!marketData || marketData.length === 0) {
+      // Set default market data immediately
+      setMarketData([
+        { pair: 'ETH/USDC', price: 2845.67, change24h: 2.34, symbol: 'ETH' },
+        { pair: 'BTC/USDT', price: 67234, change24h: 1.89, symbol: 'BTC' },
+        { pair: 'MATIC/ETH', price: 0.000456, change24h: -0.87, symbol: 'MATIC' },
+        { pair: 'LINK/USD', price: 14.23, change24h: 3.45, symbol: 'LINK' },
+        { pair: 'UNI/ETH', price: 0.002890, change24h: -1.23, symbol: 'UNI' },
+        { pair: 'AAVE/USD', price: 89.45, change24h: 0.56, symbol: 'AAVE' }
+      ]);
+    }
+  }, [marketData]);
+
+  // Fetch real-time market data for popular pairs
+  const fetchMarketData = async () => {
+    setIsLoadingMarketData(true);
+    try {
+      // Popular trading pairs
+      const popularPairs = [
+        'ethereum', 'bitcoin', 'matic-network', 'chainlink', 'uniswap', 'aave'
+      ];
+      
+      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${popularPairs.join(',')}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`);
+      const data = await response.json();
+      
+      const marketPairs = [
+        { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', pair: 'ETH/USDC' },
+        { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', pair: 'BTC/USDT' },
+        { id: 'matic-network', symbol: 'MATIC', name: 'Polygon', pair: 'MATIC/ETH' },
+        { id: 'chainlink', symbol: 'LINK', name: 'Chainlink', pair: 'LINK/USD' },
+        { id: 'uniswap', symbol: 'UNI', name: 'Uniswap', pair: 'UNI/ETH' },
+        { id: 'aave', symbol: 'AAVE', name: 'Aave', pair: 'AAVE/USD' }
+      ];
+      
+      const enrichedMarketData = marketPairs.map(pair => {
+        const priceInfo = data[pair.id];
+        if (priceInfo) {
+          return {
+            ...pair,
+            price: priceInfo.usd,
+            change24h: priceInfo.usd_24h_change || 0,
+            volume24h: priceInfo.usd_24h_vol || 0,
+            marketCap: priceInfo.usd_market_cap || 0
+          };
+        }
+        return pair;
+      });
+      
+      console.log('Setting market data:', enrichedMarketData);
+      setMarketData(enrichedMarketData);
+    } catch (error) {
+      console.error('Failed to fetch market data:', error);
+      // Fallback to mock data with correct structure
+      const fallbackData = [
+        { pair: 'ETH/USDC', price: 2845.67, change24h: 2.34, symbol: 'ETH' },
+        { pair: 'BTC/USDT', price: 67234, change24h: 1.89, symbol: 'BTC' },
+        { pair: 'MATIC/ETH', price: 0.000456, change24h: -0.87, symbol: 'MATIC' },
+        { pair: 'LINK/USD', price: 14.23, change24h: 3.45, symbol: 'LINK' },
+        { pair: 'UNI/ETH', price: 0.002890, change24h: -1.23, symbol: 'UNI' },
+        { pair: 'AAVE/USD', price: 89.45, change24h: 0.56, symbol: 'AAVE' }
+      ];
+      console.log('Setting fallback market data:', fallbackData);
+      setMarketData(fallbackData);
+    } finally {
+      setIsLoadingMarketData(false);
+    }
+  };
+
+  // Update market data every 30 seconds
+  useEffect(() => {
+    fetchMarketData(); // Initial fetch
+    
+    const interval = setInterval(() => {
+      fetchMarketData();
+    }, 30000); // 30 seconds
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Add visual feedback for real-time updates
+  const [lastUpdateTime, setLastUpdateTime] = useState<Date>(new Date());
+  
+  const updateMarketDataWithFeedback = async () => {
+    await fetchMarketData();
+    setLastUpdateTime(new Date());
+  };
+  
+  // Calculate max borrow amount based on collateral and LTV
+  const maxBorrowAmount = userPosition.collateral * 150 * 0.75; // SOL price * max LTV
+  
+  // Lending & Borrowing Functions
+  const handleDepositCollateral = async () => {
+    if (!walletConnected || depositAmount <= 0) return;
+    
+    setIsProcessing(true);
+    try {
+      // For now, simulate the transaction
+      console.log(`Depositing ${depositAmount} SOL as collateral`);
+      
+      // Update local state
+      setUserPosition(prev => ({
+        ...prev,
+        collateral: prev.collateral + depositAmount,
+        available: prev.available - depositAmount
+      }));
+      
+      // Reset input
+      setDepositAmount(0);
+      
+      // Update health metrics
+      updateLendingHealth();
+      
+    } catch (error) {
+      console.error('Deposit failed:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
+  const handleBorrowUSDC = async () => {
+    if (!walletConnected || borrowAmount <= 0 || borrowAmount > maxBorrowAmount) return;
+    
+    setIsProcessing(true);
+    try {
+      console.log(`Borrowing ${borrowAmount} USDC`);
+      
+      // Update local state
+      setUserPosition(prev => ({
+        ...prev,
+        debt: prev.debt + borrowAmount
+      }));
+      
+      // Reset input
+      setBorrowAmount(0);
+      
+      // Update health metrics
+      updateLendingHealth();
+      
+    } catch (error) {
+      console.error('Borrow failed:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
+  const handleWithdrawCollateral = async () => {
+    if (!walletConnected || !userPosition.collateral) return;
+    
+    setIsProcessing(true);
+    try {
+      const withdrawAmount = userPosition.collateral;
+      console.log(`Withdrawing ${withdrawAmount} SOL collateral`);
+      
+      // Update local state
+      setUserPosition(prev => ({
+        ...prev,
+        collateral: 0,
+        available: prev.available + withdrawAmount
+      }));
+      
+      // Update health metrics
+      updateLendingHealth();
+      
+    } catch (error) {
+      console.error('Withdraw failed:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
+  const handleRepayUSDC = async () => {
+    if (!walletConnected || !userPosition.debt) return;
+    
+    setIsProcessing(true);
+    try {
+      const repayAmount = userPosition.debt;
+      console.log(`Repaying ${repayAmount} USDC debt`);
+      
+      // Update local state
+      setUserPosition(prev => ({
+        ...prev,
+        debt: 0
+      }));
+      
+      // Update health metrics
+      updateLendingHealth();
+      
+    } catch (error) {
+      console.error('Repay failed:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
+  const updateLendingHealth = () => {
+    const collateralValue = userPosition.collateral * 150; // SOL price
+    const debtValue = userPosition.debt; // USDC price = $1
+    
+    const ltv = debtValue / Math.max(collateralValue, 1);
+    const healthFactor = (collateralValue * 0.8) / Math.max(debtValue, 1); // 80% liquidation threshold
+    
+    setLendingHealth({
+      ltv: Math.min(ltv, 1),
+      healthFactor: Math.max(healthFactor, 0),
+      apr: 0.08
+    });
+  };
+  
+  // Update health metrics when position changes
+  useEffect(() => {
+    updateLendingHealth();
+  }, [userPosition.collateral, userPosition.debt]);
+  
+  // Simulate wallet connection for demo purposes
+  useEffect(() => {
+    // For demo, simulate wallet connected
+    setWalletConnected(true);
+  }, []);
+
+  // Auto-refresh market data every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateMarketDataWithFeedback();
+    }, 30000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Enhanced search with real-time updates
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const timeoutId = setTimeout(() => {
+        searchTokens(searchQuery);
+      }, 300); // Debounce search
+      
+      return () => clearTimeout(timeoutId);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
 
   // Handle search input
   const handleSearch = async (query: string) => {
@@ -265,17 +530,6 @@ const ProTerminal: React.FC = () => {
     }
   }, [timeframe, selectedToken]);
 
-  // Handle search when query changes
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (searchQuery && searchQuery !== selectedToken?.symbol && searchQuery.trim().length >= 2) {
-        handleSearch(searchQuery);
-      }
-    }, 500); // Debounce search
-
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
-
   const formatNumber = (num: number) => {
     if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
     if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
@@ -300,6 +554,8 @@ const ProTerminal: React.FC = () => {
       default: return 'text-gray-400';
     }
   };
+
+
 
   // Interactive Chart Component with Controls
   const SimpleChart: React.FC<{ data: any[] }> = ({ data }) => {
@@ -683,8 +939,7 @@ const ProTerminal: React.FC = () => {
         <div className="terminal-loading">
           <div className="loading-content">
             <div className="loading-spinner"></div>
-            <h2>Loading Terminal...</h2>
-            <p>Initializing trading intelligence platform</p>
+            <p>Loading terminal data...</p>
           </div>
         </div>
       </div>
@@ -692,356 +947,363 @@ const ProTerminal: React.FC = () => {
   }
 
   return (
-    <div className="max-w-full mx-auto p-6 pb-24 animate-fade-in min-h-screen">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-cyphr-white mb-2 font-nulshock">Cyphr Terminal</h1>
-        <p className="text-cyphr-gray">Professional Trading Intelligence Platform</p>
-      </div>
-
-      {/* Lending & Borrowing Section - Top Card */}
-      <div className="lending-borrowing-card mb-6">
-        <div className="card-header">
-          <div className="header-content">
-            <div className="header-icon">
-              <img src="/assets/icons/WalletIcon.png" alt="Lending" className="w-6 h-6" />
-            </div>
-            <div>
-              <h2>Capital Management</h2>
-              <p>Powered by Roots - Deposit assets and borrow capital to fund your strategies</p>
-            </div>
-          </div>
-          <div className="header-badge">
-            <span className="badge-text">Roots Integration</span>
-          </div>
+    <div className="pro-terminal-container">
+      {/* Top Header Bar - Bloomberg Terminal Style */}
+      <div className="terminal-header-bar">
+        <div className="header-left">
+          <span className="terminal-prompt">&gt; PRO TERMINAL</span>
         </div>
         
-        <div className="lending-content">
-          <div className="lending-grid">
-            <div className="lending-section">
-              <LendingSection
-                onNavigateToTerminal={() => {}}
-                preflightOk={true}
-              />
-            </div>
-            <div className="borrow-section">
-              <BorrowPanel preflightOk={true} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Enhanced Controls */}
-      <div className="flex items-center justify-between gap-4 mb-4">
-        
-        {/* Status Indicator - Left Aligned */}
-                  <div className="flex items-center gap-2">
-            <div className="status-indicator"></div>
-            <span className="text-green-400 text-sm font-semibold bg-green-400/10 border border-green-400/30 px-2 py-1 rounded-md">LIVE</span>
-          </div>
-        
-        {/* Search Bar - Right Aligned */}
-        <div className="w-64">
-          <div className="search-container">
+        <div className="header-center">
+          <div className="token-search-container">
             <input
               type="text"
-              placeholder="Search tokens..."
+              placeholder="Enter token address (8x...)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setShowSearchDropdown(true)}
               onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
-              className="pro-search-input"
+              className="token-search-input"
             />
-            {searchQuery && (
-              <button
-                onClick={clearSearch}
-                className="clear-search-btn"
-                title="Clear search"
-              >
-                ✕
-              </button>
-            )}
-            {isSearching && (
-              <div className="search-spinner">
-                <div className="spinner"></div>
-              </div>
-            )}
+            <div className="search-icon">🔍</div>
           </div>
-          
-          {/* Search Results Dropdown */}
-          {showSearchDropdown && searchResults.length > 0 && (
-            <div className="search-results">
-              {searchResults.map((token) => (
-                <div
-                  key={token.id}
-                  className="search-result-item"
-                  onClick={() => handleTokenSelect(token)}
-                >
-                  <div className="result-symbol">{token.symbol}</div>
-                  <div className="result-name">{token.name}</div>
-                  <div className={`result-change ${token.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {token.change24h >= 0 ? '+' : ''}{token.change24h.toFixed(2)}%
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
-
-
+        
+        <div className="header-right">
+          <div className="global-market-data">
+            <span className="market-ticker">ETH: $2,845.67</span>
+            <span className="market-ticker">BTC: $67,234.12</span>
+            <span className="market-ticker">GAS: 23</span>
+            <div className="status-indicator-green"></div>
+          </div>
+        </div>
       </div>
 
-      {/* Main Content */}
-      <div className="pro-terminal-content">
-        {/* Token Info Bar */}
-        <div className="token-info-bar">
-          <div className="token-basic-info">
-            <h2 className="token-symbol">{selectedToken.symbol}</h2>
-            <span className="token-name">{selectedToken.name}</span>
-          </div>
-          
-          <div className="token-price-info">
-            <div className="current-price">${selectedToken.price.toLocaleString()}</div>
-            <div className={`price-change ${selectedToken.change24h >= 0 ? 'positive' : 'negative'}`}>
-              {selectedToken.change24h >= 0 ? '+' : ''}{selectedToken.change24h.toFixed(2)}%
+      {/* Main Content Area - Three Column Layout */}
+      <div className="terminal-main-content">
+        {/* Left Column - Price Chart */}
+        <div className="terminal-column chart-column">
+          <div className="chart-panel">
+            <div className="panel-header">
+              <div className="panel-title">
+                <span className="token-pair">WETH/USDC</span>
+                <span className="token-price">$2,845.67</span>
+                <span className="price-change positive">+2.34%</span>
+              </div>
+              <div className="timeframe-selector">
+                {['1H', '4H', '1D', '1W'].map((tf) => (
+                  <button
+                    key={tf}
+                    className={`timeframe-btn ${timeframe === tf ? 'active' : ''}`}
+                    onClick={() => setTimeframe(tf)}
+                  >
+                    {tf}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div className="chart-container">
+              <SimpleChart data={chartData} />
+            </div>
+            
+            <div className="chart-metrics">
+              <div className="metric">
+                <span className="metric-label">H:</span>
+                <span className="metric-value">$2,892.45</span>
+              </div>
+              <div className="metric">
+                <span className="metric-label">L:</span>
+                <span className="metric-value">$2,801.23</span>
+              </div>
+              <div className="metric">
+                <span className="metric-label">V:</span>
+                <span className="metric-value">1.2M</span>
+              </div>
             </div>
           </div>
           
-          <div className="token-stats">
-            <div className="stat">
-              <span className="stat-label">Volume 24h</span>
-              <span className="stat-value">${formatNumber(selectedToken.volume24h)}</span>
+          {/* AI Insights Panel - Below Chart */}
+          <div className="ai-insights-panel">
+            <div className="panel-header">
+              <span className="panel-title">AI INSIGHTS</span>
+              <div className="insight-status">
+                <div className="status-dot green"></div>
+                <span className="status-text">Last updated: 2s ago</span>
+              </div>
             </div>
-            <div className="stat">
-              <span className="stat-label">Market Cap</span>
-              <span className="stat-value">${formatNumber(selectedToken.marketCap)}</span>
-            </div>
-            <div className="stat">
-              <span className="stat-label">Holders</span>
-              <span className="stat-value">{formatNumber(selectedToken.holders)}</span>
-            </div>
-            <div className="stat">
-              <span className="stat-label">Risk Level</span>
-              <span className={`stat-value ${getRiskColor(selectedToken.riskLevel)}`}>
-                {selectedToken.riskLevel}
-              </span>
+            
+            <div className="insight-content">
+              <div className="insight-signal">
+                <span className="signal-type bullish">BULLISH SIGNAL</span>
+                <span className="signal-confidence">Confidence: 87%</span>
+              </div>
+              
+              <div className="insight-details">
+                <p>High liquidity detected. Trading volume increased 45% in last 2h. Whale accumulation pattern identified.</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex rounded-2xl p-2 border border-cyphr-gray/30 premium-nav">
-          {['overview', 'chart', 'insights', 'holders', 'liquidity'].map((tab) => (
-            <button
-              key={tab}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 premium-nav-button ${
-                activeTab === tab
-                  ? 'text-cyphr-black active'
-                  : 'text-cyphr-gray hover:text-cyphr-white'
-              }`}
-              onClick={() => setActiveTab(tab)}
+        {/* Middle Column - Market Overview */}
+        <div className="terminal-column market-column">
+          <div className="market-overview-panel">
+            <div className="panel-header">
+              <span className="panel-title">MARKET OVERVIEW</span>
+              <div className="panel-header-right">
+                <div className="panel-icon">📊</div>
+                <div className="last-updated">
+                  <span className="update-indicator"></span>
+                  <span className="update-text">
+                    {lastUpdateTime.toLocaleTimeString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="market-pairs">
+              {isLoadingMarketData ? (
+                <div className="market-pair-card">Loading...</div>
+              ) : marketData && marketData.length > 0 ? (
+                marketData.map((market, index) => (
+                  <div key={index} className="market-pair-card">
+                    <span className="pair-name">{market.pair || 'Unknown'}</span>
+                    <span className="pair-price">${(market.price || 0).toLocaleString()}</span>
+                    <span className={`pair-change ${(market.change24h || 0) >= 0 ? 'positive' : 'negative'}`}>
+                      {(market.change24h || 0) >= 0 ? '+' : ''}{(market.change24h || 0).toFixed(2)}%
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="market-pair-card">No market data available</div>
+              )}
+            </div>
+          </div>
+          
+          {/* Trading Insights Panel */}
+          <div className="trading-insights-panel">
+            <div className="panel-header">
+              <span className="panel-title">TRADING INSIGHTS</span>
+              <div className="panel-icon">📡</div>
+            </div>
+            
+            <div className="insights-list">
+              <div className="insight-item">
+                <span className="insight-time">2 min ago</span>
+                <span className="insight-text">Large ETH transfer detected: 15,000 ETH moved to exchange</span>
+              </div>
+              <div className="insight-item">
+                <span className="insight-time">5 min ago</span>
+                <span className="insight-text">Unusual trading volume spike in MATIC (+348%)</span>
+              </div>
+              <div className="insight-item">
+                <span className="insight-time">8 min ago</span>
+                <span className="insight-text">Flash loan attack detected on DeFi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column - Lending & Borrowing */}
+        <div className="terminal-column lending-column">
+          <div className="lending-borrowing-panel">
+            <div className="panel-header">
+              <span className="panel-title">LENDING & BORROWING</span>
+              <div className="panel-icon">💰</div>
+            </div>
+            
+            {/* Current Position Status */}
+            <div className="position-status">
+              <div className="status-header">
+                <span className="status-title">POSITION STATUS</span>
+                <div className="health-indicator">
+                  <div className={`health-dot ${lendingHealth.healthFactor > 1.5 ? 'green' : lendingHealth.healthFactor > 1.0 ? 'yellow' : 'red'}`}></div>
+                  <span className="health-text">
+                    {lendingHealth.healthFactor > 1.5 ? 'SAFE' : lendingHealth.healthFactor > 1.0 ? 'WARNING' : 'DANGER'}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="position-metrics">
+                <div className="metric-row">
+                  <span className="metric-label">Collateral (SOL)</span>
+                  <span className="metric-value">{userPosition.collateral || 0} SOL</span>
+                </div>
+                <div className="metric-row">
+                  <span className="metric-label">Borrowed (USDC)</span>
+                  <span className="metric-value">{userPosition.debt || 0} USDC</span>
+                </div>
+                <div className="metric-row">
+                  <span className="metric-label">LTV Ratio</span>
+                  <span className="metric-value">{(lendingHealth.ltv * 100).toFixed(1)}%</span>
+                </div>
+                <div className="metric-row">
+                  <span className="metric-label">Health Factor</span>
+                  <span className="metric-value">{lendingHealth.healthFactor.toFixed(2)}x</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Deposit Collateral Section */}
+            <div className="lending-section">
+              <h4>DEPOSIT COLLATERAL</h4>
+              <div className="input-group">
+                <input
+                  type="number"
+                  placeholder="SOL Amount"
+                  value={depositAmount}
+                  onChange={(e) => setDepositAmount(parseFloat(e.target.value) || 0)}
+                  className="amount-input"
+                />
+                <button 
+                  className="max-btn"
+                  onClick={() => setDepositAmount(userPosition.available || 0)}
+                >
+                  MAX
+                </button>
+              </div>
+              <div className="input-info">
+                <span>Available: {userPosition.available || 0} SOL</span>
+                <span>Max LTV: 75%</span>
+              </div>
+              <button 
+                className="action-btn deposit"
+                onClick={handleDepositCollateral}
+                disabled={!walletConnected || depositAmount <= 0}
+              >
+                DEPOSIT SOL
+              </button>
+            </div>
+            
+            {/* Borrow Section */}
+            <div className="lending-section">
+              <h4>BORROW USDC</h4>
+              <div className="input-group">
+                <input
+                  type="number"
+                  placeholder="USDC Amount"
+                  value={borrowAmount}
+                  onChange={(e) => setBorrowAmount(parseFloat(e.target.value) || 0)}
+                  className="amount-input"
+                />
+                <button 
+                  className="max-btn"
+                  onClick={() => setBorrowAmount(maxBorrowAmount)}
+                >
+                  MAX
+                </button>
+              </div>
+              <div className="input-info">
+                <span>Available to borrow: {maxBorrowAmount.toFixed(2)} USDC</span>
+                <span>Rate: 8% APR</span>
+              </div>
+              <button 
+                className="action-btn borrow"
+                onClick={handleBorrowUSDC}
+                disabled={!walletConnected || borrowAmount <= 0 || borrowAmount > maxBorrowAmount}
+              >
+                BORROW USDC
+              </button>
+            </div>
+            
+            {/* Position Management */}
+            <div className="lending-section">
+              <h4>MANAGE POSITION</h4>
+              <div className="position-actions">
+                <button 
+                  className="action-btn withdraw"
+                  onClick={handleWithdrawCollateral}
+                  disabled={!walletConnected || !userPosition.collateral}
+                >
+                  WITHDRAW SOL
+                </button>
+                <button 
+                  className="action-btn repay"
+                  onClick={handleRepayUSDC}
+                  disabled={!walletConnected || !userPosition.debt}
+                >
+                  REPAY USDC
+                </button>
+              </div>
+            </div>
+            
+            {/* Lending Rates Display */}
+            <div className="lending-rates">
+              <h4>Current Rates</h4>
+              <div className="rate-item">
+                <span className="asset">Supply APY</span>
+                <span className="rate">6.0%</span>
+              </div>
+              <div className="rate-item">
+                <span className="asset">Borrow APR</span>
+                <span className="rate">8.0%</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Portfolio Panel - Below Lending */}
+          <div className="portfolio-panel">
+            <div className="panel-header">
+              <span className="panel-title">PORTFOLIO</span>
+              <div className="panel-icon">📁</div>
+            </div>
+            
+            <div className="portfolio-metrics">
+              <div className="portfolio-metric">
+                <span className="metric-label">Total Value</span>
+                <span className="metric-value">$127,845.67</span>
+              </div>
+              <div className="portfolio-metric">
+                <span className="metric-label">24h Change</span>
+                <span className="metric-value positive">+$2,341.23 (+1.87%)</span>
+              </div>
+              <div className="portfolio-metric">
+                <span className="metric-label">Available</span>
+                <span className="metric-value">$8,234.56</span>
+              </div>
+              <div className="portfolio-metric">
+                <span className="metric-label">Lent</span>
+                <span className="metric-value">$15,000.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Ticker Bar */}
+      <div className="terminal-ticker-bar">
+        <div className="ticker-content">
+          <span className="ticker-item">234.12 +1.89%</span>
+          <span className="ticker-item">ETH $2,845.67 +2.34%</span>
+          <span className="ticker-item">MATIC $0.89 -0.87%</span>
+          <span className="ticker-item">LINK $14.23 +3.45%</span>
+          <span className="ticker-item">UNI $8.23 -1.23%</span>
+          <span className="ticker-item">AAVE $89.45 +0.56%</span>
+        </div>
+      </div>
+
+      {/* Search Results Dropdown - Overlay */}
+      {showSearchDropdown && searchResults.length > 0 && (
+        <div className="search-results-overlay">
+          {searchResults.map((token) => (
+            <div
+              key={token.id}
+              className="search-result-item"
+              onClick={() => handleTokenSelect(token)}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
+              <div className="result-info">
+                <div className="result-symbol">{token.symbol}</div>
+                <div className="result-name">{token.name}</div>
+              </div>
+              <div className="result-price">${token.price?.toLocaleString() || '0.00'}</div>
+              <div className={`result-change ${token.change24h >= 0 ? 'positive' : 'negative'}`}>
+                {token.change24h >= 0 ? '+' : ''}{token.change24h.toFixed(2)}%
+              </div>
+            </div>
           ))}
         </div>
-
-        {/* Tab Content */}
-        <div className="pro-tab-content">
-          {activeTab === 'overview' && (
-            <div className="overview-grid">
-              {/* Chart Section */}
-              <div className="chart-section">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="section-title">Price Chart</h3>
-                  <div className="flex gap-2">
-                    {['1H', '4H', '1D', '1W', '1M'].map((tf) => (
-                      <button
-                        key={tf}
-                        className={`timeframe-btn flex-1 lg:flex-none ${timeframe === tf ? 'active' : ''}`}
-                        onClick={() => setTimeframe(tf)}
-                      >
-                        {tf}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="chart-container">
-                  <SimpleChart data={chartData} />
-                </div>
-              </div>
-
-              {/* AI Insights Section */}
-              <div className="insights-section">
-                <h3 className="section-title">AI Insights</h3>
-                <div className="insights-list">
-                  {selectedToken.aiInsights.map((insight, index) => (
-                    <div key={index} className="insight-card">
-                      <div className="insight-header">
-                        <span className={`insight-type ${getInsightColor(insight.type)}`}>
-                          {insight.type}
-                        </span>
-                        <span className="insight-confidence">
-                          {insight.confidence}% confidence
-                        </span>
-                      </div>
-                      <p className="insight-analysis">{insight.analysis}</p>
-                      <p className="insight-recommendation">{insight.recommendation}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* AI Overview */}
-              <div className="quick-stats">
-                <h3 className="section-title">AI Asset Overview</h3>
-                <div className="ai-overview-grid">
-                  {/* Holder Distribution */}
-                  <div className="ai-overview-card">
-                    <div className="ai-card-header">
-                      <div className="ai-card-icon">📊</div>
-                      <div className="ai-card-title">Holder Distribution</div>
-                    </div>
-                    <div className="ai-card-content">
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">Top 10%</span>
-                        <span className="ai-stat-value">45% of supply</span>
-                      </div>
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">Smart Money</span>
-                        <span className="ai-stat-value">32% increase</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Smart Money Flow */}
-                  <div className="ai-overview-card">
-                    <div className="ai-card-header">
-                      <div className="ai-card-icon">💰</div>
-                      <div className="ai-card-title">Smart Money Flow</div>
-                    </div>
-                    <div className="ai-card-content">
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">Net Flow</span>
-                        <span className="ai-stat-value positive">+$2.4M</span>
-                      </div>
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">Whale Activity</span>
-                        <span className="ai-stat-value">High</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Notorious Wallets */}
-                  <div className="ai-overview-card">
-                    <div className="ai-card-header">
-                      <div className="ai-card-icon">👥</div>
-                      <div className="ai-card-title">Notorious Wallets</div>
-                    </div>
-                    <div className="ai-card-content">
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">Tracked</span>
-                        <span className="ai-stat-value">1,247 wallets</span>
-                      </div>
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">Risk Level</span>
-                        <span className="ai-stat-value">Medium</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Key Metrics */}
-                  <div className="ai-overview-card">
-                    <div className="ai-card-header">
-                      <div className="ai-card-icon">📈</div>
-                      <div className="ai-card-title">Key Metrics</div>
-                    </div>
-                    <div className="ai-card-content">
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">RSI</span>
-                        <span className="ai-stat-value">68.5</span>
-                      </div>
-                      <div className="ai-stat">
-                        <span className="ai-stat-label">MACD</span>
-                        <span className="ai-stat-value positive">Bullish</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'chart' && (
-            <div className="chart-section">
-              <h3 className="section-title">Advanced Chart</h3>
-              <div className="chart-container">
-                <SimpleChart data={chartData} />
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'insights' && (
-            <div className="insights-section">
-              <h3 className="section-title">Detailed AI Insights</h3>
-              <div className="insights-list">
-                {selectedToken.aiInsights.map((insight, index) => (
-                  <div key={index} className="insight-card">
-                    <div className="insight-header">
-                      <span className={`insight-type ${getInsightColor(insight.type)}`}>
-                        {insight.type}
-                      </span>
-                      <span className="insight-confidence">
-                        {insight.confidence}% confidence
-                      </span>
-                    </div>
-                    <p className="insight-analysis">{insight.analysis}</p>
-                    <p className="insight-recommendation">{insight.recommendation}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'holders' && (
-            <div className="holders-section">
-              <h3 className="section-title">Holder Distribution</h3>
-              <div className="holders-content">
-                <div className="holder-stat">
-                  <span className="holder-label">Total Holders</span>
-                  <span className="holder-value">{formatNumber(selectedToken.holders)}</span>
-                </div>
-                <div className="holder-stat">
-                  <span className="holder-label">Average Holding</span>
-                  <span className="holder-value">${formatNumber(selectedToken.marketCap / selectedToken.holders)}</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'liquidity' && (
-            <div className="liquidity-section">
-              <h3 className="section-title">Liquidity Events</h3>
-              <div className="liquidity-list">
-                {selectedToken.liquidityEvents.map((event, index) => (
-                  <div key={index} className="liquidity-card">
-                    <div className="liquidity-header">
-                      <span className="liquidity-type">{event.type}</span>
-                      <span className="liquidity-amount">${formatNumber(event.amount)}</span>
-                    </div>
-                    <div className="liquidity-details">
-                      <span className="liquidity-time">{event.timestamp}</span>
-                      <span className={`liquidity-impact ${event.impact.toLowerCase()}`}>
-                        {event.impact}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 };
