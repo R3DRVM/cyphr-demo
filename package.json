@@ -38,10 +38,13 @@
     "dev": "vite --config config/vite.config.ts",
     "dev:demo": "cross-env VITE_DEMO_MODE=true vite --config config/vite.config.ts",
     "dev:real": "cross-env VITE_DEMO_MODE=false vite --config config/vite.config.ts",
-    "build": "tsc --project config/tsconfig.json && vite build --config config/vite.config.ts",
+    "build": "vite build --config config/vite.config.ts",
     "preview": "vite preview",
     "deploy": "npm run build && git add docs && git commit -m 'Deploy to GitHub Pages' && git push",
-    "setup:devnet": "ts-node scripts/setup-devnet.ts"
+    "setup:devnet": "ts-node scripts/setup-devnet.ts",
+    "smoke:devnet": "RPC=https://api.devnet.solana.com ts-node scripts/smoke-test.ts",
+    "test:quick": "node scripts/comprehensive-devnet-test.js",
+    "test:demo": "DEMO_MODE=true node scripts/comprehensive-devnet-test.js"
   },
   "eslintConfig": {
     "extends": [
