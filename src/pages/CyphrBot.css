@@ -1,10 +1,10 @@
 /* CyphrBot Page Styles - Bloomberg Terminal Theme */
 .cyphr-bot-page {
-  min-height: 100vh;
+  min-height: 120vh;
   background: #000000;
   color: #ffffff;
   font-family: 'ModeSeven', monospace;
-  padding: 20px;
+  padding: 20px 20px 60px 20px;
   box-sizing: border-box;
 }
 
@@ -57,8 +57,8 @@
   display: grid;
   grid-template-columns: 300px 1fr 350px;
   gap: 20px;
-  height: calc(100vh - 200px);
-  min-height: 600px;
+  height: calc(100vh - 150px);
+  min-height: 800px;
 }
 
 /* Left Panel - Activity, Automation, Positions */
@@ -280,7 +280,7 @@
   flex: 1;
   overflow-y: auto;
   margin-bottom: 20px;
-  padding: 15px;
+  padding: 15px 15px 15px 40px;
   background: #0a0a0a;
   border-radius: 6px;
   border: 1px solid #333;
@@ -301,13 +301,13 @@
 .chat-message.user {
   background: #1a1a1a;
   border-left: 3px solid #0088ff;
-  margin-left: 40px;
+  margin-left: 0px;
 }
 
 .bot-avatar {
   position: absolute;
   top: 12px;
-  left: -30px;
+  left: -35px;
   width: 24px;
   height: 24px;
   background: #00ff88;
