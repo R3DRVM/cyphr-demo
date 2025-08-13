@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBorrow } from '../../hooks/useBorrow';
 import { useTxToasts } from '../../hooks/useTxToasts';
+import { Lock, Zap, CreditCard } from 'lucide-react';
 
 interface BorrowPanelProps {
   preflightOk?: boolean;
@@ -170,7 +171,7 @@ export default function BorrowPanel({ preflightOk = true }: BorrowPanelProps) {
               Processing...
             </div>
           ) : (
-            '🔒 Enable Collateral'
+            <><Lock className="w-4 h-4 inline mr-1" />Enable Collateral</>
           )}
         </button>
 
@@ -188,7 +189,7 @@ export default function BorrowPanel({ preflightOk = true }: BorrowPanelProps) {
                 ...
               </div>
             ) : (
-              '⚡ Borrow'
+              <><Zap className="w-4 h-4 inline mr-1" />Borrow</>
             )}
           </button>
 
@@ -204,7 +205,7 @@ export default function BorrowPanel({ preflightOk = true }: BorrowPanelProps) {
                 ...
               </div>
             ) : (
-              '💳 Repay'
+              <><CreditCard className="w-4 h-4 inline mr-1" />Repay</>
             )}
           </button>
         </div>

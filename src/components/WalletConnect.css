@@ -4,7 +4,7 @@
 }
 
 .connect-wallet-button {
-  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  background: linear-gradient(135deg, #6D8FC7 0%, #4A5F8C 100%);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -13,12 +13,12 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(109, 143, 199, 0.3);
 }
 
 .connect-wallet-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(109, 143, 199, 0.4);
 }
 
 .connect-wallet-button:disabled {
@@ -36,7 +36,7 @@
   border-radius: 12px;
   padding: 16px;
   min-width: 280px;
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.2);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
   z-index: 1000;
   animation: dropdownSlideIn 0.3s ease-out;
@@ -110,7 +110,7 @@
 
 .wallet-option:hover {
   background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(0, 212, 255, 0.5);
+  border-color: rgba(109, 143, 199, 0.5);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
@@ -153,8 +153,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(0, 212, 255, 0.1);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  background: rgba(109, 143, 199, 0.1);
+  border: 1px solid rgba(109, 143, 199, 0.3);
   border-radius: 8px;
   padding: 8px 12px;
 }
@@ -167,7 +167,7 @@
 
 .wallet-balance {
   font-weight: 600;
-  color: #00d4ff;
+  color: #6D8FC7;
   font-size: 14px;
 }
 

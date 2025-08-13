@@ -1,5 +1,6 @@
 import React from 'react';
 import { Position } from '../types/position';
+import { CreditCard, RotateCcw, Rocket } from 'lucide-react';
 
 interface PositionCardProps {
   position: Position;
@@ -154,7 +155,7 @@ export function PositionCard({ position, onRepay, onUnwind, onRepayAndUnwind, pr
                 className="bg-gradient-to-r from-cyphr-teal to-cyphr-blue hover:from-cyphr-teal/90 hover:to-cyphr-blue/90 disabled:from-cyphr-gray disabled:to-cyphr-gray/50 disabled:cursor-not-allowed text-cyphr-dark font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:shadow-none"
                 title={!preflightOk ? 'System not ready - check preflight banner' : ''}
               >
-                💳 Repay Debt
+                <CreditCard className="w-4 h-4 inline mr-1" />Repay Debt
               </button>
             )}
             {onUnwind && hasExposure && (
@@ -164,7 +165,7 @@ export function PositionCard({ position, onRepay, onUnwind, onRepayAndUnwind, pr
                 className="bg-gradient-to-r from-cyphr-orange to-cyphr-red hover:from-cyphr-orange/90 hover:to-cyphr-red/90 disabled:from-cyphr-gray disabled:to-cyphr-gray/50 disabled:cursor-not-allowed text-cyphr-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:shadow-none"
                 title={!preflightOk ? 'System not ready - check preflight banner' : ''}
               >
-                🔄 Close Position
+                <RotateCcw className="w-4 h-4 inline mr-1" />Close Position
               </button>
             )}
             {onRepayAndUnwind && shouldShowUnwind && (
@@ -174,7 +175,7 @@ export function PositionCard({ position, onRepay, onUnwind, onRepayAndUnwind, pr
                 className="bg-gradient-to-r from-cyphr-purple to-cyphr-blue hover:from-cyphr-purple/90 hover:to-cyphr-blue/90 disabled:from-cyphr-gray disabled:to-cyphr-gray/50 disabled:cursor-not-allowed text-cyphr-white font-bold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:shadow-none"
                 title={!preflightOk ? 'System not ready - check preflight banner' : ''}
               >
-                🚀 Repay & Unwind
+                <Rocket className="w-4 h-4 inline mr-1" />Repay & Unwind
               </button>
             )}
           </div>

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSolanaWallet } from '../providers/SolanaWalletProvider';
+import { Ghost, Flame, X } from 'lucide-react';
 import './WalletConnect.css';
 
 const WalletConnect: React.FC = () => {
@@ -76,7 +77,7 @@ const WalletConnect: React.FC = () => {
               className="close-button"
               onClick={() => setIsDropdownOpen(false)}
             >
-              ×
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -86,7 +87,7 @@ const WalletConnect: React.FC = () => {
               onClick={() => handleConnect('phantom')}
               disabled={connecting}
             >
-              <div className="wallet-icon">👻</div>
+              <div className="wallet-icon"><Ghost className="w-6 h-6" /></div>
               <div className="wallet-details">
                 <div className="wallet-name">Phantom</div>
                 <div className="wallet-description">Popular Solana wallet</div>
@@ -98,7 +99,7 @@ const WalletConnect: React.FC = () => {
               onClick={() => handleConnect('solflare')}
               disabled={connecting}
             >
-              <div className="wallet-icon">🔥</div>
+              <div className="wallet-icon"><Flame className="w-6 h-6" /></div>
               <div className="wallet-details">
                 <div className="wallet-name">Solflare</div>
                 <div className="wallet-description">Professional Solana wallet</div>

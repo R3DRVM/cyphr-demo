@@ -1,4 +1,5 @@
 import React from 'react';
+import { ChevronDown } from 'lucide-react';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -46,7 +47,7 @@ const Footer: React.FC = () => {
           
           <div className="server-location">
             <span className="location-text">US-W</span>
-            <span className="location-arrow">▼</span>
+            <ChevronDown className="w-3 h-3" />
           </div>
           
           <div className="footer-actions">

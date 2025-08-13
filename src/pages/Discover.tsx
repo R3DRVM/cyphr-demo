@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Check, X } from 'lucide-react';
 import TokenIcon from '../components/TokenIcon';
 import TokenAddress from '../components/TokenAddress';
 import LendingSection from '../components/LendingSection';
@@ -370,7 +371,7 @@ const Discover: React.FC = () => {
                         ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
                         : 'bg-red-500/20 text-red-400 border border-red-500/30'
                     }`}>
-                      {token.paid ? '✓' : '✗'} {token.paidAmount}
+                      {token.paid ? <Check className="w-3 h-3 mr-1" /> : <X className="w-3 h-3 mr-1" />} {token.paidAmount}
                     </div>
                   </td>
                   <td className="px-6 py-4">

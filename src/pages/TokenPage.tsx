@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { TrendingUp, Zap, ClipboardList, Globe, Smartphone, Twitter, MessageCircle, Info, FileText, Users } from 'lucide-react';
 import TokenIcon from '../components/TokenIcon';
 import TokenAddress from '../components/TokenAddress';
 
@@ -164,7 +165,7 @@ const TokenPage: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-6">
                           <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Token Information</h3>
-            <span className="text-cyphr-blue text-lg">ℹ️</span>
+            <Info className="w-5 h-5 text-cyphr-blue" />
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 rounded-lg bg-cyphr-black/50 border border-cyphr-gray/30">
@@ -202,7 +203,7 @@ const TokenPage: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-6">
                           <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">About {tokenData.name}</h3>
-            <span className="text-cyphr-blue text-lg">📝</span>
+            <FileText className="w-5 h-5 text-cyphr-blue" />
             </div>
             <p className="text-cyphr-gray leading-relaxed mb-6">{tokenData.description}</p>
             
@@ -219,7 +220,7 @@ const TokenPage: React.FC = () => {
                     className="elite-button flex items-center gap-2 p-3 rounded-lg transition-all duration-300 hover:scale-105 text-cyphr-gray"
                   >
                     <span className="text-cyphr-blue">
-                      {platform === 'website' ? '🌐' : platform === 'telegram' ? '📱' : platform === 'twitter' ? '🐦' : '💬'}
+                      {platform === 'website' ? <Globe className="w-4 h-4" /> : platform === 'telegram' ? <Smartphone className="w-4 h-4" /> : platform === 'twitter' ? <Twitter className="w-4 h-4" /> : <MessageCircle className="w-4 h-4" />}
                     </span>
                     <span className="text-cyphr-white capitalize">{platform}</span>
                   </a>
@@ -252,7 +253,7 @@ const TokenPage: React.FC = () => {
           </div>
           <div className="h-96 bg-gradient-to-br from-cyphr-blue/10 to-cyphr-pink/10 rounded-xl flex items-center justify-center border border-cyphr-gray/30">
             <div className="text-center">
-              <div className="text-cyphr-gray text-6xl mb-4">📈</div>
+              <div className="text-cyphr-gray text-6xl mb-4"><TrendingUp className="w-16 h-16" /></div>
               <div className="text-cyphr-gray font-sf-pro text-xl">Price Chart</div>
               <div className="text-cyphr-gray text-sm">Interactive trading chart</div>
             </div>
@@ -274,7 +275,7 @@ const TokenPage: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-6">
                           <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Trade {tokenData.name}</h3>
-            <span className="text-cyphr-blue text-lg">⚡</span>
+            <span className="text-cyphr-blue text-lg"><Zap className="w-5 h-5" /></span>
             </div>
 
             {/* Buy/Sell Toggle */}
@@ -343,7 +344,7 @@ const TokenPage: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-6">
                           <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Recent Trades</h3>
-            <span className="text-cyphr-blue text-lg">📋</span>
+            <span className="text-cyphr-blue text-lg"><ClipboardList className="w-5 h-5" /></span>
             </div>
             <div className="space-y-2">
               {tradingHistory.map((trade, index) => (
@@ -375,7 +376,7 @@ const TokenPage: React.FC = () => {
         >
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-cyphr-blue font-nulshock text-lg font-semibold">Holder Distribution</h3>
-            <span className="text-cyphr-blue text-lg">👥</span>
+            <Users className="w-5 h-5 text-cyphr-blue" />
           </div>
           <div className="space-y-4">
             {holderDistribution.map((holder, index) => (

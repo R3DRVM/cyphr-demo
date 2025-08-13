@@ -1,5 +1,6 @@
 // src/debug/Preflight.tsx
 import React from 'react';
+import { Check, X, AlertTriangle } from 'lucide-react';
 import tokens from '../config/tokens.devnet.json';
 
 export function usePreflight() {
@@ -23,7 +24,7 @@ export function PreflightBanner() {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="w-10 h-10 bg-gradient-to-br from-cyphr-orange to-cyphr-red rounded-xl flex items-center justify-center mr-4">
-            <span className="text-xl">⚠️</span>
+            <AlertTriangle className="w-6 h-6 text-white" />
           </div>
           <div>
             <h3 className="text-lg font-bold text-cyphr-white mb-1">System Preflight Check</h3>
@@ -36,7 +37,8 @@ export function PreflightBanner() {
           <div className={`flex items-center px-3 py-2 rounded-lg ${okEnv ? 'bg-cyphr-teal/20 border border-cyphr-teal/30' : 'bg-cyphr-red/20 border border-cyphr-red/30'}`}>
             <div className={`w-2 h-2 rounded-full mr-2 ${okEnv ? 'bg-cyphr-teal' : 'bg-cyphr-red'}`}></div>
             <span className={`text-sm font-medium ${okEnv ? 'text-cyphr-teal' : 'text-cyphr-red'}`}>
-              {okEnv ? 'ENV ✓' : 'ENV ✗'}
+              {okEnv ? 'ENV ' : 'ENV '}
+              {okEnv ? <Check className="w-4 h-4 inline" /> : <X className="w-4 h-4 inline" />}
             </span>
           </div>
           
@@ -44,7 +46,8 @@ export function PreflightBanner() {
           <div className={`flex items-center px-3 py-2 rounded-lg ${okTokens ? 'bg-cyphr-teal/20 border border-cyphr-teal/30' : 'bg-cyphr-red/20 border border-cyphr-red/30'}`}>
             <div className={`w-2 h-2 rounded-full mr-2 ${okTokens ? 'bg-cyphr-teal' : 'bg-cyphr-red'}`}></div>
             <span className={`text-sm font-medium ${okTokens ? 'text-cyphr-teal' : 'text-cyphr-red'}`}>
-              {okTokens ? 'TOKENS ✓' : 'TOKENS ✗'}
+              {okTokens ? 'TOKENS ' : 'TOKENS '}
+              {okTokens ? <Check className="w-4 h-4 inline" /> : <X className="w-4 h-4 inline" />}
             </span>
           </div>
           
@@ -52,7 +55,8 @@ export function PreflightBanner() {
           <div className={`flex items-center px-3 py-2 rounded-lg ${okWallet ? 'bg-cyphr-teal/20 border border-cyphr-teal/30' : 'bg-cyphr-red/20 border border-cyphr-red/30'}`}>
             <div className={`w-2 h-2 rounded-full mr-2 ${okWallet ? 'bg-cyphr-teal' : 'bg-cyphr-red'}`}></div>
             <span className={`text-sm font-medium ${okWallet ? 'text-cyphr-teal' : 'text-cyphr-red'}`}>
-              {okWallet ? 'WALLET ✓' : 'WALLET ✗'}
+              {okWallet ? 'WALLET ' : 'WALLET '}
+              {okWallet ? <Check className="w-4 h-4 inline" /> : <X className="w-4 h-4 inline" />}
             </span>
           </div>
         </div>
@@ -67,11 +71,11 @@ export function PreflightBanner() {
           </div>
           <div className="text-xs font-mono">
             {okEnv ? (
-              <span className="text-cyphr-teal">✓ Configured</span>
+              <span className="text-cyphr-teal"><Check className="w-3 h-3 inline mr-1" />Configured</span>
             ) : (
               <div className="text-cyphr-red">
-                <div>✗ VITE_PROGRAM_ID: {env.VITE_PROGRAM_ID ? 'Set' : 'Missing'}</div>
-                <div>✗ VITE_RPC_PRIMARY: {env.VITE_RPC_PRIMARY ? 'Set' : 'Missing'}</div>
+                <div><X className="w-3 h-3 inline mr-1" />VITE_PROGRAM_ID: {env.VITE_PROGRAM_ID ? 'Set' : 'Missing'}</div>
+                <div><X className="w-3 h-3 inline mr-1" />VITE_RPC_PRIMARY: {env.VITE_RPC_PRIMARY ? 'Set' : 'Missing'}</div>
               </div>
             )}
           </div>
@@ -84,11 +88,11 @@ export function PreflightBanner() {
           </div>
           <div className="text-xs font-mono">
             {okTokens ? (
-              <span className="text-cyphr-teal">✓ Valid</span>
+              <span className="text-cyphr-teal"><Check className="w-3 h-3 inline mr-1" />Valid</span>
             ) : (
               <div className="text-cyphr-red">
-                <div>✗ mintA: {(tokens as any).mintA || 'Missing'}</div>
-                <div>✗ mintB: {(tokens as any).mintB || 'Missing'}</div>
+                <div><X className="w-3 h-3 inline mr-1" />mintA: {(tokens as any).mintA || 'Missing'}</div>
+                <div><X className="w-3 h-3 inline mr-1" />mintB: {(tokens as any).mintB || 'Missing'}</div>
               </div>
             )}
           </div>
@@ -101,10 +105,10 @@ export function PreflightBanner() {
           </div>
           <div className="text-xs font-mono">
             {okWallet ? (
-              <span className="text-cyphr-teal">✓ Connected</span>
+              <span className="text-cyphr-teal"><Check className="w-3 h-3 inline mr-1" />Connected</span>
             ) : (
               <div className="text-cyphr-red">
-                <div>✗ Not connected</div>
+                <div><X className="w-3 h-3 inline mr-1" />Not connected</div>
                 <div>Connect Phantom wallet</div>
               </div>
             )}

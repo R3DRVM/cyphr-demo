@@ -21,7 +21,7 @@
   color: white;
   font-size: 28px;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+  background: linear-gradient(135deg, var(--accent-color), #6D8FC7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -248,7 +248,7 @@
 
 .input-group button,
 .claim-btn {
-  background: linear-gradient(135deg, var(--accent-color), #00d4ff);
+  background: linear-gradient(135deg, var(--accent-color), #6D8FC7);
   border: none;
   color: white;
   padding: 10px 16px;
@@ -263,7 +263,7 @@
 .input-group button:hover,
 .claim-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(109, 143, 199, 0.3);
 }
 
 .input-group button:disabled,
@@ -602,7 +602,7 @@ button:focus,
 input:focus,
 select:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(109, 143, 199, 0.3);
 }
 
 /* Custom Scrollbar */
@@ -621,5 +621,5 @@ select:focus {
 }
 
 .strategies-list::-webkit-scrollbar-thumb:hover {
-  background: #00d4ff;
+  background: #6D8FC7;
 } 

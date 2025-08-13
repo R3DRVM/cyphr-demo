@@ -369,7 +369,7 @@
 .welcome-title {
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+  background: linear-gradient(135deg, #6D8FC7 0%, #4A5F8C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -716,7 +716,7 @@
 }
 
 .money-flow-item.neutral {
-  border-left-color: #00d4ff;
+  border-left-color: #6D8FC7;
 }
 
 .flow-label {
@@ -748,7 +748,7 @@
 
 .money-flow-item.neutral .flow-value,
 .money-flow-item.neutral .flow-change {
-  color: #00d4ff;
+  color: #6D8FC7;
 }
 
 /* Notorious Wallets */
@@ -983,8 +983,8 @@
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(0, 212, 255, 0.3);
-  border-top: 3px solid #00d4ff;
+  border: 3px solid rgba(109, 143, 199, 0.3);
+  border-top: 3px solid #6D8FC7;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -1009,7 +1009,7 @@
 }
 
 .interactive-chart-container:hover {
-  border-color: rgba(0, 212, 255, 0.25);
+  border-color: rgba(109, 143, 199, 0.25);
   box-shadow: 
     inset 0 2px 10px rgba(0, 0, 0, 0.3),
     0 6px 25px rgba(0, 0, 0, 0.6);
@@ -1024,7 +1024,7 @@
   gap: 0.5rem;
   z-index: 10;
   background: rgba(0, 0, 0, 0.95);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid rgba(109, 143, 199, 0.3);
   border-radius: 8px;
   padding: 0.5rem;
   backdrop-filter: blur(20px);
@@ -1040,7 +1040,7 @@
   width: 32px;
   height: 32px;
   background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.2);
   border-radius: 6px;
   color: #cccccc;
   display: flex;
@@ -1052,16 +1052,16 @@
 }
 
 .chart-control-btn:hover {
-  background: rgba(0, 212, 255, 0.1);
-  border-color: rgba(0, 212, 255, 0.4);
+  background: rgba(109, 143, 199, 0.1);
+  border-color: rgba(109, 143, 199, 0.4);
   color: #ffffff;
   transform: translateY(-1px);
 }
 
 .chart-control-btn.active {
-  background: rgba(0, 212, 255, 0.2);
-  border-color: rgba(0, 212, 255, 0.6);
-  color: #00d4ff;
+  background: rgba(109, 143, 199, 0.2);
+  border-color: rgba(109, 143, 199, 0.6);
+  color: #6D8FC7;
 }
 
 .chart-control-btn:active {
@@ -1070,7 +1070,7 @@
 
 .chart-control-divider {
   width: 1px;
-  background: rgba(0, 212, 255, 0.3);
+  background: rgba(109, 143, 199, 0.3);
   margin: 0 0.25rem;
 }
 
@@ -1079,7 +1079,7 @@
   width: 100%;
   overflow-x: auto;
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.2);
   border-radius: 12px;
   padding: 1rem;
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -1089,7 +1089,7 @@
   width: 100%;
   overflow-x: auto;
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.2);
   border-radius: 12px;
   padding: 1rem;
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -1112,7 +1112,7 @@
   justify-content: center;
   min-height: 400px;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 8px;
   margin: 1rem 0;
 }
@@ -1126,8 +1126,8 @@
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 2px solid rgba(0, 212, 255, 0.2);
-  border-top: 2px solid #00d4ff;
+  border: 2px solid rgba(109, 143, 199, 0.2);
+  border-top: 2px solid #6D8FC7;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -1136,7 +1136,7 @@
 .loading-content h2 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
-  color: #00d4ff;
+  color: #6D8FC7;
 }
 
 .loading-content p {
@@ -1149,7 +1149,7 @@
 .chart-tooltip {
   position: absolute;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(20, 20, 20, 0.95) 100%);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid rgba(109, 143, 199, 0.3);
   border-radius: 6px;
   padding: 0.75rem;
   color: #ffffff;
@@ -1166,9 +1166,9 @@
 
 .tooltip-header {
   font-weight: 600;
-  color: #00d4ff;
+  color: #6D8FC7;
   margin-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+  border-bottom: 1px solid rgba(109, 143, 199, 0.2);
   padding-bottom: 0.25rem;
 }
 
@@ -1214,7 +1214,7 @@
 
 .insight-card {
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(109, 143, 199, 0.15);
   border-radius: 8px;
   padding: 0.75rem;
   transition: all 0.3s ease;
@@ -1222,9 +1222,9 @@
 }
 
 .insight-card:hover {
-  border-color: rgba(0, 212, 255, 0.4);
+  border-color: rgba(109, 143, 199, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.1);
+  box-shadow: 0 8px 25px rgba(109, 143, 199, 0.1);
 }
 
 .insight-header {
@@ -1290,7 +1290,7 @@
 .stat-number {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #00d4ff;
+  color: #6D8FC7;
   margin-bottom: 0.25rem;
 }
 
@@ -1332,7 +1332,7 @@
 }
 
 .detailed-insight-card:hover {
-  border-color: rgba(0, 212, 255, 0.3);
+  border-color: rgba(109, 143, 199, 0.3);
   transform: translateY(-2px);
 }
 
@@ -1347,7 +1347,7 @@
 
 .confidence-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00d4ff 0%, #0099cc 100%);
+  background: linear-gradient(90deg, #6D8FC7 0%, #4A5F8C 100%);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
@@ -1454,7 +1454,7 @@
 
 .event-amount {
   font-weight: 600;
-  color: #00d4ff;
+  color: #6D8FC7;
 }
 
 .event-impact {
@@ -1942,7 +1942,7 @@
 .liquidity-amount {
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
-  color: #00d4ff;
+  color: #6D8FC7;
 }
 
 .liquidity-details {
@@ -1985,7 +1985,7 @@
 /* Terminal Header Bar */
 .terminal-header-bar {
   background: rgba(0, 0, 0, 0.95);
-  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  border-bottom: 1px solid rgba(109, 143, 199, 0.3);
   padding: 0.75rem 1.5rem;
   display: flex;
   align-items: center;
@@ -1999,7 +1999,7 @@
 
 .header-left .terminal-prompt {
   font-family: 'ModeSeven', monospace;
-  color: #00d4ff;
+  color: #6D8FC7;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -2012,7 +2012,7 @@
 .token-search-input {
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.4);
+  border: 1px solid rgba(109, 143, 199, 0.4);
   border-radius: 6px;
   padding: 0.5rem 2.5rem 0.5rem 1rem;
   color: #ffffff;
@@ -2030,7 +2030,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 1rem;
-  color: rgba(0, 212, 255, 0.7);
+  color: rgba(109, 143, 199, 0.7);
 }
 
 .header-right .global-market-data {
@@ -2083,7 +2083,7 @@
 
 .chart-panel {
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
@@ -2112,7 +2112,7 @@
 .token-price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #00d4ff;
+  color: #6D8FC7;
   font-family: 'ModeSeven', monospace;
 }
 
@@ -2133,7 +2133,7 @@
 
 .timeframe-btn {
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid rgba(109, 143, 199, 0.3);
   border-radius: 6px;
   padding: 0.375rem 0.75rem;
   color: #ffffff;
@@ -2144,14 +2144,14 @@
 }
 
 .timeframe-btn:hover {
-  background: rgba(0, 212, 255, 0.1);
-  border-color: rgba(0, 212, 255, 0.5);
+  background: rgba(109, 143, 199, 0.1);
+  border-color: rgba(109, 143, 199, 0.5);
 }
 
 .timeframe-btn.active {
-  background: rgba(0, 212, 255, 0.2);
-  border-color: rgba(0, 212, 255, 0.8);
-  color: #00d4ff;
+  background: rgba(109, 143, 199, 0.2);
+  border-color: rgba(109, 143, 199, 0.8);
+  color: #6D8FC7;
 }
 
 .chart-container {
@@ -2194,7 +2194,7 @@
 /* AI Insights Panel */
 .ai-insights-panel {
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
@@ -2295,7 +2295,7 @@
 
 .pair-price {
   font-size: 0.875rem;
-  color: #00d4ff;
+  color: #6D8FC7;
   font-weight: 600;
   font-family: 'ModeSeven', monospace;
 }
@@ -2313,7 +2313,7 @@
 /* Trading Insights Panel */
 .trading-insights-panel {
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
@@ -2365,7 +2365,7 @@
 }
 
 .lending-rates h4, .borrowing-rates h4 {
-  color: #00d4ff;
+  color: #6D8FC7;
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
@@ -2427,14 +2427,14 @@
 }
 
 .action-btn.borrow {
-  background: rgba(0, 212, 255, 0.2);
-  color: #00d4ff;
-  border: 1px solid rgba(0, 212, 255, 0.4);
+  background: rgba(109, 143, 199, 0.2);
+  color: #6D8FC7;
+  border: 1px solid rgba(109, 143, 199, 0.4);
 }
 
 .action-btn.borrow:hover {
-  background: rgba(0, 212, 255, 0.3);
-  border-color: rgba(0, 212, 255, 0.6);
+  background: rgba(109, 143, 199, 0.3);
+  border-color: rgba(109, 143, 199, 0.6);
 }
 
 /* Enhanced Lending Widget Styles */
@@ -2456,7 +2456,7 @@
 .status-title {
   font-size: 0.75rem;
   font-weight: 600;
-  color: rgba(0, 212, 255, 0.8);
+  color: rgba(109, 143, 199, 0.8);
   letter-spacing: 1px;
   font-family: 'ModeSeven', monospace;
 }
@@ -2539,7 +2539,7 @@
 .lending-section h4 {
   font-size: 0.75rem;
   font-weight: 600;
-  color: rgba(0, 212, 255, 0.8);
+  color: rgba(109, 143, 199, 0.8);
   margin: 0 0 1rem 0;
   letter-spacing: 1px;
   font-family: 'ModeSeven', monospace;
@@ -2554,7 +2554,7 @@
 .amount-input {
   flex: 1;
   background: rgba(0, 0, 0, 0.7);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid rgba(109, 143, 199, 0.3);
   border-radius: 6px;
   padding: 0.5rem 0.75rem;
   color: rgba(255, 255, 255, 0.9);
@@ -2564,16 +2564,16 @@
 
 .amount-input:focus {
   outline: none;
-  border-color: rgba(0, 212, 255, 0.6);
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  border-color: rgba(109, 143, 199, 0.6);
+  box-shadow: 0 0 10px rgba(109, 143, 199, 0.2);
 }
 
 .max-btn {
-  background: rgba(0, 212, 255, 0.2);
-  border: 1px solid rgba(0, 212, 255, 0.4);
+  background: rgba(109, 143, 199, 0.2);
+  border: 1px solid rgba(109, 143, 199, 0.4);
   border-radius: 6px;
   padding: 0.5rem 0.75rem;
-  color: rgba(0, 212, 255, 0.9);
+  color: rgba(109, 143, 199, 0.9);
   font-size: 0.625rem;
   font-weight: 600;
   cursor: pointer;
@@ -2582,8 +2582,8 @@
 }
 
 .max-btn:hover {
-  background: rgba(0, 212, 255, 0.3);
-  border-color: rgba(0, 212, 255, 0.6);
+  background: rgba(109, 143, 199, 0.3);
+  border-color: rgba(109, 143, 199, 0.6);
 }
 
 .input-info {
@@ -2762,7 +2762,7 @@
 }
 
 .result-symbol {
-  color: #00d4ff;
+  color: #6D8FC7;
   font-weight: 600;
   font-family: 'ModeSeven', monospace;
   font-size: 1rem;
@@ -2810,7 +2810,7 @@
   padding: 1rem;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 8px;
-  border: 1px solid rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(109, 143, 199, 0.1);
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
@@ -2818,7 +2818,7 @@
 
 .market-pair-card:hover {
   background: rgba(0, 0, 0, 0.6);
-  border-color: rgba(0, 212, 255, 0.3);
+  border-color: rgba(109, 143, 199, 0.3);
   transform: translateY(-2px);
 }
 
@@ -2829,7 +2829,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(109, 143, 199, 0.3), transparent);
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -2848,7 +2848,7 @@
 
 .pair-price {
   font-size: 0.875rem;
-  color: #00d4ff;
+  color: #6D8FC7;
   font-weight: 600;
   font-family: 'ModeSeven', monospace;
   margin: 0 1rem;
@@ -2892,8 +2892,8 @@
 
 /* Real-time Updates Animation */
 @keyframes priceUpdate {
-  0% { background: rgba(0, 212, 255, 0.2); }
-  50% { background: rgba(0, 212, 255, 0.4); }
+  0% { background: rgba(109, 143, 199, 0.2); }
+  50% { background: rgba(109, 143, 199, 0.4); }
   100% { background: rgba(0, 0, 0, 0.4); }
 }
 
@@ -2905,7 +2905,7 @@
 .token-search-input {
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.4);
+  border: 1px solid rgba(109, 143, 199, 0.4);
   border-radius: 6px;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
   color: #ffffff;
@@ -2916,8 +2916,8 @@
 
 .token-search-input:focus {
   outline: none;
-  border-color: rgba(0, 212, 255, 0.8);
-  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+  border-color: rgba(109, 143, 199, 0.8);
+  box-shadow: 0 0 0 3px rgba(109, 143, 199, 0.1);
   background: rgba(0, 0, 0, 0.9);
 }
 
@@ -2937,12 +2937,12 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 1rem;
-  color: rgba(0, 212, 255, 0.7);
+  color: rgba(109, 143, 199, 0.7);
   transition: all 0.2s;
 }
 
 .token-search-container:focus-within .search-icon {
-  color: rgba(0, 212, 255, 1);
+  color: rgba(109, 143, 199, 1);
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -3018,16 +3018,16 @@
 
 @keyframes priceUpdate {
   0% { 
-    background: rgba(0, 212, 255, 0.2);
-    border-color: rgba(0, 212, 255, 0.4);
+    background: rgba(109, 143, 199, 0.2);
+    border-color: rgba(109, 143, 199, 0.4);
   }
   50% { 
-    background: rgba(0, 212, 255, 0.3);
-    border-color: rgba(0, 212, 255, 0.6);
+    background: rgba(109, 143, 199, 0.3);
+    border-color: rgba(109, 143, 199, 0.6);
   }
   100% { 
     background: rgba(0, 0, 0, 0.4);
-    border-color: rgba(0, 212, 255, 0.1);
+    border-color: rgba(109, 143, 199, 0.1);
   }
 }
 
@@ -3049,7 +3049,7 @@
   font-family: 'ModeSeven', monospace;
   font-style: italic;
   background: rgba(0, 0, 0, 0.6);
-  border-color: rgba(0, 212, 255, 0.2);
+  border-color: rgba(109, 143, 199, 0.2);
 }
 
 /* Price Change Animations */

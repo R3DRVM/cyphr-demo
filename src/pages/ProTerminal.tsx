@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ProTerminal.css';
 import LendingSection from '../components/LendingSection';
 import BorrowPanel from '../components/borrow/BorrowPanel';
+import { BarChart3, Satellite, DollarSign } from 'lucide-react';
 
 interface TokenData {
   symbol: string;
@@ -1052,7 +1053,7 @@ const ProTerminal: React.FC = () => {
             <div className="panel-header">
               <span className="panel-title">MARKET OVERVIEW</span>
               <div className="panel-header-right">
-                <div className="panel-icon">📊</div>
+                <BarChart3 className="w-4 h-4" />
                 <div className="last-updated">
                   <span className="update-indicator"></span>
                   <span className="update-text">
@@ -1085,7 +1086,7 @@ const ProTerminal: React.FC = () => {
           <div className="trading-insights-panel">
             <div className="panel-header">
               <span className="panel-title">TRADING INSIGHTS</span>
-              <div className="panel-icon">📡</div>
+              <Satellite className="w-4 h-4" />
             </div>
             
             <div className="insights-list">
@@ -1110,7 +1111,7 @@ const ProTerminal: React.FC = () => {
           <div className="lending-borrowing-panel">
             <div className="panel-header">
               <span className="panel-title">LENDING & BORROWING</span>
-              <div className="panel-icon">💰</div>
+              <DollarSign className="w-4 h-4" />
             </div>
             
             {/* Current Position Status */}

@@ -3,6 +3,7 @@ import { useSolanaWallet } from '../providers/SolanaWalletProvider';
 import { useTxToasts } from '../hooks/useTxToasts';
 import { getConnection } from '../services/connection';
 import { PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Rocket, Zap } from 'lucide-react';
 
 interface LendingSectionProps {
   onNavigateToTerminal?: () => void;
@@ -151,7 +152,7 @@ const LendingSection: React.FC<LendingSectionProps> = ({ onNavigateToTerminal, p
                   Processing...
                 </div>
               ) : (
-                '🚀 Approve & Deposit'
+                <><Rocket className="w-4 h-4 inline mr-1" />Approve & Deposit</>
               )}
             </button>
           </div>
@@ -211,7 +212,7 @@ const LendingSection: React.FC<LendingSectionProps> = ({ onNavigateToTerminal, p
                   Processing...
                 </div>
               ) : (
-                '⚡ Mint MEAD'
+                <><Zap className="w-4 h-4 inline mr-1" />Mint MEAD</>
               )}
             </button>
           </div>
@@ -254,7 +255,7 @@ const LendingSection: React.FC<LendingSectionProps> = ({ onNavigateToTerminal, p
             onClick={onNavigateToTerminal}
             className="bg-gradient-to-r from-cyphr-teal to-cyphr-blue hover:from-cyphr-teal/90 hover:to-cyphr-blue/90 text-cyphr-dark font-bold px-8 py-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
-            🚀 Go to Strategy Builder
+            <Rocket className="w-4 h-4 inline mr-2" />Go to Strategy Builder
           </button>
         </div>
       </div>

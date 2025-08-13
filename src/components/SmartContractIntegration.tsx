@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useStrategyBuilder } from '../hooks/useStrategyBuilder';
+import { AlertTriangle, Check, X, DollarSign, Coins, Pause, Play, Target, Rocket, TrendingUp, RotateCcw, Link, Wallet, Building2 } from 'lucide-react';
 import './SmartContractIntegration.css';
 
 const SmartContractIntegration: React.FC = () => {
@@ -131,11 +132,11 @@ const SmartContractIntegration: React.FC = () => {
     return (
       <div className="smart-contract-integration">
         <div className="integration-header">
-          <h2>🔗 Smart Contract Integration</h2>
+          <h2><Link className="w-6 h-6 inline mr-2" />Smart Contract Integration</h2>
           <p>Connect your Phantom wallet to interact with the Cyphr Vaults</p>
         </div>
         <div className="wallet-not-connected">
-          <div className="wallet-icon">👛</div>
+          <div className="wallet-icon"><Wallet className="w-8 h-8" /></div>
           <h3>Wallet Not Connected</h3>
           <p>Please connect your Phantom wallet to access vault features</p>
         </div>
@@ -146,7 +147,7 @@ const SmartContractIntegration: React.FC = () => {
   return (
     <div className="smart-contract-integration">
       <div className="integration-header">
-        <h2>🔗 Smart Contract Integration</h2>
+        <h2><Link className="w-6 h-6 inline mr-2" />Smart Contract Integration</h2>
         <p>Interact with Cyphr Vaults on Solana Devnet</p>
         <div className="header-actions">
           <button 
@@ -154,14 +155,14 @@ const SmartContractIntegration: React.FC = () => {
             onClick={loadVaultData}
             disabled={loading}
           >
-            {loading ? '🔄 Loading...' : '🔄 Refresh Data'}
+                            {loading ? <><RotateCcw className="w-4 h-4 inline mr-1 animate-spin" />Loading...</> : <><RotateCcw className="w-4 h-4 inline mr-1" />Refresh Data</>}
           </button>
           <button 
             className="init-vault-btn"
             onClick={handleInitializeVault}
             disabled={loading}
           >
-            🏦 Initialize Vault
+            <Building2 className="w-4 h-4 inline mr-1" />Initialize Vault
           </button>
         </div>
       </div>
@@ -169,10 +170,10 @@ const SmartContractIntegration: React.FC = () => {
       {/* Error Display */}
       {error && (
         <div className="error-message">
-          <span className="error-icon">⚠️</span>
+          <span className="error-icon"><AlertTriangle className="w-4 h-4" /></span>
           <span>{error}</span>
           <button className="clear-error-btn" onClick={clearError}>
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -180,7 +181,7 @@ const SmartContractIntegration: React.FC = () => {
       <div className="integration-content">
         {/* Basic Vault Section */}
         <div className="vault-section">
-          <h3>💰 Basic Vault</h3>
+          <h3><DollarSign className="w-5 h-5 inline mr-2" />Basic Vault</h3>
           <div className="vault-info">
             {basicVaultData ? (
               <>
@@ -207,7 +208,7 @@ const SmartContractIntegration: React.FC = () => {
                 <div className="vault-stat">
                   <span className="stat-label">Status:</span>
                   <span className={`stat-value ${basicVaultData.isPaused ? 'paused' : 'active'}`}>
-                    {basicVaultData.isPaused ? '⏸️ Paused' : '✅ Active'}
+                    {basicVaultData.isPaused ? <><Pause className="w-4 h-4 inline mr-1" />Paused</> : <><Check className="w-4 h-4 inline mr-1" />Active</>}
                   </span>
                 </div>
               </>
@@ -232,7 +233,7 @@ const SmartContractIntegration: React.FC = () => {
                   onClick={handleDeposit}
                   disabled={loading || !depositAmount}
                 >
-                  💰 Deposit
+                  <DollarSign className="w-4 h-4 mr-1" />Deposit
                 </button>
               </div>
             </div>
@@ -252,7 +253,7 @@ const SmartContractIntegration: React.FC = () => {
                   onClick={handleWithdraw}
                   disabled={loading || !withdrawAmount}
                 >
-                  💸 Withdraw
+                  <Coins className="w-4 h-4 mr-1" />Withdraw
                 </button>
               </div>
             </div>
@@ -264,7 +265,7 @@ const SmartContractIntegration: React.FC = () => {
                 disabled={loading}
                 className="claim-btn"
               >
-                🎯 Claim Yield
+                <Target className="w-4 h-4 mr-1" />Claim Yield
               </button>
             </div>
           </div>
@@ -272,7 +273,7 @@ const SmartContractIntegration: React.FC = () => {
 
         {/* Strategy Vault Section */}
         <div className="vault-section">
-          <h3>📈 Strategy Vault</h3>
+          <h3><TrendingUp className="w-5 h-5 inline mr-2" />Strategy Vault</h3>
           <div className="vault-info">
             {strategyVaultData ? (
               <>
@@ -299,7 +300,7 @@ const SmartContractIntegration: React.FC = () => {
                 <div className="vault-stat">
                   <span className="stat-label">Status:</span>
                   <span className={`stat-value ${strategyVaultData.isPaused ? 'paused' : 'active'}`}>
-                    {strategyVaultData.isPaused ? '⏸️ Paused' : '✅ Active'}
+                    {strategyVaultData.isPaused ? <><Pause className="w-4 h-4 inline mr-1" />Paused</> : <><Check className="w-4 h-4 inline mr-1" />Active</>}
                   </span>
                 </div>
               </>
@@ -311,7 +312,7 @@ const SmartContractIntegration: React.FC = () => {
 
         {/* Strategy Management Section */}
         <div className="strategy-section">
-          <h3>🎯 Strategy Management</h3>
+          <h3><Target className="w-5 h-5 inline mr-2" />Strategy Management</h3>
           
           {/* Create Strategy Form */}
           <div className="strategy-form">
@@ -400,7 +401,7 @@ const SmartContractIntegration: React.FC = () => {
               disabled={loading || !strategyName.trim()}
               className="create-strategy-btn"
             >
-              🚀 Create Strategy
+              <Rocket className="w-4 h-4 mr-1" />Create Strategy
             </button>
           </div>
 
@@ -421,7 +422,7 @@ const SmartContractIntegration: React.FC = () => {
               disabled={loading || !strategyId.trim()}
               className="execute-strategy-btn"
             >
-              ▶️ Execute Strategy
+              <Play className="w-4 h-4 mr-1" />Execute Strategy
             </button>
           </div>
 
@@ -435,7 +436,7 @@ const SmartContractIntegration: React.FC = () => {
                     <div className="strategy-header">
                       <h5>{strategy.name}</h5>
                       <span className={`status ${strategy.isActive ? 'active' : 'inactive'}`}>
-                        {strategy.isActive ? '✅ Active' : '⏸️ Inactive'}
+                        {strategy.isActive ? <><Check className="w-4 h-4 inline mr-1" />Active</> : <><Pause className="w-4 h-4 inline mr-1" />Inactive</>}
                       </span>
                     </div>
                     <p className="strategy-description">{strategy.description}</p>

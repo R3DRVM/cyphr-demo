@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BarChart3, Zap, TrendingUp } from 'lucide-react';
 
 const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState('wallets');
@@ -145,7 +146,7 @@ const Portfolio: React.FC = () => {
           <div className="elite-glass-card p-6 rounded-xl animate-slide-up shadow-elite">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold flex items-center gap-2">
-                <span className="text-xl">📊</span>
+                <BarChart3 className="w-5 h-5" />
                 Total Value
               </h3>
               <button className="text-cyphr-gray hover:text-cyphr-teal transition-all duration-300 text-sm hover:scale-110">▼</button>
@@ -158,7 +159,7 @@ const Portfolio: React.FC = () => {
           <div className="elite-glass-card p-6 rounded-xl animate-slide-up shadow-elite">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold flex items-center gap-2">
-                <span className="text-xl">⚡</span>
+                <Zap className="w-5 h-5" />
                 Recent Activity
               </h3>
               <button className="text-cyphr-gray hover:text-cyphr-teal transition-all duration-300 text-sm hover:scale-110">▼</button>
@@ -201,7 +202,7 @@ const Portfolio: React.FC = () => {
           <div className="elite-glass-card p-6 rounded-xl animate-slide-up shadow-elite">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-cyphr-teal font-nulshock text-lg font-semibold flex items-center gap-2">
-                <span className="text-xl">📈</span>
+                <TrendingUp className="w-5 h-5" />
                 Performance
               </h3>
               <button className="text-cyphr-gray hover:text-cyphr-teal transition-all duration-300 text-sm hover:scale-110">▼</button>

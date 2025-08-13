@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TokenIcon from '../components/TokenIcon';
+import { Menu, DollarSign, Star, Bot, Globe } from 'lucide-react';
 
 interface Bubble {
   id: number;
@@ -21,11 +22,11 @@ const Tracker: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Array<{name: string, address: string, symbol: string}>>([]);
 
   const navItems = [
-    { name: 'Trades', icon: '☰', path: 'trades' },
-    { name: 'My Holdings', icon: '💰', path: 'holdings' },
-    { name: 'Token Details', icon: '⭐', path: 'details' },
-    { name: 'AI Insights', icon: '🤖', path: 'ai-insights' },
-    { name: 'Bubble Map', icon: '🌐', path: 'bubble' }
+    { name: 'Trades', icon: <Menu className="w-4 h-4" />, path: 'trades' },
+    { name: 'My Holdings', icon: <DollarSign className="w-4 h-4" />, path: 'holdings' },
+    { name: 'Token Details', icon: <Star className="w-4 h-4" />, path: 'details' },
+    { name: 'AI Insights', icon: <Bot className="w-4 h-4" />, path: 'ai-insights' },
+    { name: 'Bubble Map', icon: <Globe className="w-4 h-4" />, path: 'bubble' }
   ];
 
   // Token database with different bubble configurations for each token
@@ -594,7 +595,7 @@ const Tracker: React.FC = () => {
                     }}
                     size="md"
                   />
-                  {searchedToken} 🔍
+                  {searchedToken} <Search className="w-4 h-4 inline" />
                 </button>
               )}
             </div>

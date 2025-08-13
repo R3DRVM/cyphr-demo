@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BarChart3, Upload, Circle, ChevronDown, ChevronUp } from 'lucide-react';
 
 const Spot: React.FC = () => {
   const [activeTab, setActiveTab] = useState('active');
@@ -76,7 +77,7 @@ const Spot: React.FC = () => {
               <div className="font-bold text-cyphr-white text-base mb-1">Axiom Main</div>
               <div className="text-cyphr-gray text-sm">2.47</div>
             </div>
-            <span className="text-cyphr-gray">▼</span>
+            <ChevronDown className="w-4 h-4 text-cyphr-gray" />
           </div>
 
           <div className="space-y-3">
@@ -107,7 +108,7 @@ const Spot: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-cyphr-pink to-transparent transform rotate-12"></div>
             </div>
-            <div className="absolute bottom-3 left-3 text-cyphr-gray text-xl">📊</div>
+            <div className="absolute bottom-3 left-3 text-cyphr-gray text-xl"><BarChart3 className="w-6 h-6" /></div>
           </div>
         </div>
 
@@ -115,7 +116,7 @@ const Spot: React.FC = () => {
         <div className="elite-glass-card p-4 rounded-xl shadow-elite">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-cyphr-teal font-nulshock text-base font-semibold">Performance</h3>
-            <button className="text-cyphr-gray hover:text-cyphr-teal transition-colors p-1 rounded hover:bg-cyphr-black/30">📤</button>
+            <button className="text-cyphr-gray hover:text-cyphr-teal transition-colors p-1 rounded hover:bg-cyphr-black/30"><Upload className="w-4 h-4" /></button>
           </div>
 
           <div className="space-y-3">
@@ -130,23 +131,23 @@ const Spot: React.FC = () => {
               <div className="text-cyphr-gray text-sm font-semibold">PNL Distribution</div>
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="text-cyphr-gray">🟢 &gt;500%</span>
+                  <span className="text-cyphr-gray"><Circle className="w-3 h-3 inline mr-1 text-green-500" />&gt;500%</span>
                   <span className="text-cyphr-white font-semibold">3</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-cyphr-gray">🟢 200% ~ 500%</span>
+                  <span className="text-cyphr-gray"><Circle className="w-3 h-3 inline mr-1 text-green-500" />200% ~ 500%</span>
                   <span className="text-cyphr-white font-semibold">8</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-cyphr-gray">🟢 0% ~ 200%</span>
+                  <span className="text-cyphr-gray"><Circle className="w-3 h-3 inline mr-1 text-green-500" />0% ~ 200%</span>
                   <span className="text-cyphr-white font-semibold">12</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-cyphr-gray">🔴 0% ~ -50%</span>
+                  <span className="text-cyphr-gray"><Circle className="w-3 h-3 inline mr-1 text-red-500" />0% ~ -50%</span>
                   <span className="text-cyphr-white font-semibold">4</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-cyphr-gray">🔴 &lt; -50%</span>
+                  <span className="text-cyphr-gray"><Circle className="w-3 h-3 inline mr-1 text-red-500" />&lt; -50%</span>
                   <span className="text-cyphr-white font-semibold">2</span>
                 </div>
               </div>
@@ -189,7 +190,7 @@ const Spot: React.FC = () => {
             Show Hidden
           </button>
           <button className="elite-button px-3 py-2 rounded-lg text-xs font-semibold text-cyphr-gray hover:text-cyphr-white transition-all duration-200">
-            ↑↓ USD
+            <ChevronUp className="w-3 h-3 inline" /><ChevronDown className="w-3 h-3 inline" /> USD
           </button>
         </div>
 
@@ -204,7 +205,7 @@ const Spot: React.FC = () => {
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Token</th>
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Bought</th>
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Sold</th>
-                    <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Remaining ↓</th>
+                    <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Remaining <ChevronDown className="w-3 h-3 inline" /></th>
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">PNL</th>
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Action</th>
                   </tr>
@@ -262,8 +263,8 @@ const Spot: React.FC = () => {
                   <tr className="border-b border-cyphr-gray/20 bg-cyphr-black/30">
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Type</th>
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Token</th>
-                    <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Amount ⓘ</th>
-                    <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Market Cap ⓘ</th>
+                    <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Amount <Info className="w-3 h-3 inline" /></th>
+                    <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Market Cap <Info className="w-3 h-3 inline" /></th>
                     <th className="px-3 py-2 text-left text-cyphr-teal font-bold text-xs tracking-wide">Age</th>
                   </tr>
                 </thead>

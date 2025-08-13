@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { Rocket, DollarSign, Trophy, Check, Settings, Trash2 } from 'lucide-react';
 import ReactFlow, {
   Node,
   Edge,
@@ -1005,19 +1006,19 @@ const StrategyBuilder: React.FC = () => {
         
         <div className="strategy-actions">
           <button className="strategy-btn execute">
-            <span className="btn-icon">🚀</span>
+            <Rocket className="w-4 h-4" />
             EXECUTE STRATEGY
           </button>
           <button className="strategy-btn withdraw">
-            <span className="btn-icon">💰</span>
+            <DollarSign className="w-4 h-4" />
             WITHDRAW SOL
           </button>
           <button className="strategy-btn claim">
-            <span className="btn-icon">🏆</span>
+            <Trophy className="w-4 h-4" />
             CLAIM YIELD
           </button>
           <button className="strategy-btn test-wallet">
-            <span className="btn-icon">✅</span>
+            <Check className="w-4 h-4" />
             TEST WALLET
           </button>
         </div>
@@ -1199,7 +1200,7 @@ const StrategyBuilder: React.FC = () => {
       {/* Node Properties */}
       {selectedNode && (
         <div className="node-properties">
-          <h3>⚙️ Node Properties</h3>
+          <h3><Settings className="w-5 h-5 inline mr-2" />Node Properties</h3>
           <div className="property-group">
             <label>Node Type:</label>
             <span>{selectedNode.type}</span>
@@ -1215,7 +1216,7 @@ const StrategyBuilder: React.FC = () => {
               setSelectedNode(null);
             }}
           >
-            🗑️ Delete Node
+            <Trash2 className="w-4 h-4 inline mr-1" />Delete Node
           </button>
         </div>
       )}

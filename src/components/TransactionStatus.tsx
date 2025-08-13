@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTransactionContext, TransactionStatus as TransactionStatusType } from '../contexts/TransactionContext';
+import { Clipboard, Search, Clock, Check, X, HelpCircle } from 'lucide-react';
 import './TransactionStatus.css';
 
 const TransactionStatus: React.FC = () => {
@@ -14,13 +15,13 @@ const TransactionStatus: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'pending':
-        return '⏳';
+        return <Clock className="w-4 h-4" />;
       case 'confirmed':
-        return '✅';
+        return <Check className="w-4 h-4" />;
       case 'failed':
-        return '❌';
+        return <X className="w-4 h-4" />;
       default:
-        return '❓';
+        return <HelpCircle className="w-4 h-4" />;
     }
   };
 
@@ -112,7 +113,7 @@ const TransactionStatus: React.FC = () => {
                     onClick={() => copyToClipboard(tx.signature!)}
                     title="Copy signature"
                   >
-                    📋
+                    <Clipboard className="w-4 h-4" />
                   </button>
                 </div>
                 {tx.explorerUrl && (
@@ -122,7 +123,7 @@ const TransactionStatus: React.FC = () => {
                     rel="noopener noreferrer"
                     className="explorer-link"
                   >
-                    🔍 View on Explorer
+                    <Search className="w-4 h-4 inline mr-1" />View on Explorer
                   </a>
                 )}
               </div>
