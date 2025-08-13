@@ -10,6 +10,10 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
+  build: {
+    outDir: '../docs',
+    emptyOutDir: true,
+  },
   resolve: {
     alias: {
       buffer: 'buffer',
