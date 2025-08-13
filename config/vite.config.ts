@@ -10,8 +10,12 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
+  server: {
+    port: 3000,
+    host: true,
+  },
   build: {
-    outDir: '../docs',
+    outDir: './docs',
     emptyOutDir: true,
   },
   resolve: {
