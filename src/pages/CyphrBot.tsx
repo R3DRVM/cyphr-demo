@@ -50,35 +50,37 @@ const CyphrBot: React.FC = () => {
     automation: true,
     positions: true,
     wallet: true,
-    nfts: false
+    nfts: false,
+    assets: true
   });
 
   // State for wallet mode toggle
   const [walletMode, setWalletMode] = useState(true);
 
-  // Mock data - in real app, this would come from blockchain/API
-  const [wallets] = useState<WalletInfo[]>([
-    {
-      network: 'Solana',
-      address: '2PC4g...uvbVMK',
-      balance: '0.0000',
-      balanceUSD: '$0.00',
-      assets: [
-        { symbol: 'SOL', amount: '0.0000', valueUSD: '$0.00' },
-        { symbol: 'USDC', amount: '0.00', valueUSD: '$0.00' }
-      ]
-    },
-    {
-      network: 'Ethereum',
-      address: '0x1af...84759f',
-      balance: '0.0000',
-      balanceUSD: '$0.00',
-      assets: [
-        { symbol: 'ETH', amount: '0.0000', valueUSD: '$0.00' },
-        { symbol: 'USDC', amount: '0.00', valueUSD: '$0.00' }
-      ]
+  // Real wallet data from connected wallet
+  const [wallets, setWallets] = useState<WalletInfo[]>([]);
+
+  // Update wallets when wallet connection changes
+  useEffect(() => {
+    if (connected && wallet?.publicKey) {
+      // For now, we'll show the connected wallet info
+      // In a real implementation, you'd fetch actual balances from the blockchain
+      const walletInfo: WalletInfo = {
+        network: 'Solana',
+        address: `${wallet.publicKey.toString().slice(0, 4)}...${wallet.publicKey.toString().slice(-4)}`,
+        balance: '0.0000', // This would be fetched from RPC
+        balanceUSD: '$0.00', // This would be calculated from price feeds
+        assets: [
+          { symbol: 'SOL', amount: '0.0000', valueUSD: '$0.00' },
+          { symbol: 'USDC', amount: '0.00', valueUSD: '$0.00' }
+        ]
+      };
+      
+      setWallets([walletInfo]);
+    } else {
+      setWallets([]);
     }
-  ]);
+  }, [connected, wallet]);
 
   const [activities] = useState<ActivityItem[]>([
     {
@@ -426,43 +428,62 @@ const CyphrBot: React.FC = () => {
                 <span>Wallet</span>
               </div>
               
-              {wallets.map((wallet, index) => (
-                <div key={index} className="wallet-item">
-                  <div className="wallet-network">
-                    <span className="network-name">{wallet.network}</span>
-                    <div className="wallet-address-container">
-                      <span className="wallet-address">{wallet.address}</span>
-                      <button 
-                        className="copy-button"
-                        onClick={() => copyToClipboard(wallet.address)}
-                      >
-                        <Copy size={12} />
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="wallet-balance">
-                    <span className="balance-amount">{wallet.balance}</span>
-                    <span className="balance-usd">{wallet.balanceUSD}</span>
-                  </div>
-
-                  <div className="wallet-assets">
-                    <div className="assets-header">
-                      <span>↳ Assets</span>
-                      <ChevronDown size={14} />
-                    </div>
-                    <div className="assets-list">
-                      {wallet.assets.map((asset, assetIndex) => (
-                        <div key={assetIndex} className="asset-item">
-                          <span className="asset-symbol">{asset.symbol}</span>
-                          <span className="asset-amount">{asset.amount}</span>
-                          <span className="asset-value">{asset.valueUSD}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              {!connected ? (
+                <div className="wallet-connect-prompt">
+                  <div className="connect-icon">🔗</div>
+                  <span className="connect-text">Connect your wallet to view balances</span>
+                  <button className="connect-wallet-btn">
+                    Connect Wallet
+                  </button>
                 </div>
-              ))}
+              ) : wallets.length > 0 ? (
+                wallets.map((wallet, index) => (
+                  <div key={index} className="wallet-item">
+                    <div className="wallet-network">
+                      <span className="network-name">{wallet.network}</span>
+                      <div className="wallet-address-container">
+                        <span className="wallet-address">{wallet.address}</span>
+                        <button 
+                          className="copy-button"
+                          onClick={() => copyToClipboard(wallet.address)}
+                        >
+                          <Copy size={12} />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="wallet-balance">
+                      <span className="balance-amount">{wallet.balance}</span>
+                      <span className="balance-usd">{wallet.balanceUSD}</span>
+                    </div>
+
+                                      <div className="wallet-assets">
+                    <div 
+                      className="assets-header"
+                      onClick={() => toggleSection('assets')}
+                    >
+                      <span>↳ Assets</span>
+                      {expandedSections.assets ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    </div>
+                    {expandedSections.assets && (
+                      <div className="assets-list">
+                        {wallet.assets.map((asset, assetIndex) => (
+                          <div key={assetIndex} className="asset-item">
+                            <span className="asset-symbol">{asset.symbol}</span>
+                            <span className="asset-amount">{asset.amount}</span>
+                            <span className="asset-value">{asset.valueUSD}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  </div>
+                ))
+              ) : (
+                <div className="wallet-loading">
+                  <span>Loading wallet data...</span>
+                </div>
+              )}
             </div>
           )}
 
