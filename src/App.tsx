@@ -10,10 +10,9 @@ import TransactionStatus from './components/TransactionStatus';
 import { BootDebug } from './debug/BootDebug';
 import Discover from './pages/Discover';
 import Dashboard from './pages/Dashboard';
-import Tracker from './pages/Tracker';
+import CyphrBot from './pages/CyphrBot';
 import TokenPage from './pages/TokenPage';
 import Orders from './pages/Orders';
-import Portfolio from './pages/Portfolio';
 import Spot from './pages/Spot';
 import ProTerminal from './pages/ProTerminal';
 import StrategyBuilder from './pages/StrategyBuilder';
@@ -39,8 +38,7 @@ const MobileBottomNav: React.FC = () => {
     { name: 'Strategy', path: '/strategy-builder', icon: '/assets/icons/WatchlistStar.png' },
     { name: 'Terminal', path: '/pro-terminal', icon: '/assets/icons/PhoneIcon.png' },
     { name: 'Discover', path: '/discover', icon: '/assets/icons/PriceLogic.png' },
-    { name: 'Insights', path: '/tracker', icon: '/assets/icons/SearchIcon.png' },
-    { name: 'Portfolio', path: '/portfolio', icon: '/assets/icons/WalletIcon.png' },
+    { name: 'Cyphr Bot', path: '/cyphr-bot', icon: '/assets/icons/RobotIcon.png' },
   ];
 
   return (
@@ -78,10 +76,9 @@ function App() {
                   <Route path="/pro-terminal" element={<ProTerminal />} />
                   <Route path="/discover" element={<Discover />} />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/tracker" element={<Tracker />} />
+                  <Route path="/cyphr-bot" element={<CyphrBot />} />
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/token/:id" element={<TokenPage />} />
-                  <Route path="/portfolio" element={<Portfolio />} />
                   <Route path="/spot" element={<Spot />} />
                   <Route path="/strategy-builder" element={<StrategyBuilder />} />
                 </Routes>

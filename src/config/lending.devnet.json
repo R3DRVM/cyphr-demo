@@ -1,0 +1,26 @@
+{
+  "lendingPool": {
+    "address": "11111111111111111111111111111111",
+    "collateralToken": "So11111111111111111111111111111111111111112",
+    "borrowToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "maxLtv": 0.75,
+    "liquidationThreshold": 0.8,
+    "liquidationPenalty": 0.05,
+    "borrowRate": 0.08,
+    "supplyRate": 0.06
+  },
+  "oracle": {
+    "address": "11111111111111111111111111111111",
+    "priceFeed": "https://api.devnet.solana.com"
+  },
+  "fees": {
+    "borrowFee": 0.001,
+    "repayFee": 0.001,
+    "withdrawFee": 0.001
+  },
+  "limits": {
+    "minCollateral": 0.1,
+    "maxBorrow": 1000,
+    "maxCollateral": 100
+  }
+}

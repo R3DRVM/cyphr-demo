@@ -30,8 +30,7 @@ const Header: React.FC = () => {
     { name: 'DISCOVER', path: '/discover' },
     { name: 'TERMINAL', path: '/pro-terminal' },
     { name: 'STRATEGY', path: '/strategy-builder' },
-    { name: 'INSIGHTS', path: '/tracker' },
-    { name: 'PORTFOLIO', path: '/portfolio' },
+    { name: 'CYPHR BOT', path: '/cyphr-bot' },
   ];
 
   const handleProfileClick = () => {
