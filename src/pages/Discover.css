@@ -574,3 +574,220 @@
     min-height: 250px;
   }
 }
+
+/* iPhone and Mobile Specific Styles */
+@media (max-width: 480px) {
+  .discover-page {
+    padding: 0.75rem;
+  }
+  
+  .discover-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+  
+  .header-left h1 {
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+  
+  .header-left p {
+    font-size: 0.875rem;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    font-size: 0.875rem;
+  }
+  
+  .search-icon {
+    width: 18px;
+    height: 18px;
+    left: 10px;
+  }
+  
+  .discover-main-content {
+    gap: 1.5rem;
+  }
+  
+  .discover-top-row,
+  .discover-middle-row,
+  .discover-bottom-row {
+    gap: 1rem;
+  }
+  
+  .discover-module {
+    padding: 1rem;
+    min-height: 200px;
+    border-radius: 8px;
+  }
+  
+  .module-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .module-header h3 {
+    font-size: 1.125rem;
+  }
+  
+  .token-entry {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .token-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+  }
+  
+  .token-name {
+    font-size: 0.875rem;
+  }
+  
+  .token-address,
+  .token-rank {
+    font-size: 0.75rem;
+  }
+  
+  .token-gain {
+    font-size: 0.875rem;
+  }
+  
+  .token-price,
+  .token-volume,
+  .volume-label {
+    font-size: 0.75rem;
+  }
+  
+  .transaction-entry {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .transaction-type {
+    min-width: 100px;
+  }
+  
+  .type-badge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  .transaction-time {
+    font-size: 0.75rem;
+  }
+  
+  .wallet-address {
+    font-size: 0.75rem;
+  }
+  
+  .known-wallet {
+    font-size: 0.65rem;
+  }
+  
+  .usd-amount {
+    font-size: 0.875rem;
+  }
+  
+  .token-amount {
+    font-size: 0.65rem;
+  }
+  
+  .analytics-placeholder,
+  .risk-placeholder {
+    height: 150px;
+  }
+  
+  .placeholder-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .placeholder-text p {
+    font-size: 0.75rem;
+  }
+  
+  .risk-metric {
+    padding: 0.5rem;
+  }
+  
+  .metric-label {
+    font-size: 0.75rem;
+  }
+  
+  .metric-value {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+/* iPhone SE and Small Devices */
+@media (max-width: 375px) {
+  .discover-page {
+    padding: 0.5rem;
+  }
+  
+  .discover-module {
+    padding: 0.75rem;
+    min-height: 180px;
+  }
+  
+  .token-entry {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .transaction-entry {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .header-left h1 {
+    font-size: 1.75rem;
+  }
+  
+  .search-input {
+    padding: 8px 8px 8px 30px;
+    font-size: 0.8rem;
+  }
+  
+  .search-icon {
+    width: 16px;
+    height: 16px;
+    left: 8px;
+  }
+}
+
+/* Landscape iPhone */
+@media (max-height: 500px) and (orientation: landscape) {
+  .discover-page {
+    padding: 0.5rem;
+  }
+  
+  .discover-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .discover-main-content {
+    gap: 1rem;
+  }
+  
+  .discover-module {
+    min-height: 150px;
+    padding: 0.75rem;
+  }
+  
+  .token-entry {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .transaction-entry {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}

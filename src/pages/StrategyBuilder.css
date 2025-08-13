@@ -825,6 +825,91 @@
   transition: all 0.3s ease;
 }
 
+/* Mobile Node Styling */
+@media (max-width: 480px) {
+  .input-node,
+  .logic-node,
+  .action-node {
+    min-width: 160px;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+  
+  .node-content {
+    gap: 0.5rem;
+  }
+  
+  .node-header {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .node-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  .node-title {
+    font-size: 0.875rem;
+  }
+  
+  .node-risk-badge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+  }
+  
+  .parameter {
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .parameter label {
+    font-size: 0.75rem;
+  }
+  
+  .parameter input,
+  .parameter select {
+    padding: 0.4rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+  }
+  
+  .node-delete-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 375px) {
+  .input-node,
+  .logic-node,
+  .action-node {
+    min-width: 140px;
+    padding: 0.5rem;
+  }
+  
+  .node-title {
+    font-size: 0.8rem;
+  }
+  
+  .parameter input,
+  .parameter select {
+    padding: 0.3rem;
+    font-size: 0.7rem;
+  }
+  
+  .node-delete-btn {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    top: 6px;
+    right: 6px;
+  }
+}
+
 .input-node {
   border-color: #00d4ff;
   box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
@@ -1124,4 +1209,317 @@
 .control-button.center::before {
   content: "⌂";
   font-size: 16px;
-} 
+}
+
+/* iPhone and Mobile Specific Styles */
+@media (max-width: 480px) {
+  .strategy-builder {
+    padding: 0.75rem;
+  }
+  
+  .strategy-header-bar {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .strategy-title h1 {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+  
+  .strategy-tagline {
+    font-size: 0.875rem;
+  }
+  
+  .strategy-status {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .status-label {
+    font-size: 0.75rem;
+  }
+  
+  .risk-badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .strategy-metrics {
+    gap: 0.75rem;
+  }
+  
+  .metric {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .metric-label {
+    font-size: 0.75rem;
+  }
+  
+  .metric-value {
+    font-size: 0.875rem;
+  }
+  
+  .strategy-main-content {
+    gap: 1.5rem;
+  }
+  
+  .strategy-top-row,
+  .strategy-bottom-row {
+    gap: 1rem;
+  }
+  
+  .strategy-module {
+    padding: 0.75rem;
+    min-height: 180px;
+    border-radius: 8px;
+  }
+  
+  .module-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .module-title {
+    font-size: 1rem;
+  }
+  
+  .module-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .deposit-form,
+  .borrow-form {
+    gap: 0.75rem;
+  }
+  
+  .input-with-button {
+    gap: 0.5rem;
+  }
+  
+  .deposit-input,
+  .borrow-input {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .max-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  .balance-info,
+  .borrow-info {
+    font-size: 0.75rem;
+  }
+  
+  .action-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .health-metrics {
+    gap: 0.5rem;
+  }
+  
+  .metric-row {
+    padding: 0.5rem;
+  }
+  
+  .metric-label {
+    font-size: 0.75rem;
+  }
+  
+  .metric-value {
+    font-size: 0.75rem;
+  }
+  
+  .liquidation-warning {
+    padding: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  
+  .warning-message {
+    font-size: 0.75rem;
+  }
+  
+  .pools-overview {
+    gap: 0.75rem;
+  }
+  
+  .pool-item {
+    padding: 0.75rem;
+  }
+  
+  .pool-name {
+    font-size: 0.875rem;
+  }
+  
+  .pool-status {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  .pool-stats {
+    gap: 0.5rem;
+  }
+  
+  .pool-stat {
+    font-size: 0.75rem;
+  }
+  
+  .strategy-builder-layout {
+    gap: 0.5rem;
+  }
+  
+  .strategy-sidebar {
+    padding: 0.75rem;
+  }
+  
+  .sidebar-section {
+    margin-bottom: 1rem;
+  }
+  
+  .section-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .section-title {
+    font-size: 0.875rem;
+  }
+  
+  .strategy-inputs-list {
+    gap: 0.5rem;
+  }
+  
+  .strategy-input-item {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+  
+  .palette-icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .ai-badge {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+  }
+  
+  .canvas-container {
+    min-height: 250px;
+  }
+  
+  .results-panel {
+    padding: 0.75rem;
+  }
+  
+  .results-title {
+    font-size: 1rem;
+  }
+  
+  .results-content {
+    font-size: 0.875rem;
+  }
+  
+  .custom-controls {
+    bottom: 10px;
+    left: 10px;
+    gap: 0.5rem;
+  }
+  
+  .control-button {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .react-flow__minimap {
+    width: 80px !important;
+    height: 60px !important;
+    bottom: 10px !important;
+    right: 10px !important;
+  }
+}
+
+/* iPhone SE and Small Devices */
+@media (max-width: 375px) {
+  .strategy-builder {
+    padding: 0.5rem;
+  }
+  
+  .strategy-header-bar {
+    padding: 0.5rem;
+  }
+  
+  .strategy-title h1 {
+    font-size: 1.25rem;
+  }
+  
+  .strategy-module {
+    padding: 0.5rem;
+    min-height: 160px;
+  }
+  
+  .deposit-input,
+  .borrow-input {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+  }
+  
+  .action-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .canvas-container {
+    min-height: 200px;
+  }
+  
+  .custom-controls {
+    bottom: 8px;
+    left: 8px;
+  }
+  
+  .control-button {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+/* Landscape iPhone */
+@media (max-height: 500px) and (orientation: landscape) {
+  .strategy-builder {
+    padding: 0.5rem;
+  }
+  
+  .strategy-header-bar {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .strategy-main-content {
+    gap: 1rem;
+  }
+  
+  .strategy-module {
+    min-height: 120px;
+    padding: 0.5rem;
+  }
+  
+  .canvas-container {
+    min-height: 200px;
+  }
+  
+  .strategy-sidebar {
+    padding: 0.5rem;
+  }
+  
+  .results-panel {
+    padding: 0.5rem;
+  }
+}
