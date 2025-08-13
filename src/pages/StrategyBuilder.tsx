@@ -13,6 +13,7 @@ import ReactFlow, {
   NodeTypes,
   Handle,
   Position,
+  useReactFlow,
 } from 'reactflow';
 import {
   Chart as ChartJS,
@@ -50,154 +51,54 @@ ChartJS.register(
   Filler
 );
 
-// Enhanced Node Types with Risk Profiling
-const InputNode: React.FC<{ data: any }> = ({ data }) => (
-  <div className="strategy-node input-node" title="Data Source: Provides real-time token data for strategy execution">
-    <Handle type="source" position={Position.Right} />
-    <div className="node-header">
-      <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="node-icon" style={{ width: '20px', height: '20px' }} />
-      <span className="node-title">{data.label}</span>
-      <div className="node-risk-badge low-risk">Low Risk</div>
+// Custom Controls Component for ReactFlow
+const CustomControls = () => {
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  
+  return (
+    <div className="custom-controls">
+      <button 
+        className="control-button zoom-in" 
+        onClick={() => zoomIn()}
+        title="Zoom In"
+      />
+      <button 
+        className="control-button zoom-out" 
+        onClick={() => zoomOut()}
+        title="Zoom Out"
+      />
+      <button 
+        className="control-button fullscreen" 
+        onClick={() => {
+          const canvas = document.querySelector('.strategy-canvas');
+          if (canvas) {
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            } else {
+              canvas.requestFullscreen();
+            }
+          }
+        }}
+        title="Toggle Fullscreen"
+      />
+      <button 
+        className="control-button center" 
+        onClick={() => fitView()}
+        title="Center Strategy"
+      />
     </div>
-    <div className="node-content">
-      <div className="parameter">
-        <label>Token:</label>
-        <input 
-          type="text" 
-          placeholder="SOL, ETH, etc."
-          value={data.token || ''}
-          onChange={(e) => data.onChange('token', e.target.value)}
-        />
-      </div>
-      <div className="parameter">
-        <label>Data Type:</label>
-        <select 
-          value={data.dataType || 'price'}
-          onChange={(e) => data.onChange('dataType', e.target.value)}
-        >
-          <option value="price">Price</option>
-          <option value="volume">Volume</option>
-          <option value="volatility">Volatility</option>
-          <option value="market_cap">Market Cap</option>
-        </select>
-      </div>
-    </div>
-  </div>
-);
-
-const LogicNode: React.FC<{ data: any }> = ({ data }) => (
-  <div className="strategy-node logic-node" title="Strategy Logic: Defines conditions and triggers for your strategy">
-    <Handle type="target" position={Position.Left} />
-    <Handle type="source" position={Position.Right} />
-    <div className="node-header">
-      <img src="/assets/icons/StrategyLogicIcon.png" alt="Strategy Logic" className="node-icon" style={{ width: '20px', height: '20px' }} />
-      <span className="node-title">{data.label}</span>
-      <div className={`node-risk-badge ${data.riskLevel || 'medium-risk'}`}>
-        {data.riskLevel === 'low-risk' ? 'Low Risk' : 
-         data.riskLevel === 'high-risk' ? 'High Risk' : 'Medium Risk'}
-      </div>
-    </div>
-    <div className="node-content">
-      <div className="parameter">
-        <label>Logic Type:</label>
-        <select 
-          value={data.logicType || 'time'}
-          onChange={(e) => data.onChange('logicType', e.target.value)}
-        >
-          <option value="time">Time-Based</option>
-          <option value="price">Price-Based</option>
-          <option value="volatility">Volatility-Based</option>
-          <option value="volume">Volume-Based</option>
-          <option value="ai">AI-Optimized</option>
-        </select>
-      </div>
-      <div className="parameter">
-        <label>Duration:</label>
-        <select 
-          value={data.duration || '1-week'}
-          onChange={(e) => data.onChange('duration', e.target.value)}
-        >
-          <option value="1-day">1 Day</option>
-          <option value="1-week">1 Week</option>
-          <option value="2-weeks">2 Weeks</option>
-          <option value="3-weeks">3 Weeks</option>
-          <option value="1-month">1 Month</option>
-        </select>
-      </div>
-      <div className="parameter">
-        <label>Profit Target (%):</label>
-        <input 
-          type="number"
-          value={data.profitTarget || '15'}
-          onChange={(e) => data.onChange('profitTarget', e.target.value)}
-          placeholder="15"
-          min="1"
-          max="100"
-        />
-      </div>
-    </div>
-  </div>
-);
-
-const ActionNode: React.FC<{ data: any }> = ({ data }) => (
-  <div className="strategy-node action-node" title="Action: Defines what happens when conditions are met">
-    <Handle type="target" position={Position.Left} />
-    <div className="node-header">
-      <img src="/assets/icons/ActionIcon.png" alt="Action" className="node-icon" style={{ width: '20px', height: '20px' }} />
-      <span className="node-title">{data.label}</span>
-      <div className={`node-risk-badge ${data.riskLevel || 'medium-risk'}`}>
-        {data.riskLevel === 'low-risk' ? 'Low Risk' : 
-         data.riskLevel === 'high-risk' ? 'High Risk' : 'Medium Risk'}
-      </div>
-    </div>
-    <div className="node-content">
-      <div className="parameter">
-        <label>Action Type:</label>
-        <select 
-          value={data.actionType || 'entry'}
-          onChange={(e) => data.onChange('actionType', e.target.value)}
-        >
-          <option value="entry">Entry Action</option>
-          <option value="exit">Exit Action</option>
-          <option value="rebalance">Rebalance</option>
-          <option value="hedge">Hedge</option>
-        </select>
-      </div>
-      <div className="parameter">
-        <label>Action:</label>
-        <select 
-          value={data.action || 'stake'}
-          onChange={(e) => data.onChange('action', e.target.value)}
-        >
-          <option value="stake">Stake</option>
-          <option value="swap">Swap</option>
-          <option value="lend">Lend</option>
-          <option value="borrow">Borrow</option>
-          <option value="yield-farm">Yield Farm</option>
-        </select>
-      </div>
-      <div className="parameter">
-        <label>Auto Execute:</label>
-        <select 
-          value={data.autoExecute || 'yes'}
-          onChange={(e) => data.onChange('autoExecute', e.target.value)}
-        >
-          <option value="yes">Yes (Automated)</option>
-          <option value="no">No (Manual)</option>
-          <option value="semi">Semi-Automated</option>
-        </select>
-      </div>
-    </div>
-  </div>
-);
-
-const nodeTypes: NodeTypes = {
-  inputNode: InputNode,
-  logicNode: LogicNode,
-  actionNode: ActionNode,
+  );
 };
 
-console.log('Node types defined:', Object.keys(nodeTypes));
+// Import the updated node components
+import InputNode from '../components/nodes/InputNode';
+import LogicNode from '../components/nodes/LogicNode';
+import ActionNode from '../components/nodes/ActionNode';
+
+
+
+
+
 
 const StrategyBuilder: React.FC = () => {
   // State for ReactFlow
@@ -205,6 +106,19 @@ const StrategyBuilder: React.FC = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   
+  // Node delete handler
+  const handleNodeDelete = useCallback((nodeId: string) => {
+    setNodes((nds) => nds.filter((n) => n.id !== nodeId));
+    setEdges((eds) => eds.filter((e) => e.source !== nodeId && e.target !== nodeId));
+  }, [setNodes, setEdges]);
+
+  // Define node types with delete functionality
+  const nodeTypes: NodeTypes = useMemo(() => ({
+    inputNode: (props: any) => <InputNode {...props} onDelete={handleNodeDelete} />,
+    logicNode: (props: any) => <LogicNode {...props} onDelete={handleNodeDelete} />,
+    actionNode: (props: any) => <ActionNode {...props} onDelete={handleNodeDelete} />,
+  }), [handleNodeDelete]);
+
   console.log('StrategyBuilder render - nodes:', nodes, 'edges:', edges);
   const [strategyName, setStrategyName] = useState('My DeFi Strategy');
   const [isExecuting, setIsExecuting] = useState(false);
@@ -730,87 +644,70 @@ const StrategyBuilder: React.FC = () => {
       {/* Preflight Check */}
       <PreflightBanner />
 
-      {/* Header Section */}
-      <div className="strategy-header">
-        <div className="strategy-title">
-          <h1>STRATEGY BUILDER</h1>
-          <p className="strategy-tagline">Test your risk before you buy</p>
+      {/* Header Section - Bloomberg Style */}
+      <div className="strategy-header-bar">
+        <div className="header-left">
+          <div className="strategy-title">
+            <h1>STRATEGY BUILDER</h1>
+            <p className="strategy-tagline">Test your risk before you buy</p>
+          </div>
+        </div>
+        <div className="header-center">
+          <div className="strategy-status">
+            <span className="status-label">Strategy Risk Level:</span>
+            <div className={`risk-badge ${strategyRisk}`}>
+              {strategyRisk === 'low' ? 'LOW RISK' : 
+               strategyRisk === 'high' ? 'HIGH RISK' : 'MEDIUM RISK'}
+            </div>
+          </div>
+        </div>
+        <div className="header-right">
+          <div className="strategy-metrics">
+            <div className="metric">
+              <span className="metric-label">Max Drawdown:</span>
+              <span className="metric-value">{maxDrawdown}%</span>
+            </div>
+            <div className="metric">
+              <span className="metric-label">Sharpe Ratio:</span>
+              <span className="metric-value">{sharpeRatio}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Strategy Overview */}
-      <div className="strategy-overview">
-        <div className="risk-level">
-          <span className="risk-label">Strategy Risk Level:</span>
-          <div className={`risk-badge ${strategyRisk}`}>
-            {strategyRisk === 'low' ? 'LOW RISK' : 
-             strategyRisk === 'high' ? 'HIGH RISK' : 'MEDIUM RISK'}
-          </div>
-        </div>
-        <div className="strategy-metrics">
-          <div className="metric">
-            <span className="metric-label">Max Drawdown:</span>
-            <span className="metric-value">{maxDrawdown}%</span>
-          </div>
-          <div className="metric">
-            <span className="metric-label">Sharpe Ratio:</span>
-            <span className="metric-value">{sharpeRatio}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Lending & Borrowing Section */}
-      <div className="lending-borrowing-section">
-        <div className="section-header">
-          <h2>Lending & Borrowing</h2>
-          <p>Deposit SOL as collateral and borrow USDC for trading strategies</p>
-        </div>
-        
-        <div className="lending-borrowing-cards">
-          {/* Lending Card */}
-          <div className="lending-borrowing-card">
-            <div className="card-header">
-              <div className="header-content">
-                <div className="header-icon">
-                  <img src="/assets/icons/WalletIcon.png" alt="Lending" />
-                </div>
-                <div>
-                  <h3>Lending & Deposits</h3>
-                  <p>Deposit SOL as collateral to earn yield and enable borrowing</p>
-                </div>
+      {/* Main Content Area - Modular Layout */}
+      <div className="strategy-main-content">
+        {/* Top Row - 4 Modules */}
+        <div className="strategy-top-row">
+          {/* Module 1: Deposit Collateral */}
+          <div className="strategy-module deposit-module">
+            <div className="module-header">
+              <div className="module-title">
+                <img src="/assets/icons/DepositIcon.png" alt="Deposit" className="module-icon" />
+                <span>DEPOSIT COLLATERAL</span>
               </div>
-              <div className="header-badge">
-                <span className="badge-text">Lending Pool</span>
+              <div className="module-badge">
+                <span>Roots Protocol</span>
               </div>
             </div>
             
-            <div className="lending-content">
+            <div className="module-content">
               {connected ? (
-                <div className="lending-overview">
-                  <div className="lending-stats">
+                <div className="deposit-overview">
+                  <div className="deposit-stats">
                     <div className="stat-item">
-                      <div className="stat-icon">
-                        <img src="/assets/icons/DepositIcon.png" alt="Deposits" />
-                      </div>
-                      <div className="stat-content">
-                        <div className="stat-value">{(userPosition.collateralDeposited).toFixed(4)} SOL</div>
-                        <div className="stat-label">Your Collateral</div>
-                      </div>
+                      <div className="stat-value">{(userPosition.collateralDeposited).toFixed(4)} SOL</div>
+                      <div className="stat-label">Your Collateral</div>
                     </div>
                     <div className="stat-item">
-                      <div className="stat-icon">
-                        <img src="/assets/icons/PNLIcon.png" alt="Yield" />
-                      </div>
-                      <div className="stat-content">
-                        <div className="stat-value">{(lendingStats.depositAPY * 100).toFixed(2)}%</div>
-                        <div className="stat-label">Supply APY</div>
-                      </div>
+                      <div className="stat-value">{(lendingStats.depositAPY * 100).toFixed(2)}%</div>
+                      <div className="stat-label">Supply APY</div>
                     </div>
                   </div>
                   
                   <div className="deposit-form">
                     <div className="form-group">
-                      <label>Deposit Amount (SOL):</label>
+                      <label>Amount (SOL):</label>
                       <div className="input-with-button">
                         <input
                           type="number"
@@ -836,21 +733,11 @@ const StrategyBuilder: React.FC = () => {
                     </div>
                     
                     <button 
-                      className="lending-action-btn"
+                      className="action-btn deposit"
                       onClick={handleDeposit}
                       disabled={isDepositing || !depositAmount || parseFloat(depositAmount) <= 0}
                     >
-                      {isDepositing ? (
-                        <>
-                          <div className="loading-spinner"></div>
-                          <span>Depositing...</span>
-                        </>
-                      ) : (
-                        <>
-                          <img src="/assets/icons/DepositIcon.png" alt="Deposit" />
-                          <span>Deposit SOL Collateral</span>
-                        </>
-                      )}
+                      {isDepositing ? 'Depositing...' : 'DEPOSIT SOL'}
                     </button>
                   </div>
                 </div>
@@ -859,7 +746,7 @@ const StrategyBuilder: React.FC = () => {
                   <div className="prompt-icon">
                     <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
                   </div>
-                  <p>Connect your wallet to deposit SOL and earn yield</p>
+                  <p>Connect wallet to deposit SOL</p>
                   <button className="connect-wallet-btn" onClick={() => {}}>
                     Connect Wallet
                   </button>
@@ -868,50 +755,35 @@ const StrategyBuilder: React.FC = () => {
             </div>
           </div>
 
-          {/* Strategy Vault Card */}
-          <div className="vault-card">
-            <div className="card-header">
-              <div className="header-content">
-                <div className="header-icon">
-                  <img src="/assets/icons/ActionIcon.png" alt="Strategy Vault" />
-                </div>
-                <div>
-                  <h3>Borrowing & Trading</h3>
-                  <p>Borrow USDC against your SOL collateral to fund trading strategies</p>
-                </div>
+          {/* Module 2: Borrow USDC */}
+          <div className="strategy-module borrow-module">
+            <div className="module-header">
+              <div className="module-title">
+                <img src="/assets/icons/ActionIcon.png" alt="Borrow" className="module-icon" />
+                <span>BORROW USDC</span>
               </div>
-              <div className="header-badge">
-                <span className="badge-text">Lending Pool</span>
+              <div className="module-badge">
+                <span>Roots Protocol</span>
               </div>
             </div>
             
-            <div className="borrow-content">
+            <div className="module-content">
               {connected ? (
                 <div className="borrow-overview">
                   <div className="borrow-stats">
                     <div className="stat-item">
-                      <div className="stat-icon">
-                        <img src="/assets/icons/ActionIcon.png" alt="Strategies" />
-                      </div>
-                      <div className="stat-content">
-                        <div className="stat-value">${userPosition.usdcBorrowed.toFixed(2)}</div>
-                        <div className="stat-label">USDC Borrowed</div>
-                      </div>
+                      <div className="stat-value">${userPosition.usdcBorrowed.toFixed(2)}</div>
+                      <div className="stat-label">USDC Borrowed</div>
                     </div>
                     <div className="stat-item">
-                      <div className="stat-icon">
-                        <img src="/assets/icons/HedgeIcon.png" alt="PNL" />
-                      </div>
-                      <div className="stat-content">
-                        <div className="stat-value">{userPosition.healthFactor.toFixed(2)}</div>
-                        <div className="stat-label">Health Factor</div>
-                      </div>
+                      <div className="stat-value">{(lendingStats.borrowAPY * 100).toFixed(2)}%</div>
+                      <div className="stat-label">Borrow APR</div>
                     </div>
                   </div>
                   
                   <div className="borrow-form">
                     <div className="form-group">
-                      <label>Borrow Amount (USDC):</label>
+                      <label>Amount (USDC):</label>
                       <div className="input-with-button">
                         <input
                           type="number"
@@ -919,8 +791,8 @@ const StrategyBuilder: React.FC = () => {
                           onChange={(e) => setBorrowAmountInput(e.target.value)}
                           placeholder="0.0"
                           min="0"
-                          step="0.1"
-                          className="deposit-input"
+                          step="1"
+                          className="borrow-input"
                         />
                         <button 
                           className="max-btn"
@@ -931,59 +803,26 @@ const StrategyBuilder: React.FC = () => {
                       </div>
                     </div>
                     
-                    <div className="balance-info">
+                    <div className="borrow-info">
                       <span>Available: ${userPosition.availableToBorrow.toFixed(2)} USDC</span>
-                      <span>LTV: {(userPosition.ltvRatio * 100).toFixed(1)}% / {(LENDING_CONFIG.maxLtv * 100).toFixed(0)}%</span>
+                      <span>Max LTV: {(LENDING_CONFIG.maxLtv * 100).toFixed(0)}%</span>
                     </div>
                     
                     <button 
-                      className="borrow-action-btn"
+                      className="action-btn borrow"
                       onClick={handleBorrow}
                       disabled={isBorrowing || !borrowAmountInput || parseFloat(borrowAmountInput) <= 0}
                     >
-                      {isBorrowing ? (
-                        <>
-                          <div className="loading-spinner"></div>
-                          <span>Depositing...</span>
-                        </>
-                      ) : (
-                        <>
-                          <img src="/assets/icons/ActionIcon.png" alt="Strategy" />
-                          <span>Borrow USDC</span>
-                        </>
-                      )}
+                      {isBorrowing ? 'Borrowing...' : 'BORROW USDC'}
                     </button>
-                  </div>
-                  
-                  {/* Position Management Section */}
-                  <div className="position-management">
-                    <h4>Manage Your Position</h4>
-                    <div className="position-actions">
-                      <button 
-                        className="position-btn withdraw"
-                        onClick={() => handleWithdraw()}
-                        disabled={userPosition.collateralDeposited <= 0}
-                      >
-                        <img src="/assets/icons/DepositIcon.png" alt="Withdraw" />
-                        <span>Withdraw SOL</span>
-                      </button>
-                      <button 
-                        className="position-btn repay"
-                        onClick={() => handleRepayUSDC()}
-                        disabled={userPosition.usdcBorrowed <= 0}
-                      >
-                        <img src="/assets/icons/ActionIcon.png" alt="Repay" />
-                        <span>Repay USDC</span>
-                      </button>
-                    </div>
                   </div>
                 </div>
               ) : (
                 <div className="wallet-connect-prompt">
                   <div className="prompt-icon">
-                    <img src="/assets/icons/ActionIcon.png" alt="Wallet" />
+                    <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
                   </div>
-                  <p>Connect your wallet to borrow USDC against your collateral</p>
+                  <p>Connect wallet to borrow USDC</p>
                   <button className="connect-wallet-btn" onClick={() => {}}>
                     Connect Wallet
                   </button>
@@ -991,194 +830,258 @@ const StrategyBuilder: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Strategy Builder Bar */}
-      <div className="strategy-builder-bar">
-        <div className="strategy-tabs">
-          <button className="strategy-tab active">My DeFi Strategy</button>
-          <button className="strategy-tab ai-builder">AI Builder</button>
-          <button className="strategy-tab">Simulate Strategy</button>
-          <button className="strategy-tab">Save Strategy</button>
-          <button className="strategy-tab">Publish</button>
-        </div>
-        
-        <div className="strategy-actions">
-          <button className="strategy-btn execute">
-            <Rocket className="w-4 h-4" />
-            EXECUTE STRATEGY
-          </button>
-          <button className="strategy-btn withdraw">
-            <DollarSign className="w-4 h-4" />
-            WITHDRAW SOL
-          </button>
-          <button className="strategy-btn claim">
-            <Trophy className="w-4 h-4" />
-            CLAIM YIELD
-          </button>
-          <button className="strategy-btn test-wallet">
-            <Check className="w-4 h-4" />
-            TEST WALLET
-          </button>
-        </div>
-      </div>
-
-      {/* BOTTOM HALF: Strategy Builder Section */}
-      <div className="strategy-builder-section">
-        <div className="section-header">
-          <h2>Strategy Builder</h2>
-          <p>Design and execute your DeFi trading strategies</p>
-        </div>
-
-        {/* Deposit Configuration */}
-        <div className="deposit-configuration">
-          <h3>Deposit Configuration</h3>
-          <div className="deposit-inputs">
-            <div className="deposit-input-group">
-              <label>Token:</label>
-              <select 
-                value={selectedToken}
-                onChange={(e) => setSelectedToken(e.target.value)}
-              >
-                <option value="SOL">SOL</option>
-                <option value="ETH">ETH</option>
-                <option value="USDC">USDC</option>
-                <option value="BTC">BTC</option>
-              </select>
+          {/* Module 3: Borrowing Health */}
+          <div className="strategy-module health-module">
+            <div className="module-header">
+              <div className="module-title">
+                <img src="/assets/icons/PNLIcon.png" alt="Health" className="module-icon" />
+                <span>BORROWING HEALTH</span>
+              </div>
+              <div className="module-badge">
+                <span>Risk Monitor</span>
+              </div>
             </div>
             
-            <div className="deposit-input-group">
-              <label>Amount:</label>
-              <input
-                type="number"
-                value={collateralAmount}
-                onChange={(e) => setCollateralAmount(e.target.value)}
-                placeholder="20"
-                min="0"
-                step="0.1"
-              />
+            <div className="module-content">
+              {connected ? (
+                <div className="health-overview">
+                  <div className="health-indicator">
+                    <div className={`health-dot ${userPosition.healthFactor > 1.5 ? 'green' : userPosition.healthFactor > 1.1 ? 'yellow' : 'red'}`}></div>
+                    <span className="health-text">
+                      {userPosition.healthFactor > 1.5 ? 'SAFE' : userPosition.healthFactor > 1.1 ? 'WARNING' : 'DANGER'}
+                    </span>
+                  </div>
+                  
+                  <div className="health-metrics">
+                    <div className="metric-row">
+                      <span className="metric-label">Collateral:</span>
+                      <span className="metric-value">{(userPosition.collateralDeposited).toFixed(4)} SOL</span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label">Debt:</span>
+                      <span className="metric-value">${userPosition.usdcBorrowed.toFixed(2)}</span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label">LTV Ratio:</span>
+                      <span className="metric-value">{(userPosition.ltvRatio * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="metric-row">
+                      <span className="metric-label">Health Factor:</span>
+                      <span className="metric-value">{userPosition.healthFactor.toFixed(2)}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="liquidation-warning">
+                    {userPosition.healthFactor < 1.1 && (
+                      <div className="warning-message">
+                        ⚠️ Risk of liquidation - Add collateral or repay debt
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="wallet-connect-prompt">
+                  <div className="prompt-icon">
+                    <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
+                  </div>
+                  <p>Connect wallet to view health</p>
+                  <button className="connect-wallet-btn" onClick={() => {}}>
+                    Connect Wallet
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Module 4: Lending Pools */}
+          <div className="strategy-module pools-module">
+            <div className="module-header">
+              <div className="module-title">
+                <img src="/assets/icons/TokenDataIcon.png" alt="Pools" className="module-icon" />
+                <span>LENDING POOLS</span>
+              </div>
+              <div className="module-badge">
+                <span>Available</span>
+              </div>
             </div>
             
-            <div className="deposit-summary">
-              <div className="total-cost">
-                <span className="cost-label">Total Cost (USD):</span>
-                <span className="cost-value">${(parseFloat(collateralAmount) * tokenPrice).toFixed(2)}</span>
-                <span className="cost-per-token">@ ${tokenPrice.toFixed(2)} per {selectedToken}</span>
+            <div className="module-content">
+              <div className="pools-overview">
+                <div className="pool-item">
+                  <div className="pool-header">
+                    <span className="pool-name">SOL/USDC</span>
+                    <span className="pool-status active">Active</span>
+                  </div>
+                  <div className="pool-stats">
+                    <div className="pool-stat">
+                      <span className="stat-label">Supply APY:</span>
+                      <span className="stat-value">{(lendingStats.depositAPY * 100).toFixed(2)}%</span>
+                    </div>
+                    <div className="pool-stat">
+                      <span className="stat-label">Borrow APR:</span>
+                      <span className="stat-value">{(lendingStats.borrowAPY * 100).toFixed(2)}%</span>
+                    </div>
+                    <div className="pool-stat">
+                      <span className="stat-label">Max LTV:</span>
+                      <span className="stat-value">{(LENDING_CONFIG.maxLtv * 100).toFixed(0)}%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pool-item">
+                  <div className="pool-header">
+                    <span className="pool-name">ETH/USDC</span>
+                    <span className="pool-status coming-soon">Coming Soon</span>
+                  </div>
+                  <div className="pool-stats">
+                    <div className="pool-stat">
+                      <span className="stat-label">Supply APY:</span>
+                      <span className="stat-value">--</span>
+                    </div>
+                    <div className="pool-stat">
+                      <span className="stat-label">Borrow APR:</span>
+                      <span className="stat-value">--</span>
+                    </div>
+                    <div className="pool-stat">
+                      <span className="stat-label">Max LTV:</span>
+                      <span className="stat-value">--</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main Builder Content */}
-        <div className="strategy-content">
-          {/* Left Sidebar - Data Sources & Strategy Logic */}
-          <div className="sidebar">
-            <div className="sidebar-section">
-              <h3>
-                <img src="/assets/icons/TokenDataIcon.png" alt="Data" className="section-icon" />
-                Data Sources
-              </h3>
-              <div className="strategy-inputs-list">
-                <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'inputNode', 'Token Data')}>
-                  <img src="/assets/icons/TokenDataIcon.png" alt="Token Data" className="palette-icon" />
-                  <span>Token Data</span>
-                </div>
+        {/* Bottom Row - Strategy Builder */}
+        <div className="strategy-bottom-row">
+          <div className="strategy-builder-module">
+            <div className="module-header">
+              <div className="module-title">
+                <img src="/assets/icons/StrategyLogicIcon.png" alt="Strategy" className="module-icon" />
+                <span>STRATEGY BUILDER</span>
+              </div>
+              <div className="module-badge">
+                <span>Drag & Drop</span>
               </div>
             </div>
-
-            <div className="sidebar-section">
-              <h3>
-                <img src="/assets/icons/StrategyLogicIcon.png" alt="Logic" className="section-icon" />
-                Strategy Logic
-              </h3>
-              <div className="strategy-inputs-list">
-                <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'logicNode', 'Time & Profit Logic')}>
-                  <img src="/assets/icons/TimeProfitIcon.png" alt="Time & Profit" className="palette-icon" />
-                  <span>Time & Profit Logic</span>
-                </div>
-                <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'logicNode', 'Price-Based Logic')}>
-                  <img src="/assets/icons/PriceLogic.png" alt="Price Logic" className="palette-icon" />
-                  <span>Price-Based Logic</span>
-                </div>
-                <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'logicNode', 'Volatility Logic')}>
-                  <img src="/assets/icons/PulseIcon.png" alt="Volatility" className="palette-icon" />
-                  <span>Volatility Logic</span>
-                </div>
-                <div className="strategy-input-item ai-optimized" draggable onDragStart={(event) => onDragStart(event, 'logicNode', 'AI-Optimized Logic')}>
-                  <img src="/assets/icons/RobotIcon.png" alt="AI" className="palette-icon" />
-                  <span>AI-Optimized Logic</span>
-                  <div className="ai-badge">+75%</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="sidebar-section">
-              <h3>
-                <img src="/assets/icons/ActionIcon.png" alt="Actions" className="section-icon" />
-                Actions
-              </h3>
-              <div className="strategy-inputs-list">
-                <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'actionNode', 'Entry & Exit')}>
-                  <img src="/assets/icons/ActionIcon.png" alt="Entry/Exit" className="palette-icon" />
-                  <span>Entry & Exit</span>
-                </div>
-                <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'actionNode', 'Hedge Action')}>
-                  <img src="/assets/icons/HedgeIcon.png" alt="Hedge" className="palette-icon" />
-                  <span>Hedge Action</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Center Canvas */}
-          <div className="canvas-container">
-            <h3>Strategy Canvas</h3>
-            <div style={{ height: '500px', width: '100%' }}>
-              <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onConnect={onConnect}
-                onNodeClick={onNodeClick}
-                onDrop={onDrop}
-                onDragOver={onDragOver}
-                nodeTypes={nodeTypes}
-                fitView
-                className="strategy-canvas"
-                style={{ background: '#000000' }}
-              >
-                <Controls />
-                <Background color="#000000" />
-                <MiniMap />
-              </ReactFlow>
-            </div>
-            <div style={{ marginTop: '1rem', color: '#94a3b8', fontSize: '0.875rem' }}>
-              Debug: {nodes.length} nodes, {edges.length} edges
-            </div>
-          </div>
-
-          {/* Right Results Panel */}
-          <div className="results-panel">
-            <h3>
-              <img src="/assets/icons/TokenDataIcon.png" alt="Results" className="section-icon" />
-              Strategy Results
-            </h3>
             
-            <div className="results-content">
-              <p>Click 'Simulate Strategy' to see results</p>
-              <div className="results-placeholder">
-                {/* Results will be displayed here after simulation */}
-              </div>
-            </div>
+            <div className="module-content">
+              <div className="strategy-builder-layout">
+                {/* Left Sidebar - Strategy Components */}
+                <div className="strategy-sidebar">
+                  <div className="sidebar-section">
+                    <h3>
+                      <img src="/assets/icons/TokenDataIcon.png" alt="Data" className="section-icon" />
+                      Data Sources
+                    </h3>
+                    <div className="strategy-inputs-list">
+                      <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'inputNode', 'Token Price Data')}>
+                        <img src="/assets/icons/TokenDataIcon.png" alt="Price Data" className="palette-icon" />
+                        <span>Token Price Data</span>
+                      </div>
+                      <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'inputNode', 'Volume Data')}>
+                        <img src="/assets/icons/TokenDataIcon.png" alt="Volume" className="palette-icon" />
+                        <span>Volume Data</span>
+                      </div>
+                      <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'inputNode', 'Market Cap Data')}>
+                        <img src="/assets/icons/TokenDataIcon.png" alt="Market Cap" className="palette-icon" />
+                        <span>Market Cap Data</span>
+                      </div>
+                    </div>
+                  </div>
 
-            <div className="wallet-connection">
-              <p>Connect your Phantom wallet to interact with the Cyphr Vaults.</p>
-              <div className="wallet-icon">
-                <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
+                  <div className="sidebar-section">
+                    <h3>
+                      <img src="/assets/icons/StrategyLogicIcon.png" alt="Logic" className="section-icon" />
+                      Strategy Logic
+                    </h3>
+                    <div className="strategy-inputs-list">
+                      <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'logicNode', 'Price-Based Logic')}>
+                        <img src="/assets/icons/PriceLogic.png" alt="Price Logic" className="palette-icon" />
+                        <span>Price-Based Logic</span>
+                      </div>
+                      <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'logicNode', 'Volatility Logic')}>
+                        <img src="/assets/icons/PulseIcon.png" alt="Volatility" className="palette-icon" />
+                        <span>Volatility Logic</span>
+                      </div>
+                      <div className="strategy-input-item ai-optimized" draggable onDragStart={(event) => onDragStart(event, 'logicNode', 'AI-Optimized Logic')}>
+                        <img src="/assets/icons/RobotIcon.png" alt="AI" className="palette-icon" />
+                        <span>AI-Optimized Logic</span>
+                        <div className="ai-badge">+75%</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="sidebar-section">
+                    <h3>
+                      <img src="/assets/icons/ActionIcon.png" alt="Actions" className="section-icon" />
+                      Actions
+                    </h3>
+                    <div className="strategy-inputs-list">
+                      <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'actionNode', 'Entry & Exit')}>
+                        <img src="/assets/icons/ActionIcon.png" alt="Entry/Exit" className="palette-icon" />
+                        <span>Entry & Exit</span>
+                      </div>
+                      <div className="strategy-input-item" draggable onDragStart={(event) => onDragStart(event, 'actionNode', 'Hedge Action')}>
+                        <img src="/assets/icons/HedgeIcon.png" alt="Hedge" className="palette-icon" />
+                        <span>Hedge Action</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Center Canvas */}
+                <div className="canvas-container">
+                  <div style={{ height: '600px', width: '100%', position: 'relative' }}>
+                    <ReactFlow
+                      nodes={nodes}
+                      edges={edges}
+                      onNodesChange={onNodesChange}
+                      onEdgesChange={onEdgesChange}
+                      onConnect={onConnect}
+                      onNodeClick={onNodeClick}
+                      onDrop={onDrop}
+                      onDragOver={onDragOver}
+                      nodeTypes={nodeTypes}
+                      fitView
+                      className="strategy-canvas"
+                      style={{ background: '#000000' }}
+                    >
+                      <Controls />
+                      <Background color="#000000" />
+                      <MiniMap />
+                      
+                      {/* Custom Control Buttons */}
+                      <CustomControls />
+                    </ReactFlow>
+                  </div>
+                </div>
+
+                {/* Right Results Panel */}
+                <div className="results-panel">
+                  <h3>
+                    <img src="/assets/icons/TokenDataIcon.png" alt="Results" className="section-icon" />
+                    Strategy Results
+                  </h3>
+                  
+                  <div className="results-content">
+                    <p>Click 'Simulate Strategy' to see results</p>
+                    <div className="results-placeholder">
+                      {/* Results will be displayed here after simulation */}
+                    </div>
+                  </div>
+
+                  <div className="wallet-connection">
+                    <p>Connect your Phantom wallet to interact with the Cyphr Vaults.</p>
+                    <div className="wallet-icon">
+                      <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
+                    </div>
+                    <p className="wallet-status">Wallet Not Connected</p>
+                  </div>
+                </div>
               </div>
-              <p className="wallet-status">Wallet Not Connected</p>
             </div>
           </div>
         </div>

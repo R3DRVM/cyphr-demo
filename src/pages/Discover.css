@@ -1,0 +1,576 @@
+/* Discover Page Styles - Bloomberg Terminal Theme */
+.discover-page {
+  background: #000000;
+  color: #ffffff;
+  min-height: 100vh;
+  font-family: 'ModeSeven', monospace;
+  padding: 2rem;
+}
+
+/* Header Styles */
+.discover-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.header-left h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #00d4ff;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 2px;
+}
+
+.header-left p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  width: 20px;
+  height: 20px;
+}
+
+.search-input {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  padding: 12px 12px 12px 40px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-family: 'ModeSeven', monospace;
+  width: 300px;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1);
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Main Content Layout */
+.discover-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Row Layouts */
+.discover-top-row,
+.discover-middle-row,
+.discover-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* Module Base Styles */
+.discover-module {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-height: 300px;
+  transition: all 0.3s ease;
+}
+
+.discover-module:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Module Header Styles */
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.module-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Top Gainers Module */
+.top-gainers-module {
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.top-gainers-module:hover {
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2);
+}
+
+.trending-icon {
+  color: #22c55e;
+  width: 20px;
+  height: 20px;
+}
+
+/* Volume Leaders Module */
+.volume-leaders-module {
+  border-color: rgba(255, 170, 0, 0.3);
+}
+
+.volume-leaders-module:hover {
+  box-shadow: 0 8px 32px rgba(255, 170, 0, 0.2);
+}
+
+.volume-dot {
+  width: 12px;
+  height: 12px;
+  background: #ffaa00;
+  border-radius: 50%;
+}
+
+/* Social Trending Module */
+.social-trending-module {
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.social-trending-module:hover {
+  box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+}
+
+.social-icon {
+  color: #00d4ff;
+  width: 20px;
+  height: 20px;
+}
+
+/* Whale Tracker Module */
+.whale-tracker-module {
+  border-color: rgba(255, 68, 68, 0.3);
+}
+
+.whale-tracker-module:hover {
+  box-shadow: 0 8px 32px rgba(255, 68, 68, 0.2);
+}
+
+.whale-icon {
+  color: #ff4444;
+  width: 20px;
+  height: 20px;
+}
+
+/* Holder Analytics Module */
+.holder-analytics-module {
+  border-color: rgba(109, 143, 199, 0.3);
+}
+
+.holder-analytics-module:hover {
+  box-shadow: 0 8px 32px rgba(109, 143, 199, 0.2);
+}
+
+.analytics-icon {
+  color: #6D8FC7;
+  width: 20px;
+  height: 20px;
+}
+
+/* Risk Analysis Module */
+.risk-analysis-module {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.risk-analysis-module:hover {
+  box-shadow: 0 8px 32px rgba(239, 68, 68, 0.2);
+}
+
+.risk-icon {
+  color: #ef4444;
+  width: 20px;
+  height: 20px;
+}
+
+/* Token Entry Styles */
+.token-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.token-entry:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.token-entry:last-child {
+  margin-bottom: 0;
+}
+
+.token-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.token-icon {
+  width: 40px;
+  height: 40px;
+  background: #00d4ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.volume-icon {
+  background: #ffaa00;
+}
+
+.social-icon {
+  background: #00d4ff;
+}
+
+.token-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.token-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.token-address,
+.token-rank {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.token-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.token-gain {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.token-price,
+.token-volume,
+.volume-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Sentiment Styles */
+.sentiment {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.sentiment.bullish {
+  color: #22c55e;
+}
+
+.sentiment.bearish {
+  color: #ef4444;
+}
+
+.sentiment-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.sentiment.bullish .sentiment-dot {
+  background: #22c55e;
+}
+
+.sentiment.bearish .sentiment-dot {
+  background: #ef4444;
+}
+
+.mentions {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Transaction Entry Styles */
+.transaction-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border-left: 4px solid;
+  transition: all 0.2s ease;
+}
+
+.transaction-entry.buy {
+  border-left-color: #22c55e;
+}
+
+.transaction-entry.sell {
+  border-left-color: #ef4444;
+}
+
+.transaction-entry:last-child {
+  margin-bottom: 0;
+}
+
+.transaction-type {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 120px;
+}
+
+.type-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  width: fit-content;
+}
+
+.type-badge.buy {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.type-badge.sell {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.transaction-time {
+  font-size: 0.875rem;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.transaction-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  margin: 0 1rem;
+}
+
+.wallet-address {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Courier New', monospace;
+}
+
+.known-wallet {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.transaction-amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  min-width: 100px;
+}
+
+.usd-amount {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.usd-amount.buy {
+  color: #22c55e;
+}
+
+.usd-amount.sell {
+  color: #ef4444;
+}
+
+.token-amount {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Analytics and Risk Content */
+.analytics-content,
+.risk-content {
+  height: 100%;
+}
+
+.selected-token {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.selected-token h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #00d4ff;
+  margin: 0 0 0.5rem 0;
+}
+
+.selected-token p {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.analytics-placeholder,
+.risk-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.placeholder-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.placeholder-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.5;
+}
+
+.placeholder-text p {
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Risk Metrics */
+.risk-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.risk-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.metric-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+}
+
+.metric-value.low {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.metric-value.medium {
+  background: rgba(255, 170, 0, 0.2);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.3);
+}
+
+.metric-value.high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .discover-top-row,
+  .discover-middle-row,
+  .discover-bottom-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .discover-page {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .discover-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
+  
+  .discover-page {
+    padding: 1rem;
+  }
+  
+  .discover-module {
+    padding: 1rem;
+    min-height: 250px;
+  }
+}

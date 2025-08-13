@@ -111,7 +111,7 @@
 
 .pro-terminal-search {
   flex: 1;
-  max-width: 400px;
+  max-width: 100%;
 }
 
 .search-container {
@@ -132,7 +132,7 @@
   padding: 0.375rem 0.75rem;
   background: rgba(109, 143, 199, 0.1);
   border: 1px solid rgba(109, 143, 199, 0.3);
-  min-width: 240px;
+  min-width: 200px;
   font-family: 'ModeSeven', monospace;
   border-radius: 6px;
 }
@@ -175,6 +175,8 @@
   font-size: 0.875rem;
   outline: none;
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pro-search-input:focus {
@@ -2065,20 +2067,31 @@
   grid-template-columns: 2fr 1fr 1fr;
   gap: 1.5rem;
   padding: 1.5rem;
-  height: calc(100vh - 200px);
-  overflow: hidden;
+  min-height: auto;
+  overflow: visible;
+}
+
+@media (min-width: 1200px) {
+  .terminal-main-content {
+    min-width: 1200px;
+  }
 }
 
 .terminal-column {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  overflow-y: auto;
+  overflow: visible;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-/* Chart Column */
+/* Chart Column - Full Width in New Layout */
 .chart-column {
-  grid-column: 1;
+  width: 100%;
 }
 
 .chart-panel {
@@ -2087,6 +2100,9 @@
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .panel-header {
@@ -2252,9 +2268,9 @@
   line-height: 1.5;
 }
 
-/* Market Column */
+/* Market Column - Full Width in New Layout */
 .market-column {
-  grid-column: 2;
+  width: 100%;
 }
 
 .market-overview-panel {
@@ -2263,6 +2279,9 @@
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .panel-icon {
@@ -2284,6 +2303,8 @@
   background: rgba(0, 0, 0, 0.4);
   border-radius: 8px;
   border: 1px solid rgba(0, 212, 255, 0.1);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pair-name {
@@ -2317,6 +2338,9 @@
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .insights-list {
@@ -2347,9 +2371,9 @@
   line-height: 1.4;
 }
 
-/* Lending Column */
+/* Lending Column - Full Width in New Layout */
 .lending-column {
-  grid-column: 3;
+  width: 100%;
 }
 
 .lending-borrowing-panel {
@@ -2358,6 +2382,9 @@
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .lending-rates, .borrowing-rates {
@@ -2657,6 +2684,9 @@
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .portfolio-metrics {
@@ -2976,8 +3006,8 @@
   }
   
   .terminal-main-content {
-    padding: 1rem;
-    gap: 1rem;
+    padding: 0.75rem;
+    gap: 1.5rem;
   }
 } 
 
@@ -3068,4 +3098,19 @@
   background: rgba(255, 68, 68, 0.2);
   border-color: rgba(255, 68, 68, 0.4);
   transform: scale(1.05);
+}
+
+/* Chart Column */
+.chart-column {
+  grid-column: 1;
+}
+
+/* Market Column */
+.market-column {
+  grid-column: 2;
+}
+
+/* Lending Column */
+.lending-column {
+  grid-column: 3;
 }
