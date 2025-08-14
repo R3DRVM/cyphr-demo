@@ -1,8 +1,9 @@
 import { Connection, clusterApiUrl } from '@solana/web3.js';
+import { configService } from '../services/config';
 
-// Solana network configuration
-export const SOLANA_NETWORK = 'devnet';
-export const SOLANA_RPC_URL = clusterApiUrl(SOLANA_NETWORK);
+// Solana network configuration - use config service for robust defaults
+export const SOLANA_NETWORK = configService.getSolanaNetwork();
+export const SOLANA_RPC_URL = configService.getRpcUrl();
 
 // Create connection instance
 export const connection = new Connection(SOLANA_RPC_URL, 'confirmed');

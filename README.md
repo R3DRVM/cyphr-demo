@@ -1,161 +1,308 @@
-# Cyphr Demo
+# Cyphr Demo - End-to-End Devnet Platform
 
-A comprehensive DeFi strategy builder and lending platform built on Solana.
+A professional-grade DeFi platform built on Solana, featuring lending, borrowing, trading, and automated strategy execution.
 
-## 🚀 New Features: Borrow → Buy → Take-Profit Flow
-
-The platform now includes a complete lending and trading flow with automated take-profit functionality.
-
-### Features
+## 🚀 Features
 
 - **Lending & Borrowing**: Deposit SOL as collateral, borrow USDC
-- **Trading**: Execute swaps using borrowed funds
-- **Take-Profit Automation**: Set price targets for automatic profit-taking
-- **Real-time Insights**: Pool analysis and risk assessment
-- **Position Management**: Health factor, LTV, and PnL tracking
+- **DEX Integration**: TokenSwap for asset trading with slippage protection
+- **Take-Profit Automation**: Client-side TP watcher with configurable targets
+- **Strategy Builder**: Visual drag-and-drop strategy creation
+- **Real-time Analytics**: Pool prices, health factors, and market insights
+- **Bloomberg-style UI**: Professional terminal interface with dark theme
 
-### Environment Setup
+## 🛠️ Development Setup
 
-1. Copy the environment template:
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- Phantom Wallet (for testing)
+- Solana CLI (optional, for advanced testing)
+
+### Installation
+
 ```bash
-cp env.local.template .env.local
+git clone <repository-url>
+cd demo-cyphr
+npm install
 ```
 
-2. Configure the following variables:
-```bash
-# Take-Profit Settings
-VITE_TP_TARGET_BPS=200        # 2% take-profit target
-VITE_TP_POLL_MS=15000        # 15 second polling interval
+### Environment Configuration
 
-# AI Insights (future feature)
-VITE_AI_INSIGHTS=false        # Enable AI-powered analysis
+Copy the environment template and configure your settings:
+
+```bash
+cp env.template .env.local
+```
+
+#### Required Environment Variables
+
+```bash
+# Devnet Demo Configuration
+VITE_DEMO_MODE=true                    # Enable demo mode (localStorage + fake sigs)
+VITE_SOLANA_NETWORK=devnet            # Solana network (devnet/mainnet)
+VITE_RPC_URL=https://api.devnet.solana.com  # RPC endpoint
+
+# Program IDs (replace with actual deployed programs)
+VITE_LENDING_PROGRAM_ID=11111111111111111111111111111111
+VITE_STRATEGY_PROGRAM_ID=11111111111111111111111111111111
+
+# Take Profit Configuration
+VITE_TP_TARGET_BPS=500                # Target profit in basis points (5%)
+VITE_TP_POLL_MS=15000                 # Polling interval in milliseconds
+
+# AI Insights (visual only)
+VITE_AI_INSIGHTS=true                 # Enable AI insights panel
+
+# TokenSwap Pool Configuration
+VITE_POOL_ADDRESS=11111111111111111111111111111111
+VITE_SWAP_AUTHORITY=11111111111111111111111111111111
 ```
 
 ### Configuration Files
 
+#### `src/config/tokens.devnet.json`
+Required keys (replace placeholder values):
+```json
+{
+  "mintA": "So11111111111111111111111111111111111111112",
+  "mintB": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU",
+  "vaultA": "actual_vault_a_address",
+  "vaultB": "actual_vault_b_address",
+  "swapState": "actual_swap_state_address",
+  "swapAuthority": "actual_swap_authority_address",
+  "feeAccount": "actual_fee_account_address",
+  "poolTokenMint": "actual_pool_token_mint_address"
+}
+```
+
 #### `src/config/lending.devnet.json`
+Required keys:
 ```json
 {
   "lendingPool": {
-    "address": "YOUR_LENDING_POOL_ADDRESS",
+    "address": "actual_lending_pool_address",
     "collateralToken": "So11111111111111111111111111111111111111112",
-    "borrowToken": "YOUR_USDC_MINT_ADDRESS",
-    "maxLtv": 0.75,
-    "liquidationThreshold": 0.8
+    "borrowToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
   }
 }
 ```
 
-#### `src/config/tokens.devnet.json`
-```json
-{
-  "vaultA": "YOUR_VAULT_A_ADDRESS",
-  "vaultB": "YOUR_VAULT_B_ADDRESS",
-  "swapState": "YOUR_SWAP_STATE_ADDRESS",
-  "swapAuthority": "YOUR_SWAP_AUTHORITY_ADDRESS",
-  "mintA": "So11111111111111111111111111111111111111112",
-  "mintB": "YOUR_USDC_MINT_ADDRESS"
-}
-```
+## 🏃‍♂️ Running the Application
 
-### Running the Application
+### Development Server
 
-1. **Development Mode (Demo)**:
 ```bash
-npm run dev:demo
+# Start with demo mode (default)
+npm run dev
+
+# Start with real devnet mode
+VITE_DEMO_MODE=false npm run dev
 ```
 
-2. **Development Mode (Real)**:
-```bash
-npm run dev:real
-```
+### Production Build
 
-3. **Production Build**:
 ```bash
 npm run build
+npm run preview
 ```
 
-### Testing
+## 🚀 Running the Devnet Demo (V2)
 
-#### Demo Mode Testing
-```bash
-npm run test:demo
-```
+### V2 Lending Experience
 
-#### Quick Testing
-```bash
-npm run test:quick
-```
+The platform now supports two lending interfaces:
 
-#### Full Devnet Smoke Test
+- **Legacy Mode** (`VITE_LENDING_V2=false`): Original lending section
+- **V2 Mode** (`VITE_LENDING_V2=true`): Enhanced borrowing & trading panels
+
+### Quick Start for V2
+
+1. **Copy environment template:**
+   ```bash
+   cp env.local.template .env.local
+   ```
+
+2. **Configure for real devnet testing:**
+   ```bash
+   VITE_LENDING_V2=true          # Enable V2 lending panels
+   VITE_DEMO_MODE=false          # Use real devnet (not demo mode)
+   VITE_DEBUG_TX=true            # Enable transaction simulation logs
+   VITE_TP_TARGET_BPS=200        # 2% take-profit target
+   VITE_TP_POLL_MS=15000         # 15-second polling
+   VITE_AI_INSIGHTS=false        # Disable AI insights for now
+   ```
+
+3. **Start development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Optional: Run smoke tests:**
+   ```bash
+   npm run smoke:devnet
+   ```
+
+### V2 Features
+
+- **BorrowTradePanel**: Enable Collateral → Borrow → Buy → Buy & Arm TP → Force Sell
+- **SummaryPanel**: Real-time HF, LTV, Collateral, Debt, Net Carry, PnL updates
+- **InsightsPanel**: Rule-based insights from pool ratios
+- **StrategyExecCard**: Create and execute strategies (real program or Memo fallback)
+- **Enhanced Safety**: Transaction simulation, compute budget management, position auto-refresh
+
+### Switching Between Modes
+
+- **To V2**: Set `VITE_LENDING_V2=true` in `.env.local`
+- **To Legacy**: Set `VITE_LENDING_V2=false` in `.env.local`
+- **Demo Mode**: Set `VITE_DEMO_MODE=true` for localStorage-based testing
+- **Real Devnet**: Set `VITE_DEMO_MODE=false` for actual blockchain interaction
+
+### Acceptance Criteria
+
+With `VITE_LENDING_V2=true` and `VITE_DEMO_MODE=false` on devnet with Phantom funded:
+
+1. ✅ **Lending Flow**: Enable Collateral → Borrow → Buy → Buy & Arm TP → Force Sell all succeed
+2. ✅ **Transaction Feedback**: Each tx shows toast with "View on Explorer" button
+3. ✅ **Auto-refresh**: Summary panel updates after each transaction
+4. ✅ **Strategy Bridge**: Create Strategy returns signature + stable strategyId
+5. ✅ **Debug Logs**: `VITE_DEBUG_TX=true` shows simulation (err/logs/computeUnits) before send
+
+## 🧪 Testing
+
+### Smoke Test
+
+Run the comprehensive end-to-end test on devnet:
+
 ```bash
+# Run smoke test with demo mode
+DEMO_MODE=true npm run smoke:devnet
+
+# Run smoke test with real devnet transactions
 npm run smoke:devnet
 ```
 
 The smoke test performs:
-1. SOL airdrop (if needed)
-2. Collateral deposit simulation
-3. USDC borrowing simulation
-4. Token swap simulation
-5. Reverse swap after 30 seconds
-6. Final balance verification
+1. **Airdrop SOL** (if needed)
+2. **Deposit 1 SOL** as collateral
+3. **Borrow 5 USDC** against collateral
+4. **Swap 1 USDC** for SOL via TokenSwap
+5. **Wait 30 seconds** then reverse swap
 
-### Architecture
+### Quick Tests
 
-- **Pool Price Service**: Reads vault balances for price calculation
-- **Take-Profit Hook**: Manages TP state and automation
-- **Insights Hook**: Provides rule-based market analysis
-- **Borrow & Trade Panel**: Main UI for lending and trading
-- **Summary Panel**: Position metrics and transaction status
-- **Insights Panel**: Market analysis and risk assessment
-
-### Take-Profit Engine
-
-The take-profit system:
-- Polls pool prices every `VITE_TP_POLL_MS` milliseconds
-- Automatically executes reverse swaps when `VITE_TP_TARGET_BPS` is met
-- Supports manual disarm and force-sell operations
-- Integrates with the existing position management system
-
-### Future Enhancements
-
-- **AI Insights**: Enable `VITE_AI_INSIGHTS=true` for LLM-powered analysis
-- **Advanced Strategies**: Multi-leg trades and complex position management
-- **Risk Management**: Dynamic position sizing and stop-loss automation
-
-## 🏗️ Original Strategy Builder
-
-The platform includes a comprehensive strategy builder with:
-- Drag-and-drop strategy construction
-- 55+ strategy inputs and logic operators
-- Real-time strategy simulation
-- Position tracking and management
-
-## 🔧 Development
-
-### Prerequisites
-- Node.js 18+
-- Solana CLI
-- Phantom Wallet (for testing)
-
-### Installation
 ```bash
-npm install
+# Quick devnet test
+npm run test:quick
+
+# Demo mode test
+npm run test:demo
 ```
 
-### Local Development
+## 🎯 Demo Flow
+
+### 1. System Check
+- Connect Phantom wallet to devnet
+- Verify environment configuration
+- Check token configuration
+- Validate Solana connection
+
+### 2. Lending & Borrowing
+- **Enable Collateral**: Deposit SOL as collateral
+- **Borrow USDC**: Borrow against SOL collateral
+- **Monitor Health**: Track LTV ratio and health factor
+
+### 3. Trading
+- **Buy Assets**: Swap USDC for SOL
+- **Buy & Arm TP**: Execute trade and set take-profit
+- **Force Sell**: Manual position exit
+
+### 4. Take-Profit Automation
+- **Arm TP**: Set price target for automatic selling
+- **Monitor**: Real-time price tracking
+- **Execute**: Automatic TP when target is met
+
+### 5. Strategy Management
+- **Create Strategy**: Build custom yield strategies
+- **Execute Strategy**: Deploy strategies on-chain
+- **Monitor Performance**: Track strategy PnL
+
+## 🏗️ Architecture
+
+### Core Components
+
+- **Preflight**: System health check and validation
+- **BorrowTradePanel**: Lending, borrowing, and trading controls
+- **SummaryPanel**: Position overview and transaction history
+- **StrategyBridge**: Strategy creation and execution
+- **DemoRunner**: One-click demo automation
+- **InsightsPanel**: AI-powered market analysis
+
+### Smart Contract Integration
+
+- **Lending Adapter**: Collateral management and borrowing
+- **DEX Adapter**: TokenSwap integration with slippage protection
+- **Pool Price Service**: Real-time price calculation from vault balances
+- **Take-Profit Hook**: Automated TP execution
+
+### State Management
+
+- **Demo Mode**: localStorage-based state with mock signatures
+- **Real Mode**: On-chain transactions with Explorer links
+- **Position Tracking**: Real-time balance and health monitoring
+- **Transaction History**: Complete operation log with signatures
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Preflight Check Fails**
+   - Verify environment variables are set
+   - Check token configuration addresses
+   - Ensure wallet is connected to devnet
+
+2. **Build Errors**
+   - Clear node_modules and reinstall: `rm -rf node_modules && npm install`
+   - Check TypeScript compilation: `npx tsc --noEmit`
+
+3. **Devnet Connection Issues**
+   - Verify RPC URL is accessible
+   - Check network status at [Solana Status](https://status.solana.com)
+   - Try alternative RPC endpoints
+
+4. **Wallet Connection Problems**
+   - Ensure Phantom is installed and unlocked
+   - Switch to devnet network in wallet
+   - Clear browser cache and reload
+
+### Debug Mode
+
+Enable debug logging:
 ```bash
-npm run dev
+DEBUG=* npm run dev
 ```
 
-### Build and Deploy
-```bash
-npm run build
-npm run deploy
-```
+## 📚 API Reference
 
-## 📚 Documentation
+### Lending Functions
+- `enableCollateral(mint, amount)` - Enable token as collateral
+- `borrow(borrowMint, amount)` - Borrow assets against collateral
+- `repay(borrowMint, amount)` - Repay borrowed assets
+- `getHealth()` - Get position health metrics
 
-- [Strategy Builder Guide](./docs/strategy-builder.md)
-- [API Reference](./docs/api.md)
-- [Deployment Guide](./docs/deployment.md)
+### Trading Functions
+- `getQuote(inputToken, outputToken, amountIn)` - Get swap quote
+- `swap(inputToken, outputToken, amountIn, maxSlippage)` - Execute swap
+- `getPoolPrice()` - Get current pool price ratios
+
+### Strategy Functions
+- `createStrategy(strategyConfig)` - Deploy new strategy
+- `executeStrategy(strategyId)` - Run strategy execution
+- `getStrategyPerformance(strategyId)` - Get strategy metrics
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `

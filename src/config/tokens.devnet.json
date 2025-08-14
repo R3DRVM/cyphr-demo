@@ -1,12 +1,12 @@
 {
-  "swapState": "placeholder_swap_state",
-  "swapAuthority": "placeholder_swap_authority", 
-  "poolTokenMint": "placeholder_pool_token_mint",
-  "feeAccount": "placeholder_fee_account",
+  "swapState": "11111111111111111111111111111111",
+  "swapAuthority": "11111111111111111111111111111111", 
+  "poolTokenMint": "11111111111111111111111111111111",
+  "feeAccount": "11111111111111111111111111111111",
   "mintA": "So11111111111111111111111111111111111111112",
   "mintB": "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU", 
-  "vaultA": "placeholder_vault_a",
-  "vaultB": "placeholder_vault_b",
+  "vaultA": "11111111111111111111111111111111",
+  "vaultB": "11111111111111111111111111111111",
   "hostFeeAccount": null,
   "tokens": {
     "collateral": {

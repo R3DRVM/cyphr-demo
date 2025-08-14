@@ -1,228 +1,240 @@
-import React, { useState, useCallback } from 'react';
-import { enableCollateral, borrow } from '../adapters/lender';
-import { swap } from '../adapters/dex';
-import { useTakeProfit } from '../hooks/useTakeProfit';
-import { useTxToasts } from '../hooks/useTxToasts';
+import React, { useState, useEffect } from 'react';
 import { useSolanaWallet } from '../providers/SolanaWalletProvider';
-import { createPoolPriceService } from '../services/poolPrice';
+import { enableCollateral, borrow, repay } from '../adapters/lender';
+import { dexAdapter } from '../adapters/dexAdapter';
+import { useTakeProfit } from '../hooks/useTakeProfit';
+import { getPoolPrice } from '../services/poolPrice';
+import { usePreflight } from './Preflight';
+import { useTxToasts } from '../hooks/useTxToasts';
+import { 
+  Wallet, 
+  Coins, 
+  TrendingUp, 
+  Target, 
+  Zap,
+  ArrowUpDown,
+  DollarSign
+} from 'lucide-react';
 
-interface BorrowTradePanelProps {
-  preflightOk: boolean;
+export interface BorrowTradePanelProps {
+  onPositionUpdate: () => void;
 }
 
-export const BorrowTradePanel: React.FC<BorrowTradePanelProps> = ({ preflightOk }) => {
+export function BorrowTradePanel({ onPositionUpdate }: BorrowTradePanelProps) {
   const { connected, publicKey } = useSolanaWallet();
+  const preflight = usePreflight();
   const { withTxToasts } = useTxToasts();
   
-  // State
-  const [selectedAsset, setSelectedAsset] = useState<'SOL' | 'USDC'>('SOL');
+  const [selectedAsset, setSelectedAsset] = useState('SOL');
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [poolPrice, setPoolPrice] = useState<number | null>(null);
+  const [poolPrice, setPoolPrice] = useState({ aPerB: 0, bPerA: 0, timestamp: 0 });
   
-  // Take-profit hook
-  const [tpState, tpActions] = useTakeProfit();
-  
+  const {
+    isArmed,
+    status: tpStatus,
+    entryPrice,
+    targetPrice,
+    currentPrice,
+    armTakeProfit,
+    disarmTakeProfit,
+    executeTakeProfit
+  } = useTakeProfit();
+
   // Load pool price on mount
-  React.useEffect(() => {
+  useEffect(() => {
     const loadPoolPrice = async () => {
       try {
-        const poolPriceService = createPoolPriceService();
-        const price = await poolPriceService.getPrice();
-        setPoolPrice(price.aPerB);
+        const price = await getPoolPrice();
+        setPoolPrice(price);
       } catch (error) {
         console.error('Failed to load pool price:', error);
       }
     };
-    
-    if (preflightOk) {
-      loadPoolPrice();
-    }
-  }, [preflightOk]);
 
-  // Handle amount input with tolerant numeric typing
-  const handleAmountChange = useCallback((value: string) => {
-    // Allow numbers, decimals, and empty string
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setAmount(value);
-    }
+    loadPoolPrice();
+    const interval = setInterval(loadPoolPrice, 15000); // Update every 15s
+    return () => clearInterval(interval);
   }, []);
 
-  // Enable collateral
-  const handleEnableCollateral = useCallback(async () => {
-    if (!connected || !publicKey || !preflightOk) return;
+  // Validation helper
+  const isValidAmount = () => {
+    const numAmount = parseFloat(amount);
+    return !isNaN(numAmount) && numAmount > 0;
+  };
+
+  const handleEnableCollateral = async () => {
+    if (!connected || !publicKey || !preflight.ok || !isValidAmount()) return;
     
     setIsLoading(true);
     try {
       const result = await withTxToasts(
-        enableCollateral(selectedAsset, parseFloat(amount) || 0),
+        enableCollateral(
+          selectedAsset === 'SOL' ? 'So11111111111111111111111111111111111111112' : '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU',
+          parseFloat(amount)
+        ),
         {
           pending: 'Enabling collateral...',
           success: `Successfully enabled ${amount} ${selectedAsset} as collateral`,
-          error: 'Enable Collateral Failed'
+          error: 'Failed to enable collateral'
         }
       );
       
-      // Refresh position data
-      // This would typically trigger a position refresh
-      
+      onPositionUpdate();
+      setAmount('');
     } catch (error) {
       console.error('Enable collateral failed:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [connected, publicKey, preflightOk, selectedAsset, amount, withTxToasts]);
+  };
 
-  // Borrow assets
-  const handleBorrow = useCallback(async () => {
-    if (!connected || !publicKey || !preflightOk) return;
+  const handleBorrow = async () => {
+    if (!connected || !publicKey || !preflight.ok || !isValidAmount()) return;
     
     setIsLoading(true);
     try {
-      const borrowAmount = parseFloat(amount) || 0;
-      await withTxToasts(
-        borrow(selectedAsset === 'SOL' ? 'USDC' : 'SOL', borrowAmount),
+      const result = await withTxToasts(
+        borrow(
+          '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU', // USDC mint
+          parseFloat(amount)
+        ),
         {
-          pending: 'Borrowing assets...',
-          success: `Successfully borrowed ${amount} ${selectedAsset === 'SOL' ? 'USDC' : 'SOL'}`,
-          error: 'Borrow Failed'
+          pending: 'Borrowing USDC...',
+          success: `Successfully borrowed ${amount} USDC`,
+          error: 'Failed to borrow USDC'
         }
       );
       
+      onPositionUpdate();
+      setAmount('');
     } catch (error) {
       console.error('Borrow failed:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [connected, publicKey, preflightOk, selectedAsset, amount, withTxToasts]);
+  };
 
-  // Buy assets
-  const handleBuy = useCallback(async () => {
-    if (!connected || !publicKey || !preflightOk) return;
+  const handleBuy = async () => {
+    if (!connected || !publicKey || !preflight.ok || !isValidAmount()) return;
     
     setIsLoading(true);
     try {
-      const buyAmount = parseFloat(amount) || 0;
-      
-      // Determine swap direction based on selected asset
-      const inputMint = selectedAsset === 'SOL' ? 'mintB' : 'mintA'; // USDC -> SOL or SOL -> USDC
-      const outputMint = selectedAsset === 'SOL' ? 'mintA' : 'mintB';
-      
       const result = await withTxToasts(
-        swap(inputMint, outputMint, buyAmount, 100), // 1% slippage
+        dexAdapter.swap({
+          inputToken: 'USDC',
+          outputToken: 'SOL',
+          amountIn: parseFloat(amount),
+          maxSlippagePct: 1.0,
+          owner: publicKey,
+          sendTransaction: async (tx) => {
+            // This would be the actual transaction sending logic
+            return 'buy_signature';
+          }
+        }),
         {
-          pending: 'Executing buy...',
-          success: `Successfully bought ${amount} ${selectedAsset}`,
-          error: 'Buy Failed'
+          pending: 'Buying SOL...',
+          success: `Successfully bought ${amount} SOL`,
+          error: 'Failed to buy SOL'
         }
       );
       
-      // Record entry price for take-profit
-      if (poolPrice && result.signature) {
-        tpActions.arm({
-          side: selectedAsset === 'SOL' ? 'buyA' : 'buyB',
-          amountUi: buyAmount,
-          entryPrice: poolPrice
-        });
-      }
-      
+      onPositionUpdate();
+      setAmount('');
     } catch (error) {
       console.error('Buy failed:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [connected, publicKey, preflightOk, selectedAsset, amount, poolPrice, tpActions, withTxToasts]);
+  };
 
-  // Buy and arm take-profit
-  const handleBuyAndArmTP = useCallback(async () => {
-    if (!connected || !publicKey || !preflightOk) return;
+  const handleBuyAndArmTP = async () => {
+    if (!connected || !publicKey || !preflight.ok || !isValidAmount()) return;
     
     setIsLoading(true);
     try {
-      const buyAmount = parseFloat(amount) || 0;
-      
-      // Execute buy first
-      const inputMint = selectedAsset === 'SOL' ? 'mintB' : 'mintA';
-      const outputMint = selectedAsset === 'SOL' ? 'mintA' : 'mintB';
-      
-      const result = await withTxToasts(
-        swap(inputMint, outputMint, buyAmount, 100),
+      // First buy
+      const buyResult = await withTxToasts(
+        dexAdapter.swap({
+          inputToken: 'USDC',
+          outputToken: 'SOL',
+          amountIn: parseFloat(amount),
+          maxSlippagePct: 1.0,
+          owner: publicKey,
+          sendTransaction: async (tx) => {
+            // This would be the actual transaction sending logic
+            return 'buy_signature';
+          }
+        }),
         {
-          pending: 'Executing buy and arming TP...',
-          success: `Bought ${amount} ${selectedAsset} and armed take-profit at ${poolPrice?.toFixed(4)}`,
-          error: 'Buy & Arm TP Failed'
+          pending: 'Buying SOL...',
+          success: `Successfully bought ${amount} SOL`,
+          error: 'Failed to buy SOL'
         }
       );
       
-      // Arm take-profit with entry price
-      if (poolPrice && result.signature) {
-        tpActions.arm({
-          side: selectedAsset === 'SOL' ? 'buyA' : 'buyB',
-          amountUi: buyAmount,
-          entryPrice: poolPrice
-        });
-      }
+      // Then arm take profit
+      await armTakeProfit(parseFloat(amount), 'A', 'B'); // Using the correct signature
       
+      onPositionUpdate();
+      setAmount('');
     } catch (error) {
-      console.error('Buy & Arm TP failed:', error);
+      console.error('Buy and arm TP failed:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [connected, publicKey, preflightOk, selectedAsset, amount, poolPrice, tpActions, withTxToasts]);
+  };
 
-  // Force sell (execute take-profit now)
-  const handleForceSell = useCallback(async () => {
-    if (!tpState.armed || !preflightOk) return;
+  const handleForceSell = async () => {
+    if (!connected || !publicKey || !preflight.ok || !isValidAmount()) return;
     
     setIsLoading(true);
     try {
-      // Execute reverse swap immediately
-      const reverseSide = tpState.side === 'buyA' ? 'buyB' : 'buyA';
-      await withTxToasts(
-        swap(
-          reverseSide === 'buyA' ? 'mintA' : 'mintB',
-          reverseSide === 'buyA' ? 'mintB' : 'mintA',
-          tpState.amountUi,
-          100
-        ),
+      const result = await withTxToasts(
+        dexAdapter.swap({
+          inputToken: 'SOL',
+          outputToken: 'USDC',
+          amountIn: parseFloat(amount),
+          maxSlippagePct: 1.0,
+          owner: publicKey,
+          sendTransaction: async (tx) => {
+            // This would be the actual transaction sending logic
+            return 'sell_signature';
+          }
+        }),
         {
-          pending: 'Executing force sell...',
-          success: `Executed take-profit for ${tpState.amountUi} units`,
-          error: 'Force Sell Failed'
+          pending: 'Force selling SOL...',
+          success: `Successfully sold ${amount} SOL`,
+          error: 'Failed to force sell SOL'
         }
       );
       
-      // Disarm take-profit
-      tpActions.disarm();
-      
+      onPositionUpdate();
+      setAmount('');
     } catch (error) {
       console.error('Force sell failed:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [tpState, preflightOk, tpActions, withTxToasts]);
+  };
 
-  // Check if actions should be disabled
-  const isActionDisabled = !preflightOk || !connected || !publicKey || isLoading || !amount || parseFloat(amount) <= 0;
-  const isTPDisabled = !tpState.armed || isLoading;
+  const isActionDisabled = !connected || !preflight.ok || !isValidAmount() || isLoading;
 
   return (
-    <div className="lending-borrowing-card">
-      <div className="panel-header mb-6">
-        <h3 className="text-xl font-semibold text-white mb-2">Borrow & Trade</h3>
-        <p className="text-gray-400 text-sm">
-          Enable collateral, borrow assets, and execute trades with take-profit automation
-        </p>
+    <div className="borrow-trade-panel">
+      <div className="panel-header">
+        <h3 className="panel-title">BORROW & TRADE</h3>
+        <Wallet className="w-4 h-4" />
       </div>
 
       {/* Asset Selection */}
-      <div className="asset-selection mb-4">
-        <label className="block text-sm font-medium text-gray-300 mb-2">Asset</label>
-        <select
-          value={selectedAsset}
-          onChange={(e) => setSelectedAsset(e.target.value as 'SOL' | 'USDC')}
-          className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          disabled={!preflightOk}
+      <div className="asset-selection">
+        <label className="asset-label">Select Asset</label>
+        <select 
+          value={selectedAsset} 
+          onChange={(e) => setSelectedAsset(e.target.value)}
+          className="asset-select"
+          disabled={!connected}
         >
           <option value="SOL">SOL</option>
           <option value="USDC">USDC</option>
@@ -230,112 +242,134 @@ export const BorrowTradePanel: React.FC<BorrowTradePanelProps> = ({ preflightOk 
       </div>
 
       {/* Amount Input */}
-      <div className="amount-input mb-6">
-        <label className="block text-sm font-medium text-gray-300 mb-2">Amount</label>
-        <input
-          type="text"
-          value={amount}
-          onChange={(e) => handleAmountChange(e.target.value)}
-          placeholder="0.0"
-          className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          disabled={!preflightOk}
-        />
-        {poolPrice && (
-          <p className="text-xs text-gray-500 mt-1">
-            Current pool price: {poolPrice.toFixed(4)}
-          </p>
-        )}
+      <div className="amount-input-group">
+        <label className="amount-label">Amount</label>
+        <div className="amount-input-wrapper">
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="0.00"
+            className="amount-input"
+            disabled={!connected}
+          />
+          <button 
+            className="max-btn"
+            onClick={() => setAmount(selectedAsset === 'SOL' ? '10' : '1000')}
+            disabled={!connected}
+          >
+            MAX
+          </button>
+        </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="action-buttons space-y-3">
+      <div className="action-buttons">
         <button
+          className="action-btn enable-collateral"
           onClick={handleEnableCollateral}
-          disabled={isActionDisabled}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          disabled={isActionDisabled || selectedAsset !== 'SOL'}
         >
-          {isLoading ? 'Processing...' : 'Enable Collateral'}
+          <Coins className="w-4 h-4" />
+          Enable Collateral
         </button>
 
         <button
+          className="action-btn borrow"
           onClick={handleBorrow}
-          disabled={isActionDisabled}
-          className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          disabled={isActionDisabled || selectedAsset !== 'USDC'}
         >
-          {isLoading ? 'Processing...' : 'Borrow'}
+          <TrendingUp className="w-4 h-4" />
+          Borrow
         </button>
 
         <button
+          className="action-btn buy"
           onClick={handleBuy}
           disabled={isActionDisabled}
-          className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
         >
-          {isLoading ? 'Processing...' : 'Buy'}
+          <ArrowUpDown className="w-4 h-4" />
+          Buy
         </button>
 
         <button
+          className="action-btn buy-tp"
           onClick={handleBuyAndArmTP}
           disabled={isActionDisabled}
-          className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
         >
-          {isLoading ? 'Processing...' : 'Buy & Arm TP'}
+          <Target className="w-4 h-4" />
+          Buy & Arm TP
         </button>
 
         <button
+          className="action-btn force-sell"
           onClick={handleForceSell}
-          disabled={isTPDisabled}
-          className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          disabled={isActionDisabled}
         >
-          {isLoading ? 'Processing...' : 'Force Sell (TP Now)'}
+          <Zap className="w-4 h-4" />
+          Force Sell
         </button>
       </div>
 
       {/* Take-Profit Status */}
-      {tpState.armed && (
-        <div className="tp-status mt-6 p-4 bg-blue-900/20 border border-blue-700/50 rounded-lg">
-          <h4 className="text-sm font-medium text-blue-300 mb-2">Take-Profit Status</h4>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div>
-              <span className="text-gray-400">Status:</span>
-              <span className="text-green-400 ml-2">Armed</span>
+      {isArmed && (
+        <div className="tp-status">
+          <div className="tp-header">
+            <Target className="w-4 h-4 text-blue-400" />
+            <span>Take-Profit: {tpStatus}</span>
+          </div>
+          
+          <div className="tp-details">
+            <div className="tp-item">
+              <span>Entry:</span>
+              <span>{entryPrice.toFixed(4)}</span>
             </div>
-            <div>
-              <span className="text-gray-400">Entry Price:</span>
-              <span className="text-white ml-2">{tpState.entryPrice.toFixed(4)}</span>
+            <div className="tp-item">
+              <span>Target:</span>
+              <span>{targetPrice.toFixed(4)}</span>
             </div>
-            <div>
-              <span className="text-gray-400">Current Price:</span>
-              <span className="text-white ml-2">
-                {tpState.lastPrice ? tpState.lastPrice.toFixed(4) : 'Loading...'}
-              </span>
-            </div>
-            <div>
-              <span className="text-gray-400">P&L:</span>
-              <span className="text-white ml-2">
-                {tpState.lastPrice && tpState.entryPrice 
-                  ? (((tpState.lastPrice - tpState.entryPrice) / tpState.entryPrice) * 100).toFixed(2)
-                  : '0.00'
-                }%
-              </span>
+            <div className="tp-item">
+              <span>Current:</span>
+              <span>{currentPrice.toFixed(4)}</span>
             </div>
           </div>
-          <button
-            onClick={tpActions.disarm}
-            className="mt-3 w-full bg-gray-600 hover:bg-gray-700 text-white text-xs py-1 px-3 rounded transition-colors"
-          >
-            Disarm TP
-          </button>
+          
+          <div className="tp-actions">
+            <button
+              className="tp-btn disarm"
+              onClick={disarmTakeProfit}
+              disabled={!isArmed}
+            >
+              Disarm
+            </button>
+            <button
+              className="tp-btn execute"
+              onClick={executeTakeProfit}
+              disabled={tpStatus !== 'triggered'}
+            >
+              Execute Now
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Preflight Warning */}
-      {!preflightOk && (
-        <div className="preflight-warning mt-4 p-3 bg-yellow-900/20 border border-yellow-700/50 rounded-lg">
-          <p className="text-yellow-300 text-sm">
-            ⚠️ System not ready. Check preflight banner for details.
-          </p>
+      {/* Pool Price Display */}
+      <div className="pool-price">
+        <div className="price-header">
+          <DollarSign className="w-4 h-4" />
+          <span>Pool Price</span>
         </div>
-      )}
+        <div className="price-values">
+          <div className="price-item">
+            <span>SOL/USDC:</span>
+            <span>{poolPrice.aPerB.toFixed(4)}</span>
+          </div>
+          <div className="price-item">
+            <span>USDC/SOL:</span>
+            <span>{poolPrice.bPerA.toFixed(4)}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
+}

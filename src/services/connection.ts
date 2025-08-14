@@ -1,13 +1,12 @@
 import { Connection } from '@solana/web3.js';
-
-const PRIMARY_RPC = import.meta.env.VITE_RPC_PRIMARY || 'https://api.devnet.solana.com';
-const FALLBACK_RPC = import.meta.env.VITE_RPC_FALLBACK || 'https://devnet.helius-rpc.com/?api-key=__ENV__';
+import { configService } from './config';
 
 let connectionInstance: Connection | null = null;
 
 export function getConnection(): Connection {
   if (!connectionInstance) {
-    connectionInstance = new Connection(PRIMARY_RPC, 'confirmed');
+    const rpcUrl = configService.getRpcUrl();
+    connectionInstance = new Connection(rpcUrl, 'confirmed');
   }
   return connectionInstance;
 }
@@ -18,8 +17,20 @@ export async function confirmTx(signature: string): Promise<void> {
     await connection.confirmTransaction(signature, 'confirmed');
   } catch (error) {
     // Try fallback RPC if primary fails
-    const fallbackConnection = new Connection(FALLBACK_RPC, 'confirmed');
+    const fallbackRpc = 'https://devnet.helius-rpc.com/?api-key=__ENV__';
+    const fallbackConnection = new Connection(fallbackRpc, 'confirmed');
     await fallbackConnection.confirmTransaction(signature, 'confirmed');
+  }
+}
+
+export async function testConnection(): Promise<boolean> {
+  try {
+    const connection = getConnection();
+    const blockHeight = await connection.getBlockHeight();
+    return blockHeight > 0;
+  } catch (error) {
+    console.warn('Connection test failed:', error);
+    return false;
   }
 }
 

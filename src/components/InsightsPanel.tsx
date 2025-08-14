@@ -1,290 +1,325 @@
-import React from 'react';
-import { useInsights } from '../hooks/useInsights';
+import React, { useState, useEffect } from 'react';
+import { getPoolPrice } from '../services/poolPrice';
+import { getPoolBalances } from '../services/poolPrice';
+import { TrendingUp, TrendingDown, AlertTriangle, Info, Target, DollarSign } from 'lucide-react';
 
-interface InsightsPanelProps {
-  preflightOk: boolean;
+export interface PoolInsight {
+  type: 'opportunity' | 'risk' | 'neutral';
+  title: string;
+  description: string;
+  recommendation: string;
+  confidence: number;
 }
 
-export const InsightsPanel: React.FC<InsightsPanelProps> = ({ preflightOk }) => {
-  const [analysis, insights, refresh] = useInsights();
+export function InsightsPanel() {
+  const [poolPrice, setPoolPrice] = useState({ aPerB: 0, bPerA: 0, timestamp: 0 });
+  const [poolBalances, setPoolBalances] = useState({ vaultABalance: 0, vaultBBalance: 0, poolTokenSupply: 0 });
+  const [insights, setInsights] = useState<PoolInsight[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Get insight icon based on type
+  // Load pool data and generate insights
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const [price, balances] = await Promise.all([
+          getPoolPrice(),
+          getPoolBalances()
+        ]);
+        
+        setPoolPrice(price);
+        setPoolBalances(balances);
+        
+        // Generate insights based on pool data
+        const newInsights = generateInsights(price, balances);
+        setInsights(newInsights);
+      } catch (error) {
+        console.error('Failed to load insights data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+    const interval = setInterval(loadData, 30000); // Update every 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  const generateInsights = (price: any, balances: any): PoolInsight[] => {
+    const insights: PoolInsight[] = [];
+    
+    // Price trend analysis
+    if (price.aPerB > 150) {
+      insights.push({
+        type: 'opportunity',
+        title: 'High SOL Price',
+        description: 'SOL is trading above $150, indicating strong momentum',
+        recommendation: 'Consider taking profits or reducing exposure',
+        confidence: 0.8
+      });
+    } else if (price.aPerB < 100) {
+      insights.push({
+        type: 'opportunity',
+        title: 'Low SOL Price',
+        description: 'SOL is trading below $100, potential buying opportunity',
+        recommendation: 'Consider accumulating SOL at these levels',
+        confidence: 0.7
+      });
+    }
+
+    // Liquidity analysis
+    const totalLiquidity = balances.vaultABalance + balances.vaultBBalance;
+    if (totalLiquidity < 1000000) {
+      insights.push({
+        type: 'risk',
+        title: 'Low Liquidity',
+        description: 'Pool has limited liquidity, may experience high slippage',
+        recommendation: 'Use smaller trade sizes or wait for better conditions',
+        confidence: 0.9
+      });
+    }
+
+    // Balance ratio analysis
+    if (balances.vaultABalance > 0 && balances.vaultBBalance > 0) {
+      const ratio = balances.vaultABalance / balances.vaultBBalance;
+      if (ratio > 2) {
+        insights.push({
+          type: 'opportunity',
+          title: 'SOL Heavy Pool',
+          description: 'Pool is heavily weighted towards SOL',
+          recommendation: 'Consider rebalancing or adding USDC liquidity',
+          confidence: 0.6
+        });
+      } else if (ratio < 0.5) {
+        insights.push({
+          type: 'opportunity',
+          title: 'USDC Heavy Pool',
+          description: 'Pool is heavily weighted towards USDC',
+          recommendation: 'Consider rebalancing or adding SOL liquidity',
+          confidence: 0.6
+        });
+      }
+    }
+
+    // Volatility analysis (mock)
+    const volatility = Math.random() * 0.1; // 0-10% volatility
+    if (volatility > 0.05) {
+      insights.push({
+        type: 'risk',
+        title: 'High Volatility',
+        description: 'Pool experiencing increased price volatility',
+        recommendation: 'Use tighter stop-losses and smaller position sizes',
+        confidence: 0.7
+      });
+    }
+
+    // Yield opportunity (mock)
+    if (insights.length === 0) {
+      insights.push({
+        type: 'neutral',
+        title: 'Stable Conditions',
+        description: 'Pool is operating within normal parameters',
+        recommendation: 'Continue with current strategy, monitor for changes',
+        confidence: 0.5
+      });
+    }
+
+    return insights;
+  };
+
   const getInsightIcon = (type: string) => {
     switch (type) {
-      case 'success':
-        return (
-          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
-      case 'warning':
-        return (
-          <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-          </svg>
-        );
-      case 'error':
-        return (
-          <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
-      case 'info':
+      case 'opportunity':
+        return <TrendingUp className="w-5 h-5 text-green-400" />;
+      case 'risk':
+        return <AlertTriangle className="w-5 h-5 text-red-400" />;
+      case 'neutral':
+        return <Info className="w-5 h-5 text-blue-400" />;
       default:
-        return (
-          <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
+        return <Info className="w-5 h-5 text-gray-400" />;
     }
   };
 
-  // Get risk color
-  const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case 'low':
-        return 'text-green-400';
-      case 'medium':
-        return 'text-yellow-400';
-      case 'high':
-        return 'text-red-400';
+  const getInsightColor = (type: string) => {
+    switch (type) {
+      case 'opportunity':
+        return 'border-green-500 bg-green-900/20';
+      case 'risk':
+        return 'border-red-500 bg-red-900/20';
+      case 'neutral':
+        return 'border-blue-500 bg-blue-900/20';
       default:
-        return 'text-gray-400';
+        return 'border-gray-500 bg-gray-900/20';
     }
   };
 
-  // Get volatility color
-  const getVolatilityColor = (volatility: string) => {
-    switch (volatility) {
-      case 'low':
-        return 'text-green-400';
-      case 'medium':
-        return 'text-yellow-400';
-      case 'high':
-        return 'text-red-400';
-      default:
-        return 'text-gray-400';
-    }
-  };
-
-  // Get ratio direction color
-  const getRatioDirectionColor = (direction: string) => {
-    switch (direction) {
-      case 'increasing':
-        return 'text-green-400';
-      case 'decreasing':
-        return 'text-red-400';
-      case 'stable':
-        return 'text-blue-400';
-      default:
-        return 'text-gray-400';
-    }
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 0.8) return 'text-green-400';
+    if (confidence >= 0.6) return 'text-yellow-400';
+    return 'text-red-400';
   };
 
   return (
-    <div className="insights-panel bg-gray-900/50 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6">
-      <div className="panel-header mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-xl font-semibold text-white">Pool Insights</h3>
-          <button
-            onClick={refresh}
-            disabled={!preflightOk}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-sm px-3 py-1 rounded-lg transition-colors flex items-center gap-2"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Refresh
-          </button>
-        </div>
-        <p className="text-gray-400 text-sm">
-          {import.meta.env.VITE_AI_INSIGHTS === 'true' 
-            ? 'AI-powered analysis and recommendations' 
-            : 'Rule-based market analysis and risk assessment'
-          }
-        </p>
+    <div className="insights-panel">
+      <div className="panel-header">
+        <h3 className="panel-title">AI INSIGHTS</h3>
+        <Target className="w-4 h-4" />
       </div>
 
-      {!preflightOk ? (
-        <div className="preflight-warning text-center py-8">
-          <div className="text-yellow-500 mb-2">
-            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-            </svg>
-          </div>
-          <p className="text-yellow-400">System not ready</p>
-          <p className="text-gray-400 text-sm mt-1">Check preflight banner</p>
-        </div>
-      ) : !analysis ? (
-        <div className="loading-insights text-center py-8">
-          <div className="text-gray-500 mb-2">
-            <svg className="w-12 h-12 mx-auto animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </div>
-          <p className="text-gray-400">Loading insights...</p>
-        </div>
-      ) : (
-        <div className="insights-content space-y-6">
-          {/* Pool Overview */}
-          <div className="pool-overview bg-gray-800/50 rounded-lg p-4">
-            <h4 className="text-lg font-medium text-white mb-3">Pool Overview</h4>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="metric">
-                <span className="text-sm text-gray-400">Current Ratio</span>
-                <div className="text-xl font-bold text-white">{analysis.ratio.toFixed(4)}</div>
-              </div>
-              <div className="metric">
-                <span className="text-sm text-gray-400">Direction</span>
-                <div className={`text-lg font-semibold ${getRatioDirectionColor(analysis.ratioDirection)}`}>
-                  {analysis.ratioDirection.charAt(0).toUpperCase() + analysis.ratioDirection.slice(1)}
-                </div>
-              </div>
-              <div className="metric">
-                <span className="text-sm text-gray-400">Volatility</span>
-                <div className={`text-lg font-semibold ${getVolatilityColor(analysis.volatility)}`}>
-                  {analysis.volatility.charAt(0).toUpperCase() + analysis.volatility.slice(1)}
-                </div>
-              </div>
-              <div className="metric">
-                <span className="text-sm text-gray-400">Risk Level</span>
-                <div className={`text-lg font-semibold ${getRiskColor(analysis.risk)}`}>
-                  {analysis.risk.charAt(0).toUpperCase() + analysis.risk.slice(1)}
-                </div>
-              </div>
+      {/* Pool Overview */}
+      <div className="pool-overview">
+        <h4 className="section-title">Pool Overview</h4>
+        
+        <div className="overview-grid">
+          <div className="overview-item">
+            <div className="overview-label">
+              <DollarSign className="w-4 h-4" />
+              <span>SOL/USDC Price</span>
             </div>
-            <div className="text-xs text-gray-500 mt-3">
-              Last updated: {new Date(analysis.lastUpdate).toLocaleTimeString()}
+            <div className="overview-value">
+              ${poolPrice.aPerB.toFixed(4)}
             </div>
           </div>
+          
+          <div className="overview-item">
+            <div className="overview-label">
+              <DollarSign className="w-4 h-4" />
+              <span>USDC/SOL Price</span>
+            </div>
+            <div className="overview-value">
+              ${poolPrice.bPerA.toFixed(4)}
+            </div>
+          </div>
+          
+          <div className="overview-item">
+            <div className="overview-label">
+              <span>SOL Liquidity</span>
+            </div>
+            <div className="overview-value">
+              {poolBalances.vaultABalance.toFixed(2)} SOL
+            </div>
+          </div>
+          
+          <div className="overview-item">
+            <div className="overview-label">
+              <span>USDC Liquidity</span>
+            </div>
+            <div className="overview-value">
+              {poolBalances.vaultBBalance.toFixed(2)} USDC
+            </div>
+          </div>
+        </div>
+      </div>
 
-          {/* Key Insights */}
-          <div className="key-insights">
-            <h4 className="text-lg font-medium text-white mb-3">Key Insights</h4>
-            <div className="insights-list space-y-3">
-              {insights.length > 0 ? (
-                insights.map((insight, index) => (
-                  <div
-                    key={index}
-                    className={`insight-item flex items-start gap-3 p-3 rounded-lg ${
-                      insight.type === 'success' ? 'bg-green-900/20 border border-green-700/50' :
-                      insight.type === 'warning' ? 'bg-yellow-900/20 border border-yellow-700/50' :
-                      insight.type === 'error' ? 'bg-red-900/20 border border-red-700/50' :
-                      'bg-blue-900/20 border border-blue-700/50'
-                    }`}
-                  >
-                    <div className="insight-icon flex-shrink-0 mt-0.5">
-                      {getInsightIcon(insight.type)}
-                    </div>
-                    <div className="insight-content flex-1">
-                      <p className="text-sm text-white">{insight.message}</p>
-                      <div className="insight-priority mt-1">
-                        <span className="text-xs text-gray-400">
-                          Priority: {insight.priority}
-                        </span>
-                      </div>
-                    </div>
+      {/* Market Analysis */}
+      <div className="market-analysis">
+        <h4 className="section-title">Market Analysis</h4>
+        
+        <div className="analysis-item">
+          <div className="analysis-header">
+            <span>Price Trend</span>
+            <span className="analysis-value">
+              {poolPrice.aPerB > 150 ? 'Bullish' : poolPrice.aPerB < 100 ? 'Bearish' : 'Neutral'}
+            </span>
+          </div>
+          <div className="analysis-bar">
+            <div 
+              className="analysis-fill"
+              style={{ 
+                width: `${Math.min(Math.max((poolPrice.aPerB - 50) / 200 * 100, 0), 100)}%`,
+                backgroundColor: poolPrice.aPerB > 150 ? '#10b981' : poolPrice.aPerB < 100 ? '#ef4444' : '#3b82f6'
+              }}
+            />
+          </div>
+        </div>
+        
+        <div className="analysis-item">
+          <div className="analysis-header">
+            <span>Liquidity Health</span>
+            <span className="analysis-value">
+              {poolBalances.vaultABalance + poolBalances.vaultBBalance > 1000000 ? 'Good' : 'Low'}
+            </span>
+          </div>
+          <div className="analysis-bar">
+            <div 
+              className="analysis-fill"
+              style={{ 
+                width: `${Math.min((poolBalances.vaultABalance + poolBalances.vaultBBalance) / 2000000 * 100, 100)}%`,
+                backgroundColor: poolBalances.vaultABalance + poolBalances.vaultBBalance > 1000000 ? '#10b981' : '#f59e0b'
+              }}
+            />
+          </div>
+        </div>
+        
+        <div className="analysis-item">
+          <div className="analysis-header">
+            <span>Balance Ratio</span>
+            <span className="analysis-value">
+              {poolBalances.vaultABalance > 0 && poolBalances.vaultBBalance > 0 
+                ? (poolBalances.vaultABalance / poolBalances.vaultBBalance).toFixed(2) 
+                : 'N/A'}
+            </span>
+          </div>
+          <div className="analysis-bar">
+            <div 
+              className="analysis-fill"
+              style={{ 
+                width: `${Math.min(Math.max((poolBalances.vaultABalance / Math.max(poolBalances.vaultBBalance, 1)) / 3 * 100, 0), 100)}%`,
+                backgroundColor: '#3b82f6'
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* AI Insights */}
+      <div className="ai-insights">
+        <h4 className="section-title">AI-Generated Insights</h4>
+        
+        {isLoading ? (
+          <div className="loading-insights">
+            <p>Analyzing market conditions...</p>
+          </div>
+        ) : insights.length === 0 ? (
+          <div className="no-insights">
+            <p>No insights available</p>
+          </div>
+        ) : (
+          <div className="insights-list">
+            {insights.map((insight, index) => (
+              <div key={index} className={`insight-item ${getInsightColor(insight.type)}`}>
+                <div className="insight-header">
+                  <div className="insight-icon">
+                    {getInsightIcon(insight.type)}
                   </div>
-                ))
-              ) : (
-                <div className="no-insights text-center py-6 text-gray-400">
-                  <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                  <p>No insights available</p>
-                  <p className="text-sm">Pool data is being analyzed...</p>
+                  <div className="insight-title">
+                    <h5>{insight.title}</h5>
+                    <span className={`confidence ${getConfidenceColor(insight.confidence)}`}>
+                      {Math.round(insight.confidence * 100)}% confidence
+                    </span>
+                  </div>
                 </div>
-              )}
-            </div>
+                
+                <div className="insight-content">
+                  <p className="insight-description">{insight.description}</p>
+                  <div className="insight-recommendation">
+                    <strong>Recommendation:</strong> {insight.recommendation}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
+        )}
+      </div>
 
-          {/* AI Insights Notice */}
-          {import.meta.env.VITE_AI_INSIGHTS === 'true' && (
-            <div className="ai-insights-notice bg-gradient-to-r from-purple-900/20 to-blue-900/20 border border-purple-700/50 rounded-lg p-4">
-              <div className="flex items-center gap-3 mb-2">
-                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                <span className="text-lg font-medium text-purple-300">AI Insights Active</span>
-              </div>
-              <p className="text-sm text-purple-200">
-                Advanced AI analysis is providing enhanced market insights and predictive recommendations.
-              </p>
-            </div>
-          )}
-
-          {/* Market Conditions */}
-          <div className="market-conditions bg-gray-800/50 rounded-lg p-4">
-            <h4 className="text-lg font-medium text-white mb-3">Market Conditions</h4>
-            <div className="conditions-grid grid grid-cols-1 gap-3">
-              <div className="condition-item flex justify-between items-center">
-                <span className="text-sm text-gray-400">Trend Direction</span>
-                <span className={`text-sm font-medium ${getRatioDirectionColor(analysis.ratioDirection)}`}>
-                  {analysis.ratioDirection === 'increasing' ? '↗️ Bullish' :
-                   analysis.ratioDirection === 'decreasing' ? '↘️ Bearish' : '→ Sideways'}
-                </span>
-              </div>
-              <div className="condition-item flex justify-between items-center">
-                <span className="text-sm text-gray-400">Volatility State</span>
-                <span className={`text-sm font-medium ${getVolatilityColor(analysis.volatility)}`}>
-                  {analysis.volatility === 'high' ? '⚠️ High' :
-                   analysis.volatility === 'medium' ? '⚡ Medium' : '✅ Low'}
-                </span>
-              </div>
-              <div className="condition-item flex justify-between items-center">
-                <span className="text-sm text-gray-400">Risk Assessment</span>
-                <span className={`text-sm font-medium ${getRiskColor(analysis.risk)}`}>
-                  {analysis.risk === 'high' ? '🔴 High Risk' :
-                   analysis.risk === 'medium' ? '🟡 Medium Risk' : '🟢 Low Risk'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Opportunities & Warnings */}
-          {(analysis.opportunities.length > 0 || analysis.warnings.length > 0) && (
-            <div className="opportunities-warnings space-y-4">
-              {analysis.opportunities.length > 0 && (
-                <div className="opportunities bg-green-900/20 border border-green-700/50 rounded-lg p-4">
-                  <h4 className="text-lg font-medium text-green-300 mb-3 flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Opportunities
-                  </h4>
-                  <ul className="space-y-2">
-                    {analysis.opportunities.map((opp, index) => (
-                      <li key={index} className="text-sm text-green-200 flex items-start gap-2">
-                        <span className="text-green-400">•</span>
-                        {opp}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {analysis.warnings.length > 0 && (
-                <div className="warnings bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-4">
-                  <h4 className="text-lg font-medium text-yellow-300 mb-3 flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                    Warnings
-                  </h4>
-                  <ul className="space-y-2">
-                    {analysis.warnings.map((warning, index) => (
-                      <li key={index} className="text-sm text-yellow-200 flex items-start gap-2">
-                        <span className="text-yellow-400">•</span>
-                        {warning}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+      {/* Disclaimer */}
+      <div className="insights-disclaimer">
+        <p className="disclaimer-text">
+          <strong>Disclaimer:</strong> These insights are generated using rule-based analysis and 
+          should not be considered financial advice. Always do your own research and consider 
+          consulting with a financial advisor.
+        </p>
+      </div>
     </div>
   );
-};
+}

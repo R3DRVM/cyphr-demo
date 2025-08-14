@@ -1,4 +1,4 @@
-import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram, Transaction, ComputeBudgetProgram } from '@solana/web3.js';
 import { getConnection, confirmTx } from '../services/connection';
 import { getProgram } from '../services/anchor';
 import { getMintDecimals, uiToRaw } from '../services/token';
@@ -10,6 +10,44 @@ import pricesDevnet from '../config/prices.devnet.json';
  */
 function generateFakeSignature(): string {
   return 'demo_lender_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
+/**
+ * Dry run helper for transaction simulation
+ */
+async function dryRun(name: string, txOrIxs: Transaction | any[], signers: any[]): Promise<any> {
+  const connection = getConnection();
+  const tx = Array.isArray(txOrIxs) ? new Transaction() : txOrIxs;
+  
+  if (Array.isArray(txOrIxs)) {
+    tx.add(...txOrIxs);
+  }
+  
+  // Add compute budget instructions
+  tx.add(
+    ComputeBudgetProgram.setComputeUnitLimit({ units: 300_000 }),
+    ComputeBudgetProgram.setComputeUnitPrice({ microLamports: 5_000 })
+  );
+  
+  try {
+    const simulation = await connection.simulateTransaction(tx, signers);
+    
+    if (import.meta.env.VITE_DEBUG_TX === 'true') {
+      console.log(`🔍 [DRY RUN] ${name}:`);
+      console.log(`   Logs:`, simulation.value.logs);
+      console.log(`   Compute Units: ${simulation.value.unitsConsumed}`);
+      if (simulation.value.err) {
+        console.log(`   Error:`, simulation.value.err);
+      }
+    }
+    
+    return simulation;
+  } catch (error) {
+    if (import.meta.env.VITE_DEBUG_TX === 'true') {
+      console.log(`❌ [DRY RUN] ${name} failed:`, error);
+    }
+    throw error;
+  }
 }
 
 /**
@@ -217,6 +255,77 @@ export async function repay(borrowMint: string, amount: number): Promise<{ signa
     return { signature: tx };
   } catch (error) {
     console.error('Real repay failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Withdraw collateral
+ */
+export async function withdraw(mint: string, amount: number): Promise<{ signature: string }> {
+  if (DEMO_MODE) {
+    const fakeSig = generateFakeSignature();
+    console.log(`[DEMO] Withdraw: ${amount} ${mint}`);
+    
+    // Update demo state in localStorage
+    const demoState = JSON.parse(localStorage.getItem('demo_lender_state') || '{}');
+    if (demoState.collateral && demoState.collateral.mint === mint) {
+      demoState.collateral.amount = Math.max(0, demoState.collateral.amount - amount);
+    }
+    localStorage.setItem('demo_lender_state', JSON.stringify(demoState));
+    
+    return { signature: fakeSig };
+  }
+
+  // Real implementation using Anchor
+  try {
+    const program = getProgram();
+    const connection = getConnection();
+    const provider = program.provider;
+    const wallet = provider.wallet;
+    
+    if (!wallet.publicKey) {
+      throw new Error('Wallet not connected');
+    }
+
+    const mintPubkey = new PublicKey(mint);
+    const decimals = await getMintDecimals(connection, mintPubkey);
+    const amountRaw = uiToRaw(amount, decimals);
+
+    // Derive PDA for collateral account
+    const [collateralAccount] = PublicKey.findProgramAddressSync(
+      [Buffer.from('collateral'), wallet.publicKey.toBuffer(), mintPubkey.toBuffer()],
+      program.programId
+    );
+
+    // Try different method names for withdrawing
+    const methodNames = ['withdraw', 'withdrawCollateral'];
+    let method = null;
+    
+    for (const methodName of methodNames) {
+      if (program.methods[methodName]) {
+        method = program.methods[methodName];
+        break;
+      }
+    }
+    
+    if (!method) {
+      throw new Error(`No suitable method found. Tried: ${methodNames.join(', ')}`);
+    }
+
+    const tx = await method(amountRaw)
+      .accounts({
+        user: wallet.publicKey,
+        collateralAccount,
+        mint: mintPubkey,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc();
+
+    await confirmTx(tx);
+    return { signature: tx };
+  } catch (error) {
+    console.error('Real withdraw failed:', error);
     throw error;
   }
 }

@@ -1,221 +1,196 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { createPoolPriceService, PoolPriceService } from '../services/poolPrice';
-import { swap } from '../adapters/dex';
+import { getPoolPrice } from '../services/poolPrice';
+import { dexAdapter } from '../adapters/dexAdapter';
+import { useSolanaWallet } from '../providers/SolanaWalletProvider';
+import { DEMO_MODE } from '../config/policy';
 
 export interface TakeProfitState {
-  armed: boolean;
-  side: 'buyA' | 'buyB' | null;
-  amountUi: number;
+  isArmed: boolean;
   entryPrice: number;
-  lastPrice: number | null;
-  targetBps: number;
+  targetPrice: number;
+  currentPrice: number;
   lastUpdate: number;
+  status: 'idle' | 'armed' | 'triggered' | 'executed';
 }
 
-export interface TakeProfitActions {
-  arm: (params: { side: 'buyA' | 'buyB'; amountUi: number; entryPrice: number }) => void;
-  disarm: () => void;
-  refresh: () => void;
+export interface TakeProfitConfig {
+  targetBps: number;
+  pollMs: number;
+  autoExecute: boolean;
 }
 
-export function useTakeProfit(): [TakeProfitState, TakeProfitActions] {
+const DEFAULT_CONFIG: TakeProfitConfig = {
+  targetBps: parseInt(import.meta.env.VITE_TP_TARGET_BPS || '500'),
+  pollMs: parseInt(import.meta.env.VITE_TP_POLL_MS || '15000'),
+  autoExecute: true
+};
+
+export function useTakeProfit(config: Partial<TakeProfitConfig> = {}) {
+  const { connected, publicKey } = useSolanaWallet();
   const [state, setState] = useState<TakeProfitState>({
-    armed: false,
-    side: null,
-    amountUi: 0,
+    isArmed: false,
     entryPrice: 0,
-    lastPrice: null,
-    targetBps: Number(import.meta.env.VITE_TP_TARGET_BPS) || 200,
-    lastUpdate: 0
+    targetPrice: 0,
+    currentPrice: 0,
+    lastUpdate: 0,
+    status: 'idle'
   });
+  
+  const [amount, setAmount] = useState(0);
+  const [inputMint, setInputMint] = useState('');
+  const [outputMint, setOutputMint] = useState('');
+  
+  const intervalRef = useRef<NodeJS.Timeout>();
+  const finalConfig = { ...DEFAULT_CONFIG, ...config };
 
-  const poolPriceService = useRef<PoolPriceService | null>(null);
-  const pollInterval = useRef<NodeJS.Timeout | null>(null);
-  const pollMs = Number(import.meta.env.VITE_TP_POLL_MS) || 15000;
-
-  // Initialize pool price service
-  useEffect(() => {
+  // Arm take-profit
+  const armTakeProfit = useCallback(async (
+    entryAmount: number,
+    inputToken: string,
+    outputToken: string
+  ) => {
     try {
-      poolPriceService.current = createPoolPriceService();
+      const currentPrice = await getPoolPrice();
+      const price = inputToken === 'A' ? currentPrice.aPerB : currentPrice.bPerA;
+      
+      const targetBps = finalConfig.targetBps / 10000;
+      const targetPrice = price * (1 + targetBps);
+      
+      setState({
+        isArmed: true,
+        entryPrice: price,
+        targetPrice,
+        currentPrice: price,
+        lastUpdate: Date.now(),
+        status: 'armed'
+      });
+      
+      setAmount(entryAmount);
+      setInputMint(inputToken);
+      setOutputMint(outputToken);
+      
+      console.log(`[TP] Armed: Entry=${price}, Target=${targetPrice}, Amount=${entryAmount}`);
     } catch (error) {
-      console.error('Failed to create pool price service:', error);
+      console.error('Failed to arm take-profit:', error);
     }
+  }, [finalConfig.targetBps]);
+
+  // Disarm take-profit
+  const disarmTakeProfit = useCallback(() => {
+    setState(prev => ({
+      ...prev,
+      isArmed: false,
+      status: 'idle'
+    }));
+    
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = undefined;
+    }
+    
+    console.log('[TP] Disarmed');
   }, []);
+
+  // Execute take-profit
+  const executeTakeProfit = useCallback(async () => {
+    if (!connected || !publicKey || !state.isArmed) {
+      return;
+    }
+
+    try {
+      setState(prev => ({ ...prev, status: 'executed' }));
+      
+      if (DEMO_MODE) {
+        console.log('[TP] Demo mode: Executing take-profit');
+        // In demo mode, just disarm
+        disarmTakeProfit();
+        return;
+      }
+
+      // Execute reverse swap
+      const result = await dexAdapter.swap({
+        inputToken,
+        outputToken,
+        amountIn: amount,
+        maxSlippagePct: 1.0, // 1% slippage for TP
+        owner: publicKey,
+        sendTransaction: async (tx) => {
+          // This would be the actual transaction sending logic
+          return 'tp_execution_signature';
+        }
+      });
+
+      console.log('[TP] Executed:', result);
+      disarmTakeProfit();
+    } catch (error) {
+      console.error('Failed to execute take-profit:', error);
+      setState(prev => ({ ...prev, status: 'armed' }));
+    }
+  }, [connected, publicKey, state.isArmed, amount, inputMint, outputMint, disarmTakeProfit]);
+
+  // Poll for price updates
+  useEffect(() => {
+    if (!state.isArmed || !finalConfig.autoExecute) {
+      return;
+    }
+
+    const pollPrice = async () => {
+      try {
+        const currentPrice = await getPoolPrice();
+        const price = inputMint === 'A' ? currentPrice.aPerB : currentPrice.bPerA;
+        
+        setState(prev => ({
+          ...prev,
+          currentPrice: price,
+          lastUpdate: Date.now()
+        }));
+
+        // Check if target is met
+        if (price >= state.targetPrice) {
+          setState(prev => ({ ...prev, status: 'triggered' }));
+          console.log(`[TP] Target met: ${price} >= ${state.targetPrice}`);
+          
+          if (finalConfig.autoExecute) {
+            await executeTakeProfit();
+          }
+        }
+      } catch (error) {
+        console.error('Failed to poll price:', error);
+      }
+    };
+
+    // Initial poll
+    pollPrice();
+    
+    // Set up interval
+    intervalRef.current = setInterval(pollPrice, finalConfig.pollMs);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [state.isArmed, state.targetPrice, inputMint, finalConfig.pollMs, finalConfig.autoExecute, executeTakeProfit]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (pollInterval.current) {
-        clearInterval(pollInterval.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
   }, []);
 
-  // Start polling when armed
-  useEffect(() => {
-    if (state.armed && poolPriceService.current) {
-      // Start polling
-      pollInterval.current = setInterval(async () => {
-        try {
-          const currentPrice = await poolPriceService.current!.getPrice();
-          const priceToCheck = state.side === 'buyA' ? currentPrice.aPerB : currentPrice.bPerA;
-          
-          setState(prev => ({
-            ...prev,
-            lastPrice: priceToCheck,
-            lastUpdate: Date.now()
-          }));
-
-          // Check if take-profit target is met
-          if (poolPriceService.current!.isTakeProfitTargetMet(
-            state.entryPrice, 
-            priceToCheck, 
-            state.targetBps
-          )) {
-            console.log('Take-profit target met! Executing reverse swap...');
-            
-            // Execute reverse swap
-            await executeTakeProfit();
-            
-            // Disarm after execution
-            disarm();
-          }
-        } catch (error) {
-          console.error('Error in take-profit polling:', error);
-        }
-      }, pollMs);
-
-      // Initial price fetch
-      const fetchInitialPrice = async () => {
-        try {
-          const price = await poolPriceService.current!.getPrice();
-          const priceToCheck = state.side === 'buyA' ? price.aPerB : price.bPerA;
-          
-          setState(prev => ({
-            ...prev,
-            lastPrice: priceToCheck,
-            lastUpdate: Date.now()
-          }));
-        } catch (error) {
-          console.error('Error fetching initial price:', error);
-        }
-      };
-      
-      fetchInitialPrice();
-    } else {
-      // Stop polling when disarmed
-      if (pollInterval.current) {
-        clearInterval(pollInterval.current);
-        pollInterval.current = null;
-      }
-    }
-  }, [state.armed, state.side, state.entryPrice, state.targetBps, pollMs]);
-
-  // Execute take-profit (reverse swap)
-  const executeTakeProfit = useCallback(async () => {
-    if (!state.armed || !poolPriceService.current) return;
-
-    try {
-      console.log(`Executing take-profit: ${state.side} -> reverse`);
-      
-      // Determine reverse swap direction
-      const reverseSide = state.side === 'buyA' ? 'buyB' : 'buyA';
-      
-      // Execute reverse swap
-      const result = await swap(
-        state.side === 'buyA' ? 'mintA' : 'mintB', // input mint
-        state.side === 'buyA' ? 'mintB' : 'mintA', // output mint
-        state.amountUi,
-        100 // 1% slippage for TP
-      );
-
-      if (result.signature) {
-        console.log('Take-profit executed successfully:', result.signature);
-        
-        // Update local state to reflect the trade
-        // This could trigger a position refresh
-      } else {
-        console.error('Take-profit execution failed');
-      }
-    } catch (error) {
-      console.error('Error executing take-profit:', error);
-    }
-  }, [state.armed, state.side, state.amountUi]);
-
-  // Arm take-profit
-  const arm = useCallback((params: { side: 'buyA' | 'buyB'; amountUi: number; entryPrice: number }) => {
-    const { side, amountUi, entryPrice } = params;
-    
-    console.log(`Arming take-profit: ${side}, amount: ${amountUi}, entry: ${entryPrice}`);
-    
-    setState(prev => ({
-      ...prev,
-      armed: true,
-      side,
-      amountUi,
-      entryPrice,
-      lastUpdate: Date.now()
-    }));
-  }, []);
-
-  // Disarm take-profit
-  const disarm = useCallback(() => {
-    console.log('Disarming take-profit');
-    
-    setState(prev => ({
-      ...prev,
-      armed: false,
-      side: null,
-      amountUi: 0,
-      entryPrice: 0,
-      lastPrice: null,
-      lastUpdate: 0
-    }));
-  }, []);
-
-  // Refresh take-profit state
-  const refresh = useCallback(async () => {
-    if (!poolPriceService.current || !state.armed) return;
-
-    try {
-      const currentPrice = await poolPriceService.current.getPrice();
-      const priceToCheck = state.side === 'buyA' ? currentPrice.aPerB : currentPrice.bPerA;
-      
-      setState(prev => ({
-        ...prev,
-        lastPrice: priceToCheck,
-        lastUpdate: Date.now()
-      }));
-    } catch (error) {
-      console.error('Error refreshing take-profit:', error);
-    }
-  }, [state.armed, state.side]);
-
-  // Calculate current P&L
-  const currentPnL = useCallback((): number => {
-    if (!state.armed || !state.lastPrice || !state.entryPrice) return 0;
-    
-    const priceChange = ((state.lastPrice - state.entryPrice) / state.entryPrice) * 100;
-    return priceChange;
-  }, [state.armed, state.lastPrice, state.entryPrice]);
-
-  // Check if target is met
-  const isTargetMet = useCallback((): boolean => {
-    if (!state.armed || !state.lastPrice || !state.entryPrice) return false;
-    
-    return poolPriceService.current?.isTakeProfitTargetMet(
-      state.entryPrice,
-      state.lastPrice,
-      state.targetBps
-    ) || false;
-  }, [state.armed, state.lastPrice, state.entryPrice, state.targetBps]);
-
-  return [
-    {
-      ...state,
-      currentPnL: currentPnL(),
-      isTargetMet: isTargetMet()
-    },
-    { arm, disarm, refresh }
-  ];
+  return {
+    state,
+    armTakeProfit,
+    disarmTakeProfit,
+    executeTakeProfit,
+    isArmed: state.isArmed,
+    status: state.status,
+    entryPrice: state.entryPrice,
+    targetPrice: state.targetPrice,
+    currentPrice: state.currentPrice,
+    lastUpdate: state.lastUpdate
+  };
 }

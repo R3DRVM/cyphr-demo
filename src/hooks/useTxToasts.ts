@@ -1,4 +1,5 @@
 import { useToast } from '../components/Toast';
+import { usePosition } from './usePosition';
 
 interface TxResult {
   signature: string;
@@ -12,6 +13,7 @@ interface ToastMessages {
 
 export function useTxToasts() {
   const toast = useToast();
+  const { refresh: refreshPosition } = usePosition();
 
   const withTxToasts = async <T extends TxResult>(
     promise: Promise<T>,
@@ -23,12 +25,15 @@ export function useTxToasts() {
     try {
       const result = await promise;
       
-      // Show success toast with explorer link
-      const explorerUrl = `https://explorer.solana.com/tx/${result.signature}?cluster=devnet`;
-      toast.show(
-        `${messages.success} - View on Explorer: ${explorerUrl}`,
-        'success'
-      );
+      // Show success toast with explorer link button
+      toast.showWithExplorer(messages.success, result.signature, 'success');
+      
+      // Refresh position data after successful transaction
+      try {
+        await refreshPosition();
+      } catch (error) {
+        console.warn('Failed to refresh position after transaction:', error);
+      }
 
       return result;
     } catch (error) {

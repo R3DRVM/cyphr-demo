@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Search, BarChart3, Satellite, DollarSign, TrendingUp, Activity } from 'lucide-react';
 import { useSolanaWallet } from '../providers/SolanaWalletProvider';
+import { configService } from '../services/config';
 import { usePosition } from '../hooks/usePosition';
 import { useTxToasts } from '../hooks/useTxToasts';
+import { PreflightBanner } from '../components/Preflight';
+import { QuickStart } from '../components/QuickStart';
+import { BorrowTradePanel } from '../components/BorrowTradePanel';
+import { SummaryPanel } from '../components/SummaryPanel';
+import { InsightsPanel } from '../components/InsightsPanel';
+import { StrategyExecCard } from '../components/StrategyExecCard';
+import { useToast } from '../hooks/useToast';
 import './ProTerminal.css';
 
 interface Token {
@@ -36,6 +44,10 @@ const ProTerminal: React.FC = () => {
   const { wallet, connected: walletConnected } = useSolanaWallet();
   const { position: userPosition } = usePosition();
   const { withTxToasts } = useTxToasts();
+  const { showToast } = useToast();
+  
+  // Feature flag for V2 lending panels
+  const isLendingV2 = configService.getLendingV2();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>({
@@ -221,22 +233,35 @@ const ProTerminal: React.FC = () => {
     console.log('Repay USDC functionality coming soon');
   };
 
+  // Position update handler for the new components
+  const handlePositionUpdate = () => {
+    // This would trigger a refresh of position data
+    console.log('Position updated, refreshing data...');
+    // In a real implementation, you would refresh the position data here
+  };
+
   return (
     <div className="pro-terminal-page">
       {/* Header */}
-      <div className="pro-terminal-header">
-        <div className="pro-terminal-title">
-          <h1>PRO TERMINAL</h1>
+      <div className="terminal-header">
+        <div className="header-left">
+          <h1 className="terminal-title">ProTerminal</h1>
+          <div className="terminal-subtitle">Professional DeFi Trading Interface</div>
         </div>
-        
-        <div className="pro-terminal-status">
-          <div className="status-indicator">
-            <div className="spinner"></div>
-            <span>LIVE</span>
+        <div className="header-right">
+          <div className="network-indicator">
+            <span className="network-label">Network:</span>
+            <span className="network-value">Devnet</span>
           </div>
         </div>
       </div>
 
+      {/* QuickStart Strip */}
+      <QuickStart />
+
+      {/* Preflight Banner */}
+      <PreflightBanner />
+      
       {/* Search Bar */}
       <div className="pro-terminal-search">
         <div className="search-container">
@@ -389,162 +414,186 @@ const ProTerminal: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column - Lending & Borrowing */}
-        <div className="terminal-column lending-column">
-          <div className="lending-borrowing-panel">
-            <div className="panel-header">
-              <span className="panel-title">LENDING & BORROWING</span>
-              <DollarSign className="w-4 h-4" />
-            </div>
+        {/* Right Column - Conditional Rendering */}
+        {isLendingV2 ? (
+          // V2 Layout: New Lending Panels
+          <div className="terminal-column right-column">
+            {/* Borrow & Trade Panel */}
+            <BorrowTradePanel onPositionUpdate={handlePositionUpdate} />
             
-            {/* Current Position Status */}
-            <div className="position-status">
-              <div className="status-header">
-                <span className="status-title">POSITION STATUS</span>
-                <div className="health-indicator">
-                  <div className={`health-dot ${lendingHealth.healthFactor > 1.5 ? 'green' : lendingHealth.healthFactor > 1.0 ? 'yellow' : 'red'}`}></div>
-                  <span className="health-text">
-                    {lendingHealth.healthFactor > 1.5 ? 'SAFE' : lendingHealth.healthFactor > 1.0 ? 'WARNING' : 'DANGER'}
-                  </span>
-                </div>
+            {/* Summary Panel */}
+            <SummaryPanel onRefresh={handlePositionUpdate} />
+          </div>
+        ) : (
+          // Legacy Layout: Original Lending Section
+          <div className="terminal-column lending-column">
+            <div className="lending-borrowing-panel">
+              <div className="panel-header">
+                <span className="panel-title">LENDING & BORROWING</span>
+                <DollarSign className="w-4 h-4" />
               </div>
+              
+              {/* Current Position Status */}
+              <div className="position-status">
+                <div className="status-header">
+                  <span className="status-title">POSITION STATUS</span>
+                  <div className="health-indicator">
+                    <div className={`health-dot ${lendingHealth.healthFactor > 1.5 ? 'green' : lendingHealth.healthFactor > 1.0 ? 'yellow' : 'red'}`}></div>
+                    <span className="health-text">
+                      {lendingHealth.healthFactor > 1.5 ? 'SAFE' : lendingHealth.healthFactor > 1.0 ? 'WARNING' : 'DANGER'}
+                    </span>
+                  </div>
+                </div>
 
-              <div className="position-metrics">
-                <div className="metric-row">
-                  <span className="metric-label">Collateral (SOL)</span>
-                  <span className="metric-value">{userPosition?.collateral?.amount || 0} SOL</span>
-                </div>
-                <div className="metric-row">
-                  <span className="metric-label">Borrowed (USDC)</span>
-                  <span className="metric-value">{userPosition?.debt?.amount || 0} USDC</span>
-                </div>
-                <div className="metric-row">
-                  <span className="metric-label">LTV Ratio</span>
-                  <span className="metric-value">{(lendingHealth.ltv * 100).toFixed(1)}%</span>
-                </div>
-                <div className="metric-row">
-                  <span className="metric-label">Health Factor</span>
-                  <span className="metric-value">{lendingHealth.healthFactor.toFixed(2)}x</span>
+                <div className="position-metrics">
+                  <div className="metric-row">
+                    <span className="metric-label">Collateral (SOL)</span>
+                    <span className="metric-value">{userPosition?.collateral?.amount || 0} SOL</span>
+                  </div>
+                  <div className="metric-row">
+                    <span className="metric-label">Borrowed (USDC)</span>
+                    <span className="metric-value">{userPosition?.debt?.amount || 0} USDC</span>
+                  </div>
+                  <div className="metric-row">
+                    <span className="metric-label">LTV Ratio</span>
+                    <span className="metric-value">{(lendingHealth.ltv * 100).toFixed(1)}%</span>
+                  </div>
+                  <div className="metric-row">
+                    <span className="metric-label">Health Factor</span>
+                    <span className="metric-value">{lendingHealth.healthFactor.toFixed(2)}x</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            
-            {/* Deposit Collateral Section */}
-            <div className="deposit-section">
-              <div className="section-header">
-                <span className="section-title">DEPOSIT COLLATERAL</span>
-              </div>
-              <div className="input-group">
-                <input
-                  type="number"
-                  className="amount-input"
-                  placeholder="0"
-                  value={depositAmount}
-                  onChange={(e) => setDepositAmount(parseFloat(e.target.value) || 0)}
-                  disabled={!walletConnected}
-                />
+              
+              {/* Deposit Collateral Section */}
+              <div className="deposit-section">
+                <div className="section-header">
+                  <span className="section-title">DEPOSIT COLLATERAL</span>
+                </div>
+                <div className="input-group">
+                  <input
+                    type="number"
+                    className="amount-input"
+                    placeholder="0"
+                    value={depositAmount}
+                    onChange={(e) => setDepositAmount(parseFloat(e.target.value) || 0)}
+                    disabled={!walletConnected}
+                  />
+                  <button 
+                    className="max-btn"
+                    onClick={() => setDepositAmount(10)} // Assuming 10 SOL available
+                    disabled={!walletConnected}
+                  >
+                    MAX
+                  </button>
+                </div>
+                <div className="input-info">
+                  <span className="info-text">Available: 10 SOL</span>
+                  <span className="info-text">Max LTV: 75%</span>
+                </div>
                 <button 
-                  className="max-btn"
-                  onClick={() => setDepositAmount(10)} // Assuming 10 SOL available
-                  disabled={!walletConnected}
+                  className="action-btn deposit"
+                  onClick={handleDepositSOL}
+                  disabled={!walletConnected || depositAmount <= 0}
                 >
-                  MAX
+                  DEPOSIT SOL
                 </button>
               </div>
-              <div className="input-info">
-                <span className="info-text">Available: 10 SOL</span>
-                <span className="info-text">Max LTV: 75%</span>
-              </div>
-              <button 
-                className="action-btn deposit"
-                onClick={handleDepositSOL}
-                disabled={!walletConnected || depositAmount <= 0}
-              >
-                DEPOSIT SOL
-              </button>
-            </div>
-            
-            {/* Borrow USDC Section */}
-            <div className="borrow-section">
-              <div className="section-header">
-                <span className="section-title">BORROW USDC</span>
-              </div>
-              <div className="input-group">
-                <input
-                  type="number"
-                  className="amount-input"
-                  placeholder="0"
-                  value={borrowAmount}
-                  onChange={(e) => setBorrowAmount(parseFloat(e.target.value) || 0)}
-                  disabled={!walletConnected}
-                />
+              
+              {/* Borrow USDC Section */}
+              <div className="borrow-section">
+                <div className="section-header">
+                  <span className="section-title">BORROW USDC</span>
+                </div>
+                <div className="input-group">
+                  <input
+                    type="number"
+                    className="amount-input"
+                    placeholder="0"
+                    value={borrowAmount}
+                    onChange={(e) => setBorrowAmount(parseFloat(e.target.value) || 0)}
+                    disabled={!walletConnected}
+                  />
+                  <button 
+                    className="max-btn"
+                    onClick={() => setBorrowAmount(7500)} // Assuming 7500 USDC max borrow based on 10 SOL collateral
+                    disabled={!walletConnected}
+                  >
+                    MAX
+                  </button>
+                </div>
+                <div className="input-info">
+                  <span className="info-text">Borrow Limit: 7,500 USDC</span>
+                  <span className="info-text">Interest Rate: 8.0% APR</span>
+                </div>
                 <button 
-                  className="max-btn"
-                  onClick={() => setBorrowAmount(7500)} // Assuming 7500 USDC max borrow based on 10 SOL collateral
-                  disabled={!walletConnected}
+                  className="action-btn borrow"
+                  onClick={handleBorrowUSDC}
+                  disabled={!walletConnected || borrowAmount <= 0}
                 >
-                  MAX
+                  BORROW USDC
                 </button>
               </div>
-              <div className="input-info">
-                <span className="info-text">Borrow Limit: 7,500 USDC</span>
-                <span className="info-text">Interest Rate: 8.0% APR</span>
+              
+              {/* Additional Action Buttons (Withdraw/Repay) */}
+              <div className="position-actions">
+                <button 
+                  className="action-btn withdraw"
+                  onClick={handleWithdrawCollateral}
+                  disabled={!walletConnected || !userPosition?.collateral?.amount}
+                >
+                  WITHDRAW SOL
+                </button>
+                <button 
+                  className="action-btn repay"
+                  onClick={handleRepayUSDC}
+                  disabled={!walletConnected || !userPosition?.debt?.amount}
+                >
+                  REPAY USDC
+                </button>
               </div>
-              <button 
-                className="action-btn borrow"
-                onClick={handleBorrowUSDC}
-                disabled={!walletConnected || borrowAmount <= 0}
-              >
-                BORROW USDC
-              </button>
             </div>
             
-            {/* Additional Action Buttons */}
-            <div className="position-actions">
-              <button 
-                className="action-btn withdraw"
-                onClick={handleWithdrawCollateral}
-                disabled={!walletConnected || !userPosition?.collateral?.amount}
-              >
-                WITHDRAW SOL
-              </button>
-              <button 
-                className="action-btn repay"
-                onClick={handleRepayUSDC}
-                disabled={!walletConnected || !userPosition?.debt?.amount}
-              >
-                REPAY USDC
-              </button>
+            {/* Portfolio Panel - Below Lending */}
+            <div className="portfolio-panel">
+              <div className="panel-header">
+                <span className="panel-title">PORTFOLIO</span>
+              </div>
+              
+              <div className="portfolio-metrics">
+                <div className="portfolio-metric">
+                  <span className="metric-label">Total Value</span>
+                  <span className="metric-value">$127,845.67</span>
+                </div>
+                <div className="portfolio-metric">
+                  <span className="metric-label">24h Change</span>
+                  <span className="metric-value positive">+$2,341.23 (+1.87%)</span>
+                </div>
+                <div className="portfolio-metric">
+                  <span className="metric-label">Available</span>
+                  <span className="metric-value">$8,234.56</span>
+                </div>
+                <div className="portfolio-metric">
+                  <span className="metric-label">Lent</span>
+                  <span className="metric-value">$15,000.00</span>
+                </div>
+              </div>
             </div>
           </div>
+        )}
+      </div>
+
+      {/* V2 Insights Panel - Only show when V2 is enabled */}
+      {isLendingV2 && (
+        <div className="terminal-insights-section">
+          <InsightsPanel />
           
-          {/* Portfolio Panel - Below Lending */}
-          <div className="portfolio-panel">
-            <div className="panel-header">
-              <span className="panel-title">PORTFOLIO</span>
-            </div>
-            
-            <div className="portfolio-metrics">
-              <div className="portfolio-metric">
-                <span className="metric-label">Total Value</span>
-                <span className="metric-value">$127,845.67</span>
-              </div>
-              <div className="portfolio-metric">
-                <span className="metric-label">24h Change</span>
-                <span className="metric-value positive">+$2,341.23 (+1.87%)</span>
-              </div>
-              <div className="portfolio-metric">
-                <span className="metric-label">Available</span>
-                <span className="metric-value">$8,234.56</span>
-              </div>
-              <div className="portfolio-metric">
-                <span className="metric-label">Lent</span>
-                <span className="metric-value">$15,000.00</span>
-              </div>
-            </div>
+          {/* Strategy Execution Card */}
+          <div className="strategy-exec-section">
+            <StrategyExecCard />
           </div>
         </div>
-      </div>
+      )}
 
       {/* Bottom Ticker Bar */}
       <div className="terminal-ticker-bar">
