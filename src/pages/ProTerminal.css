@@ -2693,7 +2693,7 @@
 
 .lending-borrowing-panel {
   background: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 212, 255, 0.2);
+  border: 1px solid rgba(0, 255, 136, 0.2);
   border-radius: 12px;
   padding: 1.5rem;
   flex: 1;
@@ -3701,4 +3701,203 @@
   .portfolio-item {
     padding: 0.5rem;
   }
+}
+
+/* Lending & Borrowing Panel */
+.lending-borrowing-panel {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Position Status */
+.position-status {
+  margin-bottom: 1.5rem;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.status-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  font-family: 'ModeSeven', monospace;
+  font-weight: 600;
+}
+
+.health-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.health-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.health-dot.green {
+  background: #00ff88;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.health-dot.yellow {
+  background: #ffaa00;
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+}
+
+.health-dot.red {
+  background: #ff4444;
+  box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.health-text {
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'ModeSeven', monospace;
+}
+
+/* Position Metrics */
+.position-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+.metric-row:last-child {
+  border-bottom: none;
+}
+
+.metric-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  font-family: 'ModeSeven', monospace;
+}
+
+.metric-value {
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: 'ModeSeven', monospace;
+}
+
+/* Deposit and Borrow Sections */
+.deposit-section,
+.borrow-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 255, 136, 0.1);
+  border-radius: 8px;
+}
+
+.section-header {
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: 'ModeSeven', monospace;
+}
+
+/* Input Groups */
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.amount-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 6px;
+  padding: 0.75rem;
+  color: #ffffff;
+  font-family: 'ModeSeven', monospace;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.amount-input:focus {
+  outline: none;
+  border-color: rgba(0, 255, 136, 0.6);
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+}
+
+.amount-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.max-btn {
+  background: rgba(0, 255, 136, 0.2);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  color: #00ff88;
+  font-family: 'ModeSeven', monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.max-btn:hover:not(:disabled) {
+  background: rgba(0, 255, 136, 0.3);
+  border-color: rgba(0, 255, 136, 0.6);
+  transform: translateY(-1px);
+}
+
+.max-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Input Info */
+.input-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.info-text {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  font-family: 'ModeSeven', monospace;
+}
+
+/* Action Buttons */
+.position-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.position-actions .action-btn {
+  flex: 1;
+  margin-bottom: 0;
 }

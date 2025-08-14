@@ -69,6 +69,9 @@ const ProTerminal: React.FC = () => {
     debtValue: 6750
   });
 
+  const [depositAmount, setDepositAmount] = useState(0);
+  const [borrowAmount, setBorrowAmount] = useState(0);
+
   // DexScreener chart URLs for different tokens with custom theme
   const getDexScreenerUrl = (token: string) => {
     const tokenMap: { [key: string]: string } = {
@@ -409,11 +412,11 @@ const ProTerminal: React.FC = () => {
               <div className="position-metrics">
                 <div className="metric-row">
                   <span className="metric-label">Collateral (SOL)</span>
-                  <span className="metric-value">{userPosition?.collateral || 0} SOL</span>
+                  <span className="metric-value">{userPosition?.collateral?.amount || 0} SOL</span>
                 </div>
                 <div className="metric-row">
                   <span className="metric-label">Borrowed (USDC)</span>
-                  <span className="metric-value">{userPosition?.debt || 0} USDC</span>
+                  <span className="metric-value">{userPosition?.debt?.amount || 0} USDC</span>
                 </div>
                 <div className="metric-row">
                   <span className="metric-label">LTV Ratio</span>
@@ -426,49 +429,92 @@ const ProTerminal: React.FC = () => {
               </div>
             </div>
             
-            {/* Action Buttons */}
-            <div className="position-actions">
+            {/* Deposit Collateral Section */}
+            <div className="deposit-section">
+              <div className="section-header">
+                <span className="section-title">DEPOSIT COLLATERAL</span>
+              </div>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="amount-input"
+                  placeholder="0"
+                  value={depositAmount}
+                  onChange={(e) => setDepositAmount(parseFloat(e.target.value) || 0)}
+                  disabled={!walletConnected}
+                />
+                <button 
+                  className="max-btn"
+                  onClick={() => setDepositAmount(10)} // Assuming 10 SOL available
+                  disabled={!walletConnected}
+                >
+                  MAX
+                </button>
+              </div>
+              <div className="input-info">
+                <span className="info-text">Available: 10 SOL</span>
+                <span className="info-text">Max LTV: 75%</span>
+              </div>
               <button 
                 className="action-btn deposit"
                 onClick={handleDepositSOL}
-                disabled={!walletConnected}
+                disabled={!walletConnected || depositAmount <= 0}
               >
                 DEPOSIT SOL
               </button>
+            </div>
+            
+            {/* Borrow USDC Section */}
+            <div className="borrow-section">
+              <div className="section-header">
+                <span className="section-title">BORROW USDC</span>
+              </div>
+              <div className="input-group">
+                <input
+                  type="number"
+                  className="amount-input"
+                  placeholder="0"
+                  value={borrowAmount}
+                  onChange={(e) => setBorrowAmount(parseFloat(e.target.value) || 0)}
+                  disabled={!walletConnected}
+                />
+                <button 
+                  className="max-btn"
+                  onClick={() => setBorrowAmount(7500)} // Assuming 7500 USDC max borrow based on 10 SOL collateral
+                  disabled={!walletConnected}
+                >
+                  MAX
+                </button>
+              </div>
+              <div className="input-info">
+                <span className="info-text">Borrow Limit: 7,500 USDC</span>
+                <span className="info-text">Interest Rate: 8.0% APR</span>
+              </div>
               <button 
                 className="action-btn borrow"
                 onClick={handleBorrowUSDC}
-                disabled={!walletConnected}
+                disabled={!walletConnected || borrowAmount <= 0}
               >
                 BORROW USDC
               </button>
+            </div>
+            
+            {/* Additional Action Buttons */}
+            <div className="position-actions">
               <button 
                 className="action-btn withdraw"
                 onClick={handleWithdrawCollateral}
-                disabled={!walletConnected || !userPosition?.collateral}
+                disabled={!walletConnected || !userPosition?.collateral?.amount}
               >
                 WITHDRAW SOL
               </button>
               <button 
                 className="action-btn repay"
                 onClick={handleRepayUSDC}
-                disabled={!walletConnected || !userPosition?.debt}
+                disabled={!walletConnected || !userPosition?.debt?.amount}
               >
                 REPAY USDC
               </button>
-            </div>
-            
-            {/* Lending Rates Display */}
-            <div className="lending-rates">
-              <h4>Current Rates</h4>
-              <div className="rate-item">
-                <span className="asset">Supply APY</span>
-                <span className="rate">6.0%</span>
-              </div>
-              <div className="rate-item">
-                <span className="asset">Borrow APR</span>
-                <span className="rate">8.0%</span>
-              </div>
             </div>
           </div>
           
