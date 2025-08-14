@@ -6,18 +6,69 @@ const Discover: React.FC = () => {
   const [searchToken, setSearchToken] = useState('');
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
 
-  // Mock data for demonstration
-  const topGainers = [
-    { name: 'Pepe Token', symbol: 'PEPE', address: '0x6982...f4b2', gain: '+47.8%', price: '$0.000012' },
-    { name: 'Shiba Inu', symbol: 'SHIB', address: '0x95ad...2a8c', gain: '+23.4%', price: '$0.000009' },
-    { name: 'Dogecoin', symbol: 'DOGE', address: '0x4f96...8b3d', gain: '+18.7%', price: '$0.085' }
-  ];
+  // Real data state
+  const [topGainers, setTopGainers] = useState([
+    { name: 'Loading...', symbol: '---', address: '---', gain: '---', price: '---' }
+  ]);
+  const [volumeLeaders, setVolumeLeaders] = useState([
+    { name: 'Loading...', symbol: '---', address: '---', volume: '---' }
+  ]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const volumeLeaders = [
-    { name: 'Tether', symbol: 'USDT', address: '0xa0b8...4c7f', volume: '$2.8B' },
-    { name: 'Bitcoin', symbol: 'BTC', address: '0x2260...628f', volume: '$1.9B' },
-    { name: 'Ethereum', symbol: 'ETH', address: 'Native', volume: '$1.4B' }
-  ];
+  // Fetch real data on component mount
+  useEffect(() => {
+    const fetchRealData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch top gainers and volume data from CoinGecko
+        const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=price_change_percentage_24h_desc&per_page=10&page=1&sparkline=false&price_change_percentage=24h');
+        const data = await response.json();
+        
+        // Process top gainers
+        const gainers = data.slice(0, 5).map((coin: any) => ({
+          name: coin.name,
+          symbol: coin.symbol.toUpperCase(),
+          address: coin.id,
+          gain: `${coin.price_change_percentage_24h >= 0 ? '+' : ''}${coin.price_change_percentage_24h.toFixed(2)}%`,
+          price: `$${coin.current_price.toLocaleString()}`
+        }));
+        
+        // Process volume leaders
+        const volumeData = data.sort((a: any, b: any) => b.total_volume - a.total_volume).slice(0, 5);
+        const leaders = volumeData.map((coin: any) => ({
+          name: coin.name,
+          symbol: coin.symbol.toUpperCase(),
+          address: coin.id,
+          volume: `$${(coin.total_volume / 1000000).toFixed(1)}M`
+        }));
+        
+        setTopGainers(gainers);
+        setVolumeLeaders(leaders);
+      } catch (error) {
+        console.error('Failed to fetch real data:', error);
+        // Fallback to mock data if API fails
+        setTopGainers([
+          { name: 'Pepe Token', symbol: 'PEPE', address: '0x6982...f4b2', gain: '+47.8%', price: '$0.000012' },
+          { name: 'Shiba Inu', symbol: 'SHIB', address: '0x95ad...2a8c', gain: '+23.4%', price: '$0.000009' },
+          { name: 'Dogecoin', symbol: 'DOGE', address: '0x4f96...8b3d', gain: '+18.7%', price: '$0.085' }
+        ]);
+        setVolumeLeaders([
+          { name: 'Tether', symbol: 'USDT', address: '0xa0b8...4c7f', volume: '$2.8B' },
+          { name: 'Bitcoin', symbol: 'BTC', address: '0x2260...628f', volume: '$1.9B' },
+          { name: 'Ethereum', symbol: 'ETH', address: 'Native', volume: '$1.4B' }
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRealData();
+    
+    // Update data every 5 minutes
+    const interval = setInterval(fetchRealData, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const socialTrending = [
     { name: 'Arbitrum', symbol: 'ARB', rank: 'Trending #1', sentiment: 'Bullish', mentions: '12.4K mentions' },
