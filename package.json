@@ -44,6 +44,7 @@
     "build": "vite build --config config/vite.config.ts",
     "preview": "vite preview",
     "deploy": "npm run build && git add docs && git commit -m 'Deploy to GitHub Pages' && git push",
+    "deploy:live-demo": "npm run build && git add docs && git commit -m 'deploy: Strategy Builder & Bot integration to live-demo' && git push origin live-demo",
     "setup:devnet": "ts-node scripts/setup-devnet.ts",
     "smoke:devnet": "RPC=https://api.devnet.solana.com ts-node scripts/smoke-test.ts",
     "smoke:strategy": "ts-node scripts/strategy-smoke.ts",
