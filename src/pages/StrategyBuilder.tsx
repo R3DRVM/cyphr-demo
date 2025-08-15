@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Rocket, DollarSign, Trophy, Check, Settings, Trash2 } from 'lucide-react';
+import { Rocket, DollarSign, Trophy, Check, Settings, Trash2, Play, Save, Zap } from 'lucide-react';
 import ReactFlow, {
   Node,
   Edge,
@@ -38,6 +38,9 @@ import { DEFAULT_POLICY } from '../config/policy';
 import { PositionCard } from '../components/PositionCard';
 import NumericInput from '../components/ui/NumericInput';
 import { usePreflight, PreflightBanner } from '../debug/Preflight';
+import { useStrategyStore } from '../state/strategyStore';
+import { serializeGraph, validateConfig, simulate, create, execute, setStrategyEventBus } from '../services/strategyBuilderService';
+import { getVaultInfo, getUserVaultStats } from '../services/vaultService';
 import './StrategyBuilder.css';
 
 ChartJS.register(
@@ -176,8 +179,19 @@ const StrategyBuilder: React.FC = () => {
   // Preflight check
   const { ok: preflightOk } = usePreflight();
 
+  // Strategy store
+  const { 
+    graph, setGraph, cfg, setCfg, lastResult, setLastResult, 
+    loading, setLoading, events, pushEvent 
+  } = useStrategyStore();
+
   // Safe config loading with fallback
   const [config, setConfig] = useState<any>({});
+
+  // Set up strategy event bus
+  useEffect(() => {
+    setStrategyEventBus(pushEvent);
+  }, [pushEvent]);
 
   useEffect(() => {
     const loadConfig = async () => {
@@ -200,6 +214,122 @@ const StrategyBuilder: React.FC = () => {
   const onNodeClick = useCallback((event: any, node: Node) => {
     setSelectedNode(node);
   }, []);
+
+  // Strategy handlers
+  const handleSimulate = async () => {
+    if (!connected || !preflightOk) return;
+    
+    setLoading('simulate', true);
+    try {
+      // Update graph in store
+      const currentGraph = { nodes, edges };
+      setGraph(currentGraph);
+      
+      // Serialize to config
+      const strategyConfig = serializeGraph(currentGraph);
+      setCfg(strategyConfig);
+      
+      // Validate config
+      const validation = validateConfig(strategyConfig);
+      if (!validation.ok) {
+        throw new Error(`Invalid strategy: ${validation.errors.join(', ')}`);
+      }
+      
+      // Simulate strategy
+      const simulation = await simulate(strategyConfig);
+      
+      // Store results
+      setLastResult({
+        type: 'simulate',
+        data: simulation,
+        timestamp: Date.now()
+      });
+      
+    } catch (error) {
+      console.error('Simulation failed:', error);
+    } finally {
+      setLoading('simulate', false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!connected || !preflightOk || !cfg) return;
+    
+    setLoading('create', true);
+    try {
+      // Create strategy
+      const result = await withTxToasts(
+        create(cfg),
+        {
+          pending: 'Creating strategy...',
+          success: 'Strategy created successfully',
+          error: 'Failed to create strategy'
+        }
+      );
+      
+      // Store results
+      setLastResult({
+        type: 'create',
+        data: result,
+        timestamp: Date.now()
+      });
+      
+      // Refresh position
+      position.refresh();
+      
+    } catch (error) {
+      console.error('Save failed:', error);
+    } finally {
+      setLoading('create', false);
+    }
+  };
+
+  const handleExecute = async () => {
+    if (!connected || !preflightOk || !lastResult || lastResult.type !== 'create') return;
+    
+    setLoading('execute', true);
+    try {
+      // Execute strategy
+      const result = await withTxToasts(
+        execute(lastResult.data.strategyId),
+        {
+          pending: 'Executing strategy...',
+          success: 'Strategy executed successfully',
+          error: 'Failed to execute strategy'
+        }
+      );
+      
+      // Store results
+      setLastResult({
+        type: 'execute',
+        data: result,
+        timestamp: Date.now()
+      });
+      
+      // Refresh position
+      position.refresh();
+      
+    } catch (error) {
+      console.error('Execute failed:', error);
+    } finally {
+      setLoading('execute', false);
+    }
+  };
+
+  // Load vault info when wallet connects
+  useEffect(() => {
+    if (connected && publicKey) {
+      const loadVaultInfo = async () => {
+        try {
+          await getVaultInfo();
+          await getUserVaultStats(publicKey);
+        } catch (error) {
+          console.warn('Failed to load vault info:', error);
+        }
+      };
+      loadVaultInfo();
+    }
+  }, [connected, publicKey]);
 
   const updateNodeData = useCallback((nodeId: string, field: string, value: any) => {
     setNodes((nds) =>
@@ -748,7 +878,7 @@ const StrategyBuilder: React.FC = () => {
                   </div>
                   <p>Connect wallet to deposit SOL</p>
                   <button className="connect-wallet-btn" onClick={() => {}}>
-                    Connect Wallet
+                    {connected ? 'Connected ✓' : 'Connect Wallet'}
                   </button>
                 </div>
               )}
@@ -824,7 +954,7 @@ const StrategyBuilder: React.FC = () => {
                   </div>
                   <p>Connect wallet to borrow USDC</p>
                   <button className="connect-wallet-btn" onClick={() => {}}>
-                    Connect Wallet
+                    {connected ? 'Connected ✓' : 'Connect Wallet'}
                   </button>
                 </div>
               )}
@@ -887,7 +1017,7 @@ const StrategyBuilder: React.FC = () => {
                   </div>
                   <p>Connect wallet to view health</p>
                   <button className="connect-wallet-btn" onClick={() => {}}>
-                    Connect Wallet
+                    {connected ? 'Connected ✓' : 'Connect Wallet'}
                   </button>
                 </div>
               )}
@@ -1067,18 +1197,92 @@ const StrategyBuilder: React.FC = () => {
                   </h3>
                   
                   <div className="results-content">
-                    <p>Click 'Simulate Strategy' to see results</p>
-                    <div className="results-placeholder">
-                      {/* Results will be displayed here after simulation */}
+                    {!lastResult ? (
+                      <p>Click 'Simulate Strategy' to see results</p>
+                    ) : (
+                      <div className="strategy-results">
+                        {lastResult.type === 'simulate' && (
+                          <div className="simulation-results">
+                            <h4>Simulation Results</h4>
+                            <p><strong>Success Probability:</strong> {(lastResult.data.successProb * 100).toFixed(1)}%</p>
+                            <p><strong>Estimated Yield:</strong> {lastResult.data.estYieldPct.toFixed(2)}%</p>
+                            <div className="notes">
+                              <strong>Notes:</strong>
+                              <ul>
+                                {lastResult.data.notes.map((note: string, index: number) => (
+                                  <li key={index}>{note}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {lastResult.type === 'create' && (
+                          <div className="create-results">
+                            <h4>Strategy Created</h4>
+                            <p><strong>Strategy ID:</strong> {lastResult.data.strategyId}</p>
+                            <p><strong>Signature:</strong> {lastResult.data.signature.substring(0, 8)}...</p>
+                          </div>
+                        )}
+                        
+                        {lastResult.type === 'execute' && (
+                          <div className="execute-results">
+                            <h4>Strategy Executed</h4>
+                            <p><strong>Signature:</strong> {lastResult.data.signature.substring(0, 8)}...</p>
+                            <p><strong>Status:</strong> Executed</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="strategy-actions">
+                      <button
+                        className="cyphr-btn primary"
+                        onClick={handleSimulate}
+                        disabled={!connected || !preflightOk || loading.simulate}
+                      >
+                        <Play className="w-4 h-4 inline mr-2" />
+                        {loading.simulate ? 'Simulating...' : 'Simulate Strategy'}
+                      </button>
+                      
+                      <button
+                        className="cyphr-btn secondary"
+                        onClick={handleSave}
+                        disabled={!connected || !preflightOk || !cfg || loading.create}
+                      >
+                        <Save className="w-4 h-4 inline mr-2" />
+                        {loading.create ? 'Saving...' : 'Save Strategy'}
+                      </button>
+                      
+                      <button
+                        className="cyphr-btn success"
+                        onClick={handleExecute}
+                        disabled={!connected || !preflightOk || !lastResult || lastResult.type !== 'create' || loading.execute}
+                      >
+                        <Zap className="w-4 h-4 inline mr-2" />
+                        {loading.execute ? 'Executing...' : 'Execute Strategy'}
+                      </button>
                     </div>
                   </div>
 
                   <div className="wallet-connection">
-                    <p>Connect your Phantom wallet to interact with the Cyphr Vaults.</p>
-                    <div className="wallet-icon">
-                      <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
-                    </div>
-                    <p className="wallet-status">Wallet Not Connected</p>
+                    {connected ? (
+                      <>
+                        <p>Wallet Connected ✓</p>
+                        <div className="wallet-icon">
+                          <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
+                        </div>
+                        <p className="wallet-status">Connected to {publicKey?.toString().slice(0, 4)}...{publicKey?.toString().slice(-4)}</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>Connect your Phantom wallet to interact with the Cyphr Vaults.</p>
+                        <div className="wallet-icon">
+                          <img src="/assets/icons/WalletIcon.png" alt="Wallet" />
+                        </div>
+                        <p className="wallet-status">Wallet Not Connected</p>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

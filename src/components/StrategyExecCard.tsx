@@ -3,14 +3,21 @@ import { useSolanaWallet } from '../providers/SolanaWalletProvider';
 import { usePreflight } from './Preflight';
 import { useTxToasts } from '../hooks/useTxToasts';
 import { createStrategy, executeStrategy, getLastStrategyId, type StrategyConfig } from '../services/strategyBridge';
+import { useStrategyStore } from '../state/strategyStore';
 import { Target, Play, Plus, FileText } from 'lucide-react';
 
 export function StrategyExecCard() {
   const { connected, publicKey } = useSolanaWallet();
   const preflight = usePreflight();
   const { withTxToasts } = useTxToasts();
+  const { cfg: strategyConfig } = useStrategyStore();
   
-  const [strategyConfig, setStrategyConfig] = useState<StrategyConfig>({
+  const [lastStrategyId, setLastStrategyId] = useState<string | null>(null);
+  const [lastSignature, setLastSignature] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Use live config from store, fallback to sample if none
+  const displayConfig = strategyConfig || {
     name: 'Sample Strategy',
     type: 'momentum',
     parameters: {
@@ -18,11 +25,7 @@ export function StrategyExecCard() {
       exitThreshold: 0.02,
       maxPositionSize: 1000
     }
-  });
-  
-  const [lastStrategyId, setLastStrategyId] = useState<string | null>(null);
-  const [lastSignature, setLastSignature] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  };
 
   // Load last strategy ID from localStorage or service
   useEffect(() => {
@@ -39,7 +42,7 @@ export function StrategyExecCard() {
   }, []);
 
   const handleCreateStrategy = async () => {
-    if (!connected || !publicKey || !preflight.ok) return;
+    if (!connected || !publicKey || !preflight.ok || !strategyConfig) return;
     
     setIsLoading(true);
     try {
@@ -86,7 +89,7 @@ export function StrategyExecCard() {
     }
   };
 
-  const isCreateDisabled = !connected || !preflight.ok || isLoading;
+  const isCreateDisabled = !connected || !preflight.ok || !strategyConfig || isLoading;
   const isExecuteDisabled = !connected || !preflight.ok || !lastStrategyId || isLoading;
 
   return (
@@ -104,7 +107,7 @@ export function StrategyExecCard() {
         </div>
         <div className="config-content">
           <pre className="config-json">
-            {JSON.stringify(strategyConfig, null, 2)}
+            {JSON.stringify(displayConfig, null, 2)}
           </pre>
         </div>
       </div>

@@ -1,123 +1,77 @@
-import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { connection, VAULT_PROGRAM_ID } from '../config/solana';
+import { PublicKey } from '@solana/web3.js';
+import { usePosition } from '../hooks/usePosition';
+import { getHealth } from '../adapters/lender';
+import lendingConfig from '../config/lending.devnet.json';
+import tokensConfig from '../config/tokens.devnet.json';
 
-export interface VaultInfo {
-  totalDeposits: number;
-  totalUsers: number;
-  userDeposit: number;
-}
-
-export interface DepositResult {
-  success: boolean;
-  transactionId?: string;
-  error?: string;
-}
-
-export class VaultService {
-  private connection: Connection;
-  private programId: PublicKey;
-
-  constructor() {
-    this.connection = connection;
-    this.programId = new PublicKey(VAULT_PROGRAM_ID);
-  }
-
-  /**
-   * Deposit SOL into the vault
-   */
-  async depositSol(
-    userPublicKey: PublicKey,
-    amount: number,
-    sendTransaction: (transaction: Transaction) => Promise<string>
-  ): Promise<DepositResult> {
-    try {
-      // Convert SOL to lamports
-      const lamports = Math.floor(amount * LAMPORTS_PER_SOL);
-
-      // Create a simple transfer transaction for now
-      // In a real implementation, this would call the vault program
-      const transaction = new Transaction();
-      
-      // Add transfer instruction
-      transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: userPublicKey,
-          toPubkey: this.programId, // This would be the vault PDA in real implementation
-          lamports: lamports
-        })
-      );
-
-      // Use the wallet's sendTransaction method
-      const signature = await sendTransaction(transaction);
-
-      return {
-        success: true,
-        transactionId: signature
-      };
-    } catch (error) {
-      console.error('Deposit failed:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
-  }
-
-  /**
-   * Get vault information
-   */
-  async getVaultInfo(userPublicKey?: PublicKey): Promise<VaultInfo> {
-    try {
-      // For now, return mock data
-      // In a real implementation, this would fetch from the vault program
-      return {
-        totalDeposits: 1000, // Mock total deposits in SOL
-        totalUsers: 50, // Mock total users
-        userDeposit: userPublicKey ? 25 : 0 // Mock user deposit
-      };
-    } catch (error) {
-      console.error('Failed to get vault info:', error);
-      return {
-        totalDeposits: 0,
-        totalUsers: 0,
-        userDeposit: 0
-      };
-    }
-  }
-
-  /**
-   * Simulate a deposit transaction
-   */
-  async simulateDeposit(
-    userPublicKey: PublicKey,
-    amount: number
-  ): Promise<{ success: boolean; error?: string }> {
-    try {
-      const lamports = Math.floor(amount * LAMPORTS_PER_SOL);
-      
-      const transaction = new Transaction();
-      transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: userPublicKey,
-          toPubkey: this.programId,
-          lamports: lamports
-        })
-      );
-
-      const { value } = await this.connection.simulateTransaction(transaction);
-      
-      return {
-        success: !value.err,
-        error: value.err ? 'Simulation failed' : undefined
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      };
-    }
+/**
+ * Vault information service
+ */
+export async function getVaultInfo(): Promise<{
+  tvlUsd: number;
+  supplyApy: number;
+  borrowApr: number;
+  maxLtv: number;
+}> {
+  try {
+    // Read from existing configs with safe fallbacks
+    const maxLtv = lendingConfig.lendingPool?.maxLtv || 0.75;
+    const supplyApy = lendingConfig.lendingPool?.supplyRate || 0.06;
+    const borrowApr = lendingConfig.lendingPool?.borrowRate || 0.08;
+    
+    // Mock TVL for now - in real implementation this would come from on-chain data
+    const tvlUsd = 1000000; // $1M placeholder
+    
+    return {
+      tvlUsd,
+      supplyApy,
+      borrowApr,
+      maxLtv
+    };
+  } catch (error) {
+    console.warn('Failed to get vault info, using defaults:', error);
+    return {
+      tvlUsd: 1000000,
+      supplyApy: 0.06,
+      borrowApr: 0.08,
+      maxLtv: 0.75
+    };
   }
 }
 
-// Export singleton instance
-export const vaultService = new VaultService(); 
+/**
+ * Get user vault statistics
+ */
+export async function getUserVaultStats(pubkey: PublicKey): Promise<{
+  collateralSol: number;
+  debtUsdc: number;
+  ltv: number;
+  health: number;
+}> {
+  try {
+    // Get health metrics from lender adapter
+    const health = await getHealth();
+    
+    // For now, return mock data that matches Summary panel expectations
+    // In real implementation, this would read actual on-chain positions
+    const collateralSol = 0.5; // Mock 0.5 SOL collateral
+    const debtUsdc = 50; // Mock $50 USDC debt
+    const ltv = health.ltv || 0.5;
+    const healthFactor = health.healthFactor || 2.0;
+    
+    return {
+      collateralSol,
+      debtUsdc,
+      ltv,
+      health: healthFactor
+    };
+  } catch (error) {
+    console.warn('Failed to get user vault stats, using defaults:', error);
+    return {
+      collateralSol: 0,
+      debtUsdc: 0,
+      ltv: 0,
+      health: 0
+    };
+  }
+} 

@@ -3,6 +3,7 @@ import { getConnection, confirmTx } from '../services/connection';
 import { getProgram } from '../services/anchor';
 import { getMintDecimals, uiToRaw } from '../services/token';
 import { DEMO_MODE } from '../config/policy';
+import { emitEvent } from '../state/eventBus';
 import pricesDevnet from '../config/prices.devnet.json';
 
 /**
@@ -32,7 +33,7 @@ async function dryRun(name: string, txOrIxs: Transaction | any[], signers: any[]
   try {
     const simulation = await connection.simulateTransaction(tx, signers);
     
-    if (import.meta.env.VITE_DEBUG_TX === 'true') {
+    if ((import.meta as any).env?.VITE_DEBUG_TX === 'true') {
       console.log(`🔍 [DRY RUN] ${name}:`);
       console.log(`   Logs:`, simulation.value.logs);
       console.log(`   Compute Units: ${simulation.value.unitsConsumed}`);
@@ -43,7 +44,7 @@ async function dryRun(name: string, txOrIxs: Transaction | any[], signers: any[]
     
     return simulation;
   } catch (error) {
-    if (import.meta.env.VITE_DEBUG_TX === 'true') {
+    if ((import.meta as any).env?.VITE_DEBUG_TX === 'true') {
       console.log(`❌ [DRY RUN] ${name} failed:`, error);
     }
     throw error;
@@ -62,6 +63,9 @@ export async function enableCollateral(mint: string, amount: number): Promise<{ 
     const demoState = JSON.parse(localStorage.getItem('demo_lender_state') || '{}');
     demoState.collateral = { mint, amount };
     localStorage.setItem('demo_lender_state', JSON.stringify(demoState));
+    
+    // Emit event
+    emitEvent({ kind: 'deposit', sig: fakeSig, meta: { mint, amount }, ts: Date.now() });
     
     return { signature: fakeSig };
   }
@@ -131,6 +135,9 @@ export async function borrow(borrowMint: string, amount: number): Promise<{ sign
     const demoState = JSON.parse(localStorage.getItem('demo_lender_state') || '{}');
     demoState.debt = { mint: borrowMint, amount };
     localStorage.setItem('demo_lender_state', JSON.stringify(demoState));
+    
+    // Emit event
+    emitEvent({ kind: 'borrow', sig: fakeSig, meta: { mint: borrowMint, amount }, ts: Date.now() });
     
     return { signature: fakeSig };
   }

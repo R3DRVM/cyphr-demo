@@ -46,6 +46,7 @@
     "deploy": "npm run build && git add docs && git commit -m 'Deploy to GitHub Pages' && git push",
     "setup:devnet": "ts-node scripts/setup-devnet.ts",
     "smoke:devnet": "RPC=https://api.devnet.solana.com ts-node scripts/smoke-test.ts",
+    "smoke:strategy": "ts-node scripts/strategy-smoke.ts",
     "test:quick": "node scripts/comprehensive-devnet-test.js",
     "test:demo": "DEMO_MODE=true node scripts/comprehensive-devnet-test.js"
   },

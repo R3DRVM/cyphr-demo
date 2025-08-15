@@ -1,6 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, Copy, Wallet, Activity, Zap, TrendingUp, Bot, MessageCircle } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ChevronDown, ChevronRight, Copy, Wallet, Activity, Zap, TrendingUp, Bot, MessageCircle, ArrowRight } from 'lucide-react';
 import { useSolanaWallet } from '../providers/SolanaWalletProvider';
+import { useNavigate } from 'react-router-dom';
+import { useStrategyStore } from '../state/strategyStore';
+import { fromPromptToConfig } from '../services/aiStrategyMapper';
+import { getConnection } from '../services/connection';
+import { useEventBus } from '../state/eventBus';
+import { PublicKey } from '@solana/web3.js';
+import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from '@solana/spl-token';
 import './CyphrBot.css';
 
 interface WalletInfo {
@@ -43,6 +50,8 @@ interface PositionItem {
 
 const CyphrBot: React.FC = () => {
   const { wallet, connected } = useSolanaWallet();
+  const navigate = useNavigate();
+  const { setCfg } = useStrategyStore();
   
   // State for collapsible sections
   const [expandedSections, setExpandedSections] = useState({
@@ -57,49 +66,110 @@ const CyphrBot: React.FC = () => {
   // State for wallet mode toggle
   const [walletMode, setWalletMode] = useState(true);
 
+  // Strategy intent state
+  const [strategyIntent, setStrategyIntent] = useState<any>(null);
+
   // Real wallet data from connected wallet
   const [wallets, setWallets] = useState<WalletInfo[]>([]);
 
+  // Event bus for real activity and positions
+  const { events: eventBusEvents, getRecentEvents } = useEventBus();
+  const { lastResult } = useStrategyStore();
+
+  // Convert event bus events to activity items
+  const activities = useMemo(() => {
+    return getRecentEvents(10).map((event, index) => ({
+      id: (index + 1).toString(),
+      type: event.kind === 'deposit' ? 'deposit' : 
+            event.kind === 'borrow' ? 'trade' : 
+            event.kind === 'swap' ? 'trade' : 
+            event.kind === 'create' ? 'strategy' : 
+            event.kind === 'execute' ? 'strategy' : 'trade',
+      description: `${event.kind.charAt(0).toUpperCase() + event.kind.slice(1)} ${event.meta?.mint || event.meta?.inputToken || 'tokens'}`,
+      timestamp: new Date(event.ts).toLocaleString(),
+      amount: event.meta?.amount ? `${event.meta.amount} ${event.meta.mint || event.meta.inputToken}` : '',
+      status: 'completed' as const,
+      signature: event.sig
+    }));
+  }, [eventBusEvents]);
+
+  // Convert strategy store data to position items
+  const positions = useMemo(() => {
+    if (!lastResult || lastResult.type !== 'create') return [];
+    
+    return [{
+      id: '1',
+      strategy: `${lastResult.data.config?.token || 'SOL'} Strategy`,
+      collateral: lastResult.data.config?.collateral || '0 SOL',
+      debt: lastResult.data.config?.debt || '0 USDC',
+      health: 85,
+      apy: '12.5%',
+      status: 'active' as const,
+      strategyId: lastResult.data.strategyId
+    }];
+  }, [lastResult]);
+
   // Update wallets when wallet connection changes
   useEffect(() => {
-    if (connected && wallet?.publicKey) {
-      // For now, we'll show the connected wallet info
-      // In a real implementation, you'd fetch actual balances from the blockchain
-      const walletInfo: WalletInfo = {
-        network: 'Solana',
-        address: `${wallet.publicKey.toString().slice(0, 4)}...${wallet.publicKey.toString().slice(-4)}`,
-        balance: '0.0000', // This would be fetched from RPC
-        balanceUSD: '$0.00', // This would be calculated from price feeds
-        assets: [
-          { symbol: 'SOL', amount: '0.0000', valueUSD: '$0.00' },
-          { symbol: 'USDC', amount: '0.00', valueUSD: '$0.00' }
-        ]
-      };
-      
-      setWallets([walletInfo]);
-    } else {
-      setWallets([]);
-    }
+    const fetchWalletBalances = async () => {
+      if (connected && wallet?.publicKey) {
+        try {
+          const connection = getConnection();
+          const publicKey = wallet.publicKey;
+          
+          // Get SOL balance
+          const solBalance = await connection.getBalance(publicKey);
+          const solBalanceSOL = solBalance / 1e9; // Convert lamports to SOL
+          
+          // Get USDC balance (assuming USDC mint from config)
+          let usdcBalance = 0;
+          try {
+            const usdcMint = new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'); // Devnet USDC
+            const usdcATA = await getAssociatedTokenAddress(usdcMint, publicKey);
+            const usdcAccount = await connection.getTokenAccountBalance(usdcATA);
+            usdcBalance = usdcAccount.value.uiAmount || 0;
+          } catch (error) {
+            console.warn('Could not fetch USDC balance:', error);
+          }
+          
+          // Mock USD values (in real app, use price feeds)
+          const solPriceUSD = 150; // Mock SOL price
+          const usdcPriceUSD = 1; // USDC is stable
+          
+          const walletInfo: WalletInfo = {
+            network: 'Solana',
+            address: `${publicKey.toString().slice(0, 4)}...${publicKey.toString().slice(-4)}`,
+            balance: solBalanceSOL.toFixed(4),
+            balanceUSD: `$${(solBalanceSOL * solPriceUSD).toFixed(2)}`,
+            assets: [
+              { symbol: 'SOL', amount: solBalanceSOL.toFixed(4), valueUSD: `$${(solBalanceSOL * solPriceUSD).toFixed(2)}` },
+              { symbol: 'USDC', amount: usdcBalance.toFixed(2), valueUSD: `$${(usdcBalance * usdcPriceUSD).toFixed(2)}` }
+            ]
+          };
+          
+          setWallets([walletInfo]);
+        } catch (error) {
+          console.error('Failed to fetch wallet balances:', error);
+          // Fallback to mock data
+          const walletInfo: WalletInfo = {
+            network: 'Solana',
+            address: `${wallet.publicKey.toString().slice(0, 4)}...${wallet.publicKey.toString().slice(-4)}`,
+            balance: '0.0000',
+            balanceUSD: '$0.00',
+            assets: [
+              { symbol: 'SOL', amount: '0.0000', valueUSD: '$0.00' },
+              { symbol: 'USDC', amount: '0.00', valueUSD: '$0.00' }
+            ]
+          };
+          setWallets([walletInfo]);
+        }
+      } else {
+        setWallets([]);
+      }
+    };
+    
+    fetchWalletBalances();
   }, [connected, wallet]);
-
-  const [activities] = useState<ActivityItem[]>([
-    {
-      id: '1',
-      type: 'strategy',
-      description: 'Yield strategy deployed: SOL-USDC LP',
-      timestamp: '2 hours ago',
-      amount: '$500',
-      status: 'completed'
-    },
-    {
-      id: '2',
-      type: 'deposit',
-      description: 'Deposited SOL to lending protocol',
-      timestamp: '1 day ago',
-      amount: '2.5 SOL',
-      status: 'completed'
-    }
-  ]);
 
   const [automations] = useState<AutomationItem[]>([
     {
@@ -107,18 +177,6 @@ const CyphrBot: React.FC = () => {
       description: 'Rebalance portfolio every 24h',
       status: 'active',
       nextExecution: 'Next: 6h 23m'
-    }
-  ]);
-
-  const [positions] = useState<PositionItem[]>([
-    {
-      id: '1',
-      strategy: 'SOL-USDC Yield Farming',
-      collateral: '2.5 SOL',
-      debt: '150 USDC',
-      health: 85,
-      apy: '12.5%',
-      status: 'active'
     }
   ]);
 
@@ -163,21 +221,54 @@ const CyphrBot: React.FC = () => {
     setChatMessages(prev => [...prev, userMessage]);
     setInputMessage('');
 
-    // Simulate bot response
-    setTimeout(() => {
-      const botResponse = {
-        id: (Date.now() + 1).toString(),
-        type: 'bot' as const,
-        content: "I'm analyzing your request. This would integrate with our strategy builder and yield protocols to provide real-time recommendations.",
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, botResponse]);
-    }, 1000);
+    // Check if message contains strategy intent
+    const strategyConfig = fromPromptToConfig(inputMessage);
+    const hasStrategyIntent = strategyConfig.token && strategyConfig.logicType;
+    
+    if (hasStrategyIntent) {
+      setStrategyIntent(strategyConfig);
+      
+      // Bot response with strategy suggestion
+      setTimeout(() => {
+        const botResponse = {
+          id: (Date.now() + 1).toString(),
+          type: 'bot' as const,
+          content: `I've identified a strategy intent: ${strategyConfig.token} ${strategyConfig.logicType} strategy targeting ${strategyConfig.profitTargetPct}% profit over ${strategyConfig.durationDays} days.`,
+          timestamp: new Date()
+        };
+        setChatMessages(prev => [...prev, botResponse]);
+      }, 1000);
+    } else {
+      // Regular bot response
+      setTimeout(() => {
+        const botResponse = {
+          id: (Date.now() + 1).toString(),
+          type: 'bot' as const,
+          content: "I'm analyzing your request. This would integrate with our strategy builder and yield protocols to provide real-time recommendations.",
+          timestamp: new Date()
+        };
+        setChatMessages(prev => [...prev, botResponse]);
+      }, 1000);
+    }
+  };
+
+  const handleApplyToBuilder = () => {
+    if (strategyIntent) {
+      setCfg(strategyIntent);
+      navigate('/strategy');
+    }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     // Could add a toast notification here
+  };
+
+  const handleActivityClick = (activity: any) => {
+    if (activity.signature) {
+      const explorerUrl = `https://explorer.solana.com/tx/${activity.signature}?cluster=devnet`;
+      window.open(explorerUrl, '_blank');
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -240,7 +331,12 @@ const CyphrBot: React.FC = () => {
               <div className="cyphr-bot-section-content">
                 {activities.length > 0 ? (
                   activities.map(activity => (
-                    <div key={activity.id} className="activity-item">
+                    <div 
+                      key={activity.id} 
+                      className="activity-item"
+                      onClick={() => handleActivityClick(activity)}
+                      style={{ cursor: activity.signature ? 'pointer' : 'default' }}
+                    >
                       <div className="activity-header">
                         <span className="activity-type">{activity.type}</span>
                         <span className="activity-status" style={{ color: getStatusColor(activity.status) }}>
@@ -369,6 +465,23 @@ const CyphrBot: React.FC = () => {
                   </div>
                 </div>
               ))}
+              
+              {/* Strategy Intent Action */}
+              {strategyIntent && (
+                <div className="strategy-intent-action">
+                  <div className="intent-preview">
+                    <strong>Strategy Detected:</strong> {strategyIntent.token} {strategyIntent.logicType} 
+                    targeting {strategyIntent.profitTargetPct}% profit over {strategyIntent.durationDays} days
+                  </div>
+                  <button 
+                    className="apply-to-builder-btn"
+                    onClick={handleApplyToBuilder}
+                  >
+                    <ArrowRight className="w-4 h-4 inline mr-2" />
+                    Apply to Builder
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="suggested-prompts">
