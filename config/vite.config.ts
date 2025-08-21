@@ -23,6 +23,7 @@ export default defineConfig({
       buffer: 'buffer',
       process: 'process/browser',
     },
+    dedupe: ['react', 'react-dom'],
   },
   optimizeDeps: {
     include: [
@@ -31,6 +32,10 @@ export default defineConfig({
       '@solana/web3.js',
       '@solana/spl-token',
       '@solana/spl-token-swap',
+      '@solana/wallet-adapter-base',
+      '@solana/wallet-adapter-react',
+      '@solana/wallet-adapter-react-ui',
+      '@solana/wallet-adapter-phantom',
     ],
     esbuildOptions: {
       define: {

@@ -1,10 +1,18 @@
+/* Page container constraints - removed global scroll lock */
+
 /* CyphrBot Page Styles - Bloomberg Terminal Theme */
+:root {
+  --header-h: 64px;
+  --composer-h: 80px;
+  --center-v-pad: 24px;
+}
+
 .cyphr-bot-page {
-  min-height: 120vh;
+  min-height: 100vh;
   background: #000000;
   color: #ffffff;
   font-family: 'ModeSeven', monospace;
-  padding: 20px 20px 60px 20px;
+  padding: 20px 20px 20px 20px;
   box-sizing: border-box;
 }
 
@@ -46,8 +54,81 @@
   font-weight: bold;
 }
 
+.mode-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.mode-badge.real-mode {
+  background: #00ff88;
+  color: #000;
+}
+
+.mode-badge.demo-mode {
+  background: #ffaa00;
+  color: #000;
+}
+
 .cyphr-bot-subtitle {
   font-size: 1.1rem;
+  color: #888;
+  font-style: italic;
+}
+
+/* Transaction Mode Toggle */
+.transaction-mode-toggle {
+  margin-top: 20px;
+  padding: 15px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.mode-label {
+  display: block;
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.mode-button {
+  background: #333;
+  color: #ccc;
+  border: 1px solid #555;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'ModeSeven', monospace;
+  font-size: 0.9rem;
+}
+
+.mode-button:hover {
+  background: #444;
+  border-color: #666;
+}
+
+.mode-button.active {
+  background: #00ff88;
+  color: #000;
+  border-color: #00ff88;
+  font-weight: bold;
+}
+
+.mode-description {
+  font-size: 0.9rem;
   color: #888;
   font-style: italic;
 }
@@ -55,10 +136,15 @@
 /* Main Layout */
 .cyphr-bot-main {
   display: grid;
-  grid-template-columns: 300px 1fr 350px;
+  grid-template-columns: 300px minmax(0, 1fr) 350px;
   gap: 20px;
-  height: calc(100vh - 150px);
-  min-height: 800px;
+  min-height: calc(100vh - 120px);
+  min-height: 0;
+}
+
+/* Ensure all grid columns can shrink */
+.cyphr-bot-main > * {
+  min-height: 0;
 }
 
 /* Left Panel - Activity, Automation, Positions */
@@ -68,6 +154,7 @@
   border-radius: 8px;
   padding: 20px;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .cyphr-bot-section {
@@ -268,11 +355,16 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+  max-height: calc(100vh - 160px);
+  overflow: hidden;
 }
 
 .chat-container {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
   height: 100%;
 }
 
@@ -284,6 +376,43 @@
   background: #0a0a0a;
   border-radius: 6px;
   border: 1px solid #333;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+  max-height: calc(100vh - 300px);
+  /* make sure last bubble isn't under the composer */
+  padding-bottom: 80px;
+}
+
+/* Jump to latest button */
+.jump-to-latest {
+  position: sticky;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  background: linear-gradient(transparent, #0a0a0a 50%);
+}
+
+.jump-to-latest-btn {
+  background: #00ff88;
+  color: #000;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'ModeSeven', monospace;
+  box-shadow: 0 2px 8px rgba(0, 255, 136, 0.3);
+}
+
+.jump-to-latest-btn:hover {
+  background: #00cc6a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.4);
 }
 
 .chat-message {
@@ -324,6 +453,10 @@
   font-size: 0.9rem;
   line-height: 1.4;
   margin-bottom: 5px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .message-timestamp {
@@ -357,6 +490,14 @@
   background: #222;
   border-color: #00ff88;
   color: #ffffff;
+}
+
+/* Interactive Chips */
+.interactive-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 /* Chat Input */
@@ -431,6 +572,7 @@
   border-radius: 8px;
   padding: 20px;
   overflow-y: auto;
+  min-height: 0;
 }
 
 .wallet-header {
@@ -439,7 +581,8 @@
   border-bottom: 1px solid #333;
 }
 
-.deposit-button {
+.deposit-button,
+.connect-wallet-button {
   width: 100%;
   background: #00ff88;
   color: #000;
@@ -455,6 +598,14 @@
 
 .deposit-button:hover {
   background: #00cc6a;
+}
+
+.connect-wallet-button {
+  background: #ff6b35;
+}
+
+.connect-wallet-button:hover {
+  background: #f7931e;
 }
 
 .wallet-mode-toggle {
@@ -515,6 +666,8 @@ input:checked + .toggle-slider:before {
 /* Wallet Section */
 .wallet-section {
   margin-bottom: 25px;
+  width: 100%;
+  min-width: 0;
 }
 
 .wallet-title {
@@ -545,6 +698,9 @@ input:checked + .toggle-slider:before {
   background: #0a0a0a;
   border-radius: 6px;
   border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .wallet-network {
@@ -610,33 +766,47 @@ input:checked + .toggle-slider:before {
 
 .wallet-assets {
   border-top: 1px solid #333;
-  padding-top: 12px;
+  padding-top: 16px;
+  margin-top: 16px;
 }
 
 .assets-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #ccc;
-  font-size: 0.8rem;
-  margin-bottom: 8px;
+  color: #00ff88;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 12px;
   cursor: pointer;
+  padding: 8px 12px;
+  background: #1a1a1a;
+  border-radius: 6px;
+  border: 1px solid #333;
+  transition: all 0.2s ease;
+}
+
+.assets-header:hover {
+  background: #222;
+  border-color: #00ff88;
 }
 
 .assets-list {
-  background: #1a1a1a;
-  border-radius: 4px;
-  padding: 8px;
+  background: #0a0a0a;
+  border-radius: 6px;
+  padding: 12px;
+  border: 1px solid #333;
+  margin-top: 8px;
 }
 
 .asset-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
-  font-size: 0.8rem;
+  padding: 10px 0;
+  font-size: 0.9rem;
   border-bottom: 1px solid #222;
-  gap: 8px;
+  gap: 12px;
 }
 
 .asset-symbol {
@@ -696,7 +866,7 @@ input:checked + .toggle-slider:before {
   display: block;
 }
 
-.connect-wallet-btn {
+.connect-wallet-button {
   background: #00ff88;
   color: #000;
   border: none;
@@ -704,12 +874,12 @@ input:checked + .toggle-slider:before {
   padding: 10px 20px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
-  font-family: 'ModeSeven', monospace;
+  transition: all 0.2s ease;
 }
 
-.connect-wallet-btn:hover {
+.connect-wallet-button:hover {
   background: #00cc6a;
+  transform: translateY(-1px);
 }
 
 .wallet-loading {
@@ -854,4 +1024,61 @@ input:checked + .toggle-slider:before {
   .cyphr-bot-right-panel {
     padding: 15px;
   }
+}
+
+/* Action Chips Styles */
+.action-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.action-chip {
+  background: linear-gradient(135deg, #00ff88, #00cc6a);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'ModeSeven', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-chip:hover {
+  background: linear-gradient(135deg, #00cc6a, #00ff88);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.action-chip:active {
+  transform: translateY(0);
+}
+
+.deposit-chip {
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+}
+
+.deposit-chip:hover {
+  background: linear-gradient(135deg, #f7931e, #ff6b35);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.execute-chip {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+.execute-chip:hover {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.action-chip-text {
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
 }

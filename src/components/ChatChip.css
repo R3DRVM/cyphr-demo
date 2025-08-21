@@ -1,0 +1,83 @@
+.chat-chip {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 4px;
+  border: 1px solid #333;
+  border-radius: 20px;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-family: 'ModeSeven', monospace;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  outline: none;
+}
+
+.chat-chip:hover:not(.disabled) {
+  background: #00ff88;
+  color: #000;
+  border-color: #00ff88;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.chat-chip:active:not(.disabled) {
+  transform: translateY(0);
+}
+
+.chat-chip-primary {
+  border-color: #00ff88;
+  color: #00ff88;
+}
+
+.chat-chip-primary:hover:not(.disabled) {
+  background: #00ff88;
+  color: #000;
+}
+
+.chat-chip-secondary {
+  border-color: #0088ff;
+  color: #0088ff;
+}
+
+.chat-chip-secondary:hover:not(.disabled) {
+  background: #0088ff;
+  color: #000;
+}
+
+.chat-chip-success {
+  border-color: #00ff88;
+  color: #00ff88;
+}
+
+.chat-chip-success:hover:not(.disabled) {
+  background: #00ff88;
+  color: #000;
+}
+
+.chat-chip-warning {
+  border-color: #ffaa00;
+  color: #ffaa00;
+}
+
+.chat-chip-warning:hover:not(.disabled) {
+  background: #ffaa00;
+  color: #000;
+}
+
+.chat-chip.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #333;
+  color: #666;
+  border-color: #555;
+}
+
+.chat-chip.disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background: #333;
+  color: #666;
+}
+

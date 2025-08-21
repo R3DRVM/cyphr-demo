@@ -7,7 +7,7 @@ import Header from './components/Header';
 import { ToastProvider } from './components/Toast';
 import Footer from './components/Footer';
 import TransactionStatus from './components/TransactionStatus';
-import { BootDebug } from './debug/BootDebug';
+
 import Discover from './pages/Discover';
 import Dashboard from './pages/Dashboard';
 import CyphrBot from './pages/CyphrBot';
@@ -88,7 +88,7 @@ function App() {
               <TransactionStatus />
             </div>
             </Router>
-            <BootDebug />
+
           </ToastProvider>
         </TransactionProvider>
       </SolanaWalletProvider>

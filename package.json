@@ -38,7 +38,7 @@
     "wagmi": "^2.16.1"
   },
   "scripts": {
-    "dev": "vite --config config/vite.config.ts",
+    "dev": "vite --config config/vite.config.ts --port 3000",
     "dev:demo": "cross-env VITE_DEMO_MODE=true vite --config config/vite.config.ts",
     "dev:real": "cross-env VITE_DEMO_MODE=false vite --config config/vite.config.ts",
     "build": "vite build --config config/vite.config.ts",
