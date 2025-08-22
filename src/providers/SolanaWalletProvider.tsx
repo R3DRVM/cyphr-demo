@@ -34,6 +34,7 @@ export const SolanaWalletProvider: React.FC<SolanaWalletProviderProps> = ({ chil
   const [connecting, setConnecting] = useState(false);
 
   const connect = async (walletType: string) => {
+    console.log('SolanaWalletProvider: Starting connection process for', walletType);
     setConnecting(true);
     try {
       let selectedWallet: any = null;
@@ -43,9 +44,14 @@ export const SolanaWalletProvider: React.FC<SolanaWalletProviderProps> = ({ chil
 
       switch (walletType) {
         case 'phantom':
+          console.log('SolanaWalletProvider: Checking for Phantom wallet...');
+          console.log('SolanaWalletProvider: window.solana exists:', !!window.solana);
+          console.log('SolanaWalletProvider: window.solana.isPhantom:', window.solana?.isPhantom);
           if (!window.solana || !window.solana.isPhantom) {
+            console.error('SolanaWalletProvider: Phantom wallet not found');
             throw new Error('Phantom wallet is not installed! Please install Phantom wallet extension.');
           }
+          console.log('SolanaWalletProvider: Phantom wallet found, proceeding with connection...');
           selectedWallet = window.solana;
           break;
         case 'solflare':
@@ -58,13 +64,17 @@ export const SolanaWalletProvider: React.FC<SolanaWalletProviderProps> = ({ chil
           throw new Error(`Unsupported wallet type: ${walletType}`);
       }
 
+      console.log('SolanaWalletProvider: Attempting to connect to wallet...');
       const response = await selectedWallet.connect();
+      console.log('SolanaWalletProvider: Connection response:', response);
       const pubKey = new PublicKey(response.publicKey.toString());
+      console.log('SolanaWalletProvider: Public key created:', pubKey.toString());
       
       setWallet(selectedWallet);
       setPublicKey(pubKey);
       setConnected(true);
       
+      console.log('SolanaWalletProvider: Wallet state updated successfully');
       console.log('Connected to wallet:', walletType, 'Public key:', pubKey.toString());
     } catch (error) {
       console.error('Failed to connect wallet:', error);

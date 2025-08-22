@@ -35,10 +35,10 @@ const MobileBottomNav: React.FC = () => {
   if (!isVisible) return null;
 
   const navItems = [
+    { name: 'Cyphr Bot', path: '/cyphr-bot', icon: '/assets/icons/RobotIcon.png' },
     { name: 'Strategy', path: '/strategy-builder', icon: '/assets/icons/WatchlistStar.png' },
     { name: 'Terminal', path: '/pro-terminal', icon: '/assets/icons/PhoneIcon.png' },
     { name: 'Discover', path: '/discover', icon: '/assets/icons/PriceLogic.png' },
-    { name: 'Cyphr Bot', path: '/cyphr-bot', icon: '/assets/icons/RobotIcon.png' },
   ];
 
   return (
@@ -72,7 +72,7 @@ function App() {
               <Header />
               <main className="main-content">
                 <Routes>
-                  <Route path="/" element={<Navigate to="/discover" replace />} />
+                  <Route path="/" element={<Navigate to="/cyphr-bot" replace />} />
                   <Route path="/pro-terminal" element={<ProTerminal />} />
                   <Route path="/discover" element={<Discover />} />
                   <Route path="/dashboard" element={<Dashboard />} />

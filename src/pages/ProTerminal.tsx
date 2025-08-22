@@ -4,8 +4,8 @@ import { useSolanaWallet } from '../providers/SolanaWalletProvider';
 import { configService } from '../services/config';
 import { usePosition } from '../hooks/usePosition';
 import { useTxToasts } from '../hooks/useTxToasts';
-import { PreflightBanner } from '../components/Preflight';
-import { QuickStart } from '../components/QuickStart';
+
+
 import { BorrowTradePanel } from '../components/BorrowTradePanel';
 import { SummaryPanel } from '../components/SummaryPanel';
 import { InsightsPanel } from '../components/InsightsPanel';
@@ -245,7 +245,7 @@ const ProTerminal: React.FC = () => {
       {/* Header */}
       <div className="terminal-header">
         <div className="header-left">
-          <h1 className="terminal-title">ProTerminal</h1>
+          <h1 className="terminal-title">Cyphr Pro Terminal</h1>
           <div className="terminal-subtitle">Professional DeFi Trading Interface</div>
         </div>
         <div className="header-right">
@@ -256,11 +256,9 @@ const ProTerminal: React.FC = () => {
         </div>
       </div>
 
-      {/* QuickStart Strip */}
-      <QuickStart />
 
-      {/* Preflight Banner */}
-      <PreflightBanner />
+
+
       
       {/* Search Bar */}
       <div className="pro-terminal-search">

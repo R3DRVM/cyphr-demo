@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { ChevronDown, ChevronRight, Copy, Wallet, Activity, Zap, TrendingUp, Bot, MessageCircle, ArrowRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, Copy, Wallet, Activity, Zap, TrendingUp, Bot, MessageCircle, ArrowRight, X } from 'lucide-react';
 import { useSolanaWallet } from '../providers/SolanaWalletProvider';
 import ChatChip from '../components/ChatChip';
 import { createBrowserTreasuryService } from '../services/browserTreasuryService';
@@ -66,7 +66,7 @@ interface PositionItem {
 }
 
 const CyphrBot: React.FC = () => {
-  const { wallet, connected, publicKey, sendTransaction } = useSolanaWallet();
+  const { wallet, connected, publicKey, sendTransaction, connect, disconnect } = useSolanaWallet();
   const navigate = useNavigate();
   const { setCfg } = useStrategyStore();
   
@@ -458,7 +458,7 @@ const CyphrBot: React.FC = () => {
             const successMessage = {
               id: (Date.now() + 2).toString(),
               type: 'bot' as const,
-              content: `✅ [DEVNET MODE] Automated withdrawal successful!\n\n📝 Hash: ${result.signature.substring(0, 8)}...${result.signature.substring(result.signature.length - 8)}\n🔗 [View on Explorer](https://explorer.solana.com/tx/${result.signature}?cluster=devnet)\n💰 Original Deposit: ${result.originalDeposit} SOL\n🎯 Yield Earned: ${result.yieldEarned.toFixed(4)} SOL (${targetAPY}% APY)\n💸 Total Returned: ${result.totalReturn.toFixed(4)} SOL\n\n🚀 Your SOL + yield has been automatically returned from the treasury!`,
+              content: `✅ [DEVNET MODE] Automated withdrawal successful!\n\n📝 Hash: ${result.signature.substring(0, 8)}...${result.signature.substring(result.signature.length - 8)}\n🔗 [View on Explorer](https://explorer.solana.com/tx/${result.signature}?cluster=devnet)\n💰 Original Deposit: ${result.originalDeposit} SOL\n🎯 Yield Earned: ${result.yieldEarned.toFixed(4)} SOL (${targetAPY}% APY)\n💸 Total Returned: ${result.totalReturn.toFixed(4)} SOL\n\n🚀 You should now see your funds and earnings in your wallet!`,
               timestamp: new Date()
             };
             setChatMessages(prev => [...prev, successMessage]);
@@ -486,7 +486,7 @@ const CyphrBot: React.FC = () => {
             const errorMessage = {
               id: (Date.now() + 2).toString(),
               type: 'bot' as const,
-              content: `❌ [DEVNET MODE] Withdrawal failed: ${error instanceof Error ? error.message : 'Unknown error'}\n\n🔄 Your funds are safe in the treasury. Click "Try Withdrawal Again" to retry.`,
+              content: `❌ [DEVNET MODE] Withdrawal failed: ${error instanceof Error ? error.message : 'Unknown error'}\n\n🔄 Your funds are safe and secure. Click "Try Withdrawal Again" to retry.`,
               timestamp: new Date()
             };
             setChatMessages(prev => [...prev, errorMessage]);
@@ -916,7 +916,7 @@ const CyphrBot: React.FC = () => {
               const withdrawalMessage = {
                 id: (Date.now() + 1).toString(),
                 type: 'bot' as const,
-                content: `💰 REAL Withdrawal processed!\n\n📊 Original Deposit: ${depositAmount} SOL\n🎯 Yield Earned: ${yieldAmount.toFixed(4)} SOL (${targetAPY}% APY)\n💸 Total Returned: ${totalReturn.toFixed(4)} SOL\n\n✅ Your SOL + yield has been ACTUALLY returned from the treasury!\n\n🔗 Check your wallet balance - you should see the increase!`,
+                content: `💰 REAL Withdrawal processed!\n\n📊 Original Deposit: ${depositAmount} SOL\n🎯 Yield Earned: ${yieldAmount.toFixed(4)} SOL (${targetAPY}% APY)\n💸 Total Returned: ${totalReturn.toFixed(4)} SOL\n\n✅ Your SOL + yield has been successfully processed!\n\n🔗 Check your wallet balance - you should see the increase!`,
                 timestamp: new Date()
               };
               setChatMessages(prev => [...prev, withdrawalMessage]);
@@ -1289,7 +1289,7 @@ const CyphrBot: React.FC = () => {
                 const botResponse = {
                   id: (Date.now() + 1).toString(),
                   type: 'bot' as const,
-                  content: 'I understand you\'re having trouble with your withdrawal. Let me help you troubleshoot this issue. Your funds are safe in the treasury, and we\'ll get them back to you.',
+                  content: 'I understand you\'re having trouble with your withdrawal. Let me help you troubleshoot this issue. Your funds are safe and secure, and we\'ll get them back to you.',
                   timestamp: new Date()
                 };
                 setChatMessages(prev => [...prev, botResponse]);
@@ -1679,15 +1679,15 @@ const CyphrBot: React.FC = () => {
             {!connected ? (
               <button 
                 className="connect-wallet-button"
-                onClick={() => {
+                onClick={async () => {
                   try {
-                    if (window.solana && window.solana.isPhantom) {
-                      window.solana.connect();
-                    } else {
-                      alert('Please install Phantom wallet extension');
-                    }
+                    console.log('Attempting to connect to Phantom wallet...');
+                    // Use the proper wallet connection from the provider
+                    await connect('phantom');
+                    console.log('Wallet connection successful!');
                   } catch (error) {
-                    console.error('Failed to connect:', error);
+                    console.error('Failed to connect wallet:', error);
+                    alert(`Failed to connect wallet: ${error instanceof Error ? error.message : 'Unknown error'}`);
                   }
                 }}
               >
@@ -1707,49 +1707,43 @@ const CyphrBot: React.FC = () => {
                 <span className="toggle-slider"></span>
               </label>
             </div>
+            {connected && (
+              <div className="connection-status">
+                <span className="status-indicator connected">●</span>
+                <span className="status-text">Connected</span>
+              </div>
+            )}
           </div>
 
-          {(walletMode || connected) && (
+          {connected && (
             <div className="wallet-section">
               <div className="wallet-title">
                 <Wallet className="wallet-icon" />
                 <span>Wallet</span>
               </div>
               
-              {!connected ? (
-                <div className="wallet-connect-prompt">
-                  <div className="connect-icon">🔗</div>
-                  <span className="connect-text">Connect your wallet to view balances</span>
-                  <button 
-                    className="connect-wallet-button"
-                    onClick={() => {
-                      try {
-                        // Try to connect to Phantom wallet
-                        if (window.solana && window.solana.isPhantom) {
-                          window.solana.connect();
-                        } else {
-                          alert('Please install Phantom wallet extension');
-                        }
-                      } catch (error) {
-                        console.error('Failed to connect:', error);
-                      }
-                    }}
-                  >
-                    Connect Phantom
-                  </button>
-                </div>
-              ) : connected && publicKey ? (
+              {publicKey ? (
                 <div className="wallet-item">
                   <div className="wallet-network">
                     <span className="network-name">Solana</span>
                     <div className="wallet-address-container">
                       <span className="wallet-address">{`${publicKey.toString().slice(0, 4)}...${publicKey.toString().slice(-4)}`}</span>
-                      <button 
-                        className="copy-button"
-                        onClick={() => copyToClipboard(publicKey.toString())}
-                      >
-                        <Copy size={12} />
-                      </button>
+                      <div className="wallet-actions">
+                        <button 
+                          className="copy-button"
+                          onClick={() => copyToClipboard(publicKey.toString())}
+                          title="Copy address"
+                        >
+                          <Copy size={12} />
+                        </button>
+                        <button 
+                          className="disconnect-button"
+                          onClick={() => disconnect()}
+                          title="Disconnect wallet"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                   

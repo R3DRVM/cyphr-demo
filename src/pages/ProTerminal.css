@@ -4953,12 +4953,14 @@
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  font-family: 'ModeSeven', monospace;
 }
 
 .header-left .terminal-subtitle {
   color: #9ca3af;
   font-size: 0.875rem;
   margin-top: 0.25rem;
+  font-family: 'ModeSeven', monospace;
 }
 
 .header-right .network-indicator {

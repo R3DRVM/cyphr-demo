@@ -27,10 +27,10 @@ const Header: React.FC = () => {
   }, []);
 
   const navItems = [
+    { name: 'CYPHR BOT', path: '/cyphr-bot' },
     { name: 'DISCOVER', path: '/discover' },
     { name: 'TERMINAL', path: '/pro-terminal' },
     { name: 'STRATEGY', path: '/strategy-builder' },
-    { name: 'CYPHR BOT', path: '/cyphr-bot' },
   ];
 
   const handleProfileClick = () => {
